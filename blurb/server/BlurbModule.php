@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
@@ -27,13 +27,18 @@ use ET\Builder\Packages\Module\Options\BoxShadow\BoxShadowClassnames;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
+use ET\Builder\Packages\ModuleLibrary\Image\ImageModule;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\ModuleUtils\ImageUtils;
+use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use Exception;
 use WP_Block_Type_Registry;
 use WP_Block;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroup;
+use ET\Builder\Packages\GlobalData\GlobalData;
 
 /**
  * BlurbModule class.
@@ -176,21 +181,6 @@ class BlurbModule implements DependencyInterface {
 				'storeInstance' => $store_instance,
 				'hoverSelector' => $selector,
 				'setContent'    => [
-					[
-						'selector'      => $selector . ' .et_pb_module_header',
-						'data'          => $attrs['title']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
-							return $value['text'] ?? '';
-						},
-					],
-					[
-						'selector'      => $selector . ' .et_pb_blurb_description',
-						'data'          => $attrs['content']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
-							return $value ?? '';
-						},
-						'sanitizer'     => 'et_core_esc_previously',
-					],
 					$is_use_icon ? [
 						'selector'      => $selector . ' .et-pb-icon',
 						'data'          => $attrs['imageIcon']['innerContent'] ?? [],
@@ -456,10 +446,14 @@ class BlurbModule implements DependencyInterface {
 	/**
 	 * Sets the image width style declaration for the Blurb module.
 	 *
-	 * This function adds a `max-width` style declaration to the Blurb module's
+	 * This function adds a `width` or `max-width` style declaration to the Blurb module's
 	 * image based on the provided parameters. It uses the value (breakpoint >
 	 * state > value) of the module attribute to determine the width. The CSS
 	 * style declaration is returned as a string.
+	 *
+	 * Matches D4's conditional logic:
+	 * - Uses `width` for px values (or SVG images, handled separately)
+	 * - Uses `max-width` for percentage values to preserve aspect ratio
 	 *
 	 * @since ??
 	 *
@@ -479,7 +473,18 @@ class BlurbModule implements DependencyInterface {
 	 *   ],
 	 * ];
 	 * $imageWidthStyle = BlurbModule::image_width_style_declaration( $params );
-	 * // Result: "max-width: 500px;"
+	 * // Result: "width: 500px;"
+	 * ```
+	 *
+	 * @example: Set the image width style declaration with percentage.
+	 * ```php
+	 * $params = [
+	 *   'attrValue' => [
+	 *     'image' => '50%',
+	 *   ],
+	 * ];
+	 * $imageWidthStyle = BlurbModule::image_width_style_declaration( $params );
+	 * // Result: "max-width: 50%;"
 	 * ```
 	 */
 	public static function image_width_style_declaration( array $params ): string {
@@ -490,88 +495,99 @@ class BlurbModule implements DependencyInterface {
 		);
 
 		if ( isset( $params['attrValue']['image'] ) ) {
-			$style_declarations->add( 'width', $params['attrValue']['image'] );
+			$width_value = $params['attrValue']['image'];
+			// D4 logic: use 'width' for px values, 'max-width' for percentages/other units
+			// This preserves aspect ratio for percentage values (prevents vertical stretching).
+			$property = str_contains( $width_value, 'px' ) ? 'width' : 'max-width';
+			$style_declarations->add( $property, $width_value );
 		}
 
 		return $style_declarations->value();
 	}
 
 	/**
-	 * Sets the overflow style declaration for Blurb module when border radius used.
-	 *
-	 * This function is the equivalent of the `overflowStyleDeclaration` JS function located in
-	 * visual-builder/packages/module-library/src/components/blurb/style-declarations/overflow/index.ts.
+	 * Image max-width style declaration for Blurb module.
+	 * Adds max-width: 100% only when the image width exceeds 100%
+	 * to prevent overflow in left/right positioned blurbs.
 	 *
 	 * @since ??
 	 *
-	 * @param array $params {
-	 *     An array of parameters.
+	 * @param array $params Parameters for the style declaration.
 	 *
-	 *     @type array $attrValue The value (breakpoint > state > value) of the module attribute.
-	 * }
-	 *
-	 * @return string The overflow style declaration.
-	 *
-	 * @example:
-	 * ```php
-	 *   $params = array(
-	 *       'attrValue' => array(
-	 *           'radius' => '10px',
-	 *       ),
-	 *   );
-	 *   // Output: "overflow: hidden;"
-	 *   $styleDeclaration = BlurbModule::overflow_style_declaration( $params );
-	 * ```
-	 *
-	 * @example:
-	 * ```php
-	 *   $params = array(
-	 *       'attrValue' => array(
-	 *           'radius' => null,
-	 *       ),
-	 *   );
-	 *   // Output: ""
-	 *   $styleDeclaration = BlurbModule::overflow_style_declaration( $params );
-	 * ```
+	 * @return string Generated CSS styles for image max-width.
 	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
-
+	public static function image_max_width_style_declaration( array $params ): string {
 		$style_declarations = new StyleDeclarations(
 			[
 				'returnType' => 'string',
 			]
 		);
 
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
+		// Get the image width value.
+		$image_width = $params['attrValue']['image'] ?? '';
 
-		$all_corners_zero = true;
+		if ( $image_width ) {
+			// Parse the numeric value from the width string.
+			$numeric_value = floatval( $image_width );
 
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
+			// Check if the value is a percentage and exceeds 100.
+			if ( str_contains( $image_width, '%' ) && $numeric_value > 100 ) {
+				$style_declarations->add( 'max-width', '100%' );
 			}
 		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
 
 		return $style_declarations->value();
 	}
+
+	/**
+	 * SVG style declaration for Blurb module.
+	 * Handles the unique Blurb structure where width can be either for icon or image.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params Parameters for the style declaration.
+	 *
+	 * @return string Generated CSS styles for SVG images.
+	 */
+	public static function svg_style_declaration( array $params ): string {
+		$attr_value = $params['attrValue'] ?? [];
+
+		$style_declarations = new StyleDeclarations(
+			[
+				'returnType' => 'string',
+				'important'  => false,
+			]
+		);
+
+		// Only handle SVG images, not icons.
+		$is_using_icon = 'on' === ( $attr_value['useIcon'] ?? '' );
+
+		if ( ! $is_using_icon ) {
+			// Get src from innerContent.
+			$src = $attr_value['src'] ?? '';
+
+			// Check if image is SVG using utility that handles query params and fragments.
+			// Skip utility call if src is empty for performance.
+			$is_src_svg = ! empty( $src ) && ImageUtils::is_file_extension( $src, 'svg' );
+
+			if ( $is_src_svg ) {
+				// Get the image width value from the merged attributes.
+				// Note: After array_replace_recursive merging, the width is at ['image'], NOT ['width']['image'].
+				// This was confirmed via debug logging - when user sets width in Design > Sizing > Width,
+				// the value appears directly at $attr_value['image'] (e.g., '90%').
+				$width = $attr_value['image'] ?? '';
+
+				// Use user's width if set, otherwise fallback to 100%.
+				$style_declarations->add( 'width', ! empty( $width ) ? $width : '100%' );
+
+				// Use auto height for SVGs.
+				$style_declarations->add( 'height', 'auto' );
+			}
+		}
+
+		return $style_declarations->value();
+	}
+
 
 	/**
 	 * Get the style components for the Blurb Module.
@@ -622,27 +638,54 @@ class BlurbModule implements DependencyInterface {
 		$settings    = $args['settings'] ?? [];
 		$placement   = $attrs['imageIcon']['advanced']['placement']['desktop']['value'] ?? '';
 		$order_class = $args['orderClass'];
+		$style_group = $args['styleGroup'] ?? 'module';
+		$use_icon    = 'on' === ( $attrs['imageIcon']['innerContent']['desktop']['value']['useIcon'] ?? 'off' );
+
+		// Image conditionals.
+		$image_src        = $attrs['imageIcon']['innerContent']['desktop']['value']['src'] ?? '';
+		$is_placement_top = empty( $placement ) || 'top' === $placement;
+		$is_image_svg     = ! empty( $image_src ) && ImageUtils::is_file_extension( $image_src, 'svg' );
 
 		// In D4, image alignment is used only when placement is top.
-		$image_alignment = ( empty( $placement ) || 'top' === $placement ) ? [
-			'selector'            => "{$args['orderClass']} .et_pb_main_blurb_image .et_pb_image_wrap",
+		$image_alignment = $is_placement_top ? [
+			'selector'            => $is_image_svg
+				? "{$args['orderClass']} .et_pb_main_blurb_image"
+				: "{$args['orderClass']} .et_pb_main_blurb_image .et_pb_image_wrap",
 			'attr'                => $attrs['imageIcon']['advanced']['alignment'] ?? [],
 			'declarationFunction' => [ self::class, 'image_alignment_style_declaration' ],
 		] : [];
 
-		// In D4, only one of them should be rendered. Render icon font-size if icon is
-		// used. Otherwise, render image max-width.
-		$icon_width = 'on' === ( $attrs['imageIcon']['innerContent']['desktop']['value']['useIcon'] ?? 'off' )
-			? [
-				'selector'            => "{$args['orderClass']} .et-pb-icon",
-				'attr'                => $attrs['imageIcon']['advanced']['width'] ?? [],
-				'declarationFunction' => [ self::class, 'icon_width_style_declaration' ],
-			]
-			: [
-				'selector'            => "{$args['orderClass']} .et_pb_main_blurb_image .et_pb_image_wrap",
-				'attr'                => $attrs['imageIcon']['advanced']['width'] ?? [],
-				'declarationFunction' => [ self::class, 'image_width_style_declaration' ],
-			];
+		// Determine if icon width styles should be rendered:
+		// - always render when rendering preset styles (useIcon attribute is not available in preset attributes).
+		// - only render when icon is enabled when rendering module styles.
+		$render_icon_width_style_declaration = 'module' !== $style_group || $use_icon;
+
+		// Determine if image width styles should be rendered:
+		// - always render when rendering preset styles (useIcon attribute is not available in preset attributes).
+		// - only render when icon is disable when rendering module styles.
+		$render_image_width_style_declaration = 'module' !== $style_group || ! $use_icon;
+
+		// Create icon width style props if icon width styles should be rendered.
+		$render_icon_width_props = $render_icon_width_style_declaration ? [
+			'selector'            => "{$args['orderClass']} .et-pb-icon",
+			'attr'                => $attrs['imageIcon']['advanced']['width'] ?? [],
+			'declarationFunction' => [ self::class, 'icon_width_style_declaration' ],
+		] : [];
+
+		// Determine image width selector based on D4's conditional logic:
+		// - When placement is "top" (or empty, which defaults to "top") AND image is SVG:
+		// apply width to parent `.et_pb_main_blurb_image` to preserve left alignment.
+		// - Otherwise: apply width to wrapper `.et_pb_image_wrap.et_pb_only_image_mode_wrap`.
+		$image_width_selector = ( $is_placement_top && $is_image_svg )
+			? "{$args['orderClass']} .et_pb_main_blurb_image"
+			: "{$args['orderClass']} .et_pb_main_blurb_image .et_pb_image_wrap.et_pb_only_image_mode_wrap";
+
+		// Create image width style props if image width styles should be rendered.
+		$render_image_width_props = $render_image_width_style_declaration ? [
+			'selector'            => $image_width_selector,
+			'attr'                => $attrs['imageIcon']['advanced']['width'] ?? [],
+			'declarationFunction' => [ self::class, 'image_width_style_declaration' ],
+		] : [];
 
 		Style::add(
 			[
@@ -661,6 +704,12 @@ class BlurbModule implements DependencyInterface {
 								],
 								'advancedStyles' => [
 									[
+										'componentName' => 'divi/background',
+										'props'         => [
+											'attr' => $attrs['module']['decoration']['background'] ?? [],
+										],
+									],
+									[
 										'componentName' => 'divi/text',
 										'props'         => [
 											'selector' => "{$order_class} .et_pb_blurb_container",
@@ -671,7 +720,10 @@ class BlurbModule implements DependencyInterface {
 										'componentName' => 'divi/common',
 										'props'         => [
 											'attr' => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 									[
@@ -679,7 +731,7 @@ class BlurbModule implements DependencyInterface {
 										'props'         => [
 											'selector' => "{$order_class} .et_pb_main_blurb_image .et_pb_only_image_mode_wrap, {$order_class} .et_pb_main_blurb_image .et-pb-icon",
 											'attr'     => $attrs['imageIcon']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => [ Declarations::class, 'overflow_for_border_radius_style_declaration' ],
 										],
 									],
 								],
@@ -719,7 +771,19 @@ class BlurbModule implements DependencyInterface {
 									],
 									[
 										'componentName' => 'divi/common',
-										'props'         => $icon_width,
+										'props'         => $render_icon_width_props,
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => $render_image_width_props,
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => "{$args['orderClass']}.et_pb_blurb_position_left .et_pb_main_blurb_image .et_pb_image_wrap.et_pb_only_image_mode_wrap, {$args['orderClass']}.et_pb_blurb_position_right .et_pb_main_blurb_image .et_pb_image_wrap.et_pb_only_image_mode_wrap",
+											'attr'     => $attrs['imageIcon']['advanced']['width'] ?? [],
+											'declarationFunction' => [ self::class, 'image_max_width_style_declaration' ],
+										],
 									],
 									[
 										'componentName' => 'divi/common',
@@ -732,6 +796,14 @@ class BlurbModule implements DependencyInterface {
 									[
 										'componentName' => 'divi/common',
 										'props'         => $image_alignment,
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => "{$args['orderClass']} .et_pb_main_blurb_image .et_pb_image_wrap img",
+											'attr'     => array_replace_recursive( [], $attrs['imageIcon']['innerContent'] ?? [], $attrs['imageIcon']['advanced']['width'] ?? [] ),
+											'declarationFunction' => [ self::class, 'svg_style_declaration' ],
+										],
 									],
 								],
 							],
@@ -775,7 +847,7 @@ class BlurbModule implements DependencyInterface {
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => $args['orderClass'] . '.et_pb_blurb',
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -797,7 +869,7 @@ class BlurbModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array          $attrs                       Block attributes that were saved by Divi Builder.
-	 * @param string         $content                     The block's content.
+	 * @param string         $child_modules_content       The block's content (child modules content).
 	 * @param WP_Block       $block                       Parsed block object that is being rendered.
 	 * @param ModuleElements $elements                    An instance of the ModuleElements class.
 	 * @param array          $default_printed_style_attrs Default printed style attributes.
@@ -819,7 +891,7 @@ class BlurbModule implements DependencyInterface {
 	 * BlurbModule::render_callback( $attrs, $content, $block, $elements, $default_printed_style_attrs );
 	 * ```
 	 */
-	public static function render_callback( array $attrs, string $content, WP_Block $block, ModuleElements $elements, array $default_printed_style_attrs ): string {
+	public static function render_callback( array $attrs, string $child_modules_content, WP_Block $block, ModuleElements $elements, array $default_printed_style_attrs ): string {
 		$has_image_src = ModuleUtils::has_value(
 			$attrs['imageIcon']['innerContent'] ?? [],
 			[
@@ -843,10 +915,11 @@ class BlurbModule implements DependencyInterface {
 					'class' => 'et_pb_image_wrap',
 				],
 				'childrenSanitizer' => 'et_core_esc_previously',
-				'children'          => HTMLUtility::render(
+				'children'          => $elements->render(
 					[
-						'tag'        => 'span',
-						'attributes' => [
+						'attrName'      => 'imageIcon',
+						'tagName'       => 'span',
+						'attributes'    => [
 							'class' => HTMLUtility::classnames(
 								[
 									'et-pb-icon'  => true,
@@ -857,7 +930,13 @@ class BlurbModule implements DependencyInterface {
 								]
 							),
 						],
-						'children'   => $icon_value,
+						'applyWpautop'  => false,
+						'valueResolver' => function ( $value ) {
+							// process_font_icon can return non-string values, so normalize to empty string.
+							$process_font_icon = Utils::process_font_icon( $value['icon'] ?? [] );
+
+							return is_string( $process_font_icon ) ? $process_font_icon : '';
+						},
 					]
 				),
 			]
@@ -932,12 +1011,22 @@ class BlurbModule implements DependencyInterface {
 			]
 		) : '';
 
+		// Check if the header has a value accross all breakpoints.
+		$has_header_text = ModuleUtils::has_value(
+			$attrs['title']['innerContent'] ?? [],
+			[
+				'valueResolver' => function ( $value ) {
+					return ! empty( $value['text'] );
+				},
+			]
+		);
+
 		// Title.
-		$header = $elements->render(
+		$header = $has_header_text ? $elements->render(
 			[
 				'attrName' => 'title',
 			]
-		);
+		) : '';
 
 		// Content.
 		$content = $elements->render(
@@ -958,7 +1047,21 @@ class BlurbModule implements DependencyInterface {
 			]
 		);
 
+		// Extract child modules IDs using helper utility.
+		$children_ids = ChildrenUtils::extract_children_ids( $block );
+
 		$parent = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
+
+		// Layout classes for content container.
+		// These classes are merged with the existing 'et_pb_blurb_content' class from metadata.
+		$layout_display_value      = $attrs['module']['decoration']['layout']['desktop']['value']['display'] ?? 'flex';
+		$content_container_classes = HTMLUtility::classnames(
+			'et_pb_blurb_content',
+			[
+				'et_flex_module' => 'flex' === $layout_display_value,
+				'et_grid_module' => 'grid' === $layout_display_value,
+			]
+		);
 
 		return Module::render(
 			[
@@ -978,16 +1081,21 @@ class BlurbModule implements DependencyInterface {
 				'parentAttrs'         => $parent->attrs ?? [],
 				'parentId'            => $parent->id ?? '',
 				'parentName'          => $parent->blockName ?? '',
+				'childrenIds'         => $children_ids,
 				'children'            => $elements->style_components(
 					[
 						'attrName' => 'module',
 					]
 				) . $elements->render(
 					[
-						'attrName' => 'contentContainer',
-						'children' => [
+						'attrName'   => 'contentContainer',
+						'attributes' => [
+							'class' => $content_container_classes,
+						],
+						'children'   => [
 							$image_container,
 							$header_n_content,
+							$child_modules_content,
 						],
 					]
 				),

@@ -61,7 +61,7 @@
   },
   "module": {
     "fullwidth": "fullwidth.advanced.enable.*",
-    "use_current_loop": "post.advanced.currentLoop.*",
+    "use_current_loop": "post.advanced.useCurrentLoop.*",
     "post_type": "post.advanced.type.*",
     "posts_number": "post.advanced.number.*",
     "include_categories": "post.advanced.categories.*",
@@ -83,7 +83,9 @@
     "hover_overlay_color": "overlay.decoration.background.*.color",
     "hover_icon": "overlayIcon.decoration.icon.*",
     "masonry_tile_background_color": "masonry.decoration.background.*.color",
-    "header_level": "title.decoration.font.font.*.headingLevel"
+    "header_level": "title.decoration.font.font.*.headingLevel",
+    "layout_display": "blogGrid.decoration.layout.*.display",
+    "layout_grid_type": "blogGrid.advanced.flexType.*"
   },
   "valueExpansionFunctionMap": {
     "hover_icon": "convertFontIcon",

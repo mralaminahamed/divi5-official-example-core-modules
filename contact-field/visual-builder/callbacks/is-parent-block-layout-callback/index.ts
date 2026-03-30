@@ -2,7 +2,6 @@ import { select } from '@divi/data';
 import { getAttrValue } from '@divi/module-utils';
 import { type ContactFieldAttrs, type Module } from '@divi/types';
 
-
 /**
  * Determines if the parent module of the current module is using a block layout.
  *
@@ -19,7 +18,7 @@ export const isParentBlockLayoutCallback = ({
   const parentModule = select('divi/edit-post').getParentModule(moduleId);
 
   // If there's no parent or it's the root, default to false
-  if (! parentModule || 'divi/root' === parentModule?.name) {
+  if (!parentModule || 'divi/root' === parentModule?.name) {
     return false;
   }
 
@@ -29,12 +28,12 @@ export const isParentBlockLayoutCallback = ({
   );
 
   const layoutAttr = getAttrValue({
-    attr:       parentModuleLayoutAttr,
+    attr: parentModuleLayoutAttr,
     breakpoint: responsiveMode,
-    state:      stateMode,
+    state: stateMode,
     breakpointNames,
     baseBreakpoint,
-    mode:       'getAndInheritAll',
+    mode: 'getAndInheritAll',
   });
 
   const parentLayoutDisplay = layoutAttr?.display ?? 'flex';

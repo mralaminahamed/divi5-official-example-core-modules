@@ -1,8 +1,4 @@
-import {
-  type CtaAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type CtaAttrs, type Metadata } from '@divi/types';
 
 /**
  * CTA Module Default Render Attributes.
@@ -23,7 +19,7 @@ const ctaModuleDefaultRenderAttributes: Metadata.DefaultAttributes<CtaAttrs> = {
       background: {
         desktop: {
           value: {
-            color: 'var(--gcid-primary-color)',
+            color: '$variable({"type":"color","value":{"name":"gcid-primary-color","settings":{}}})$',
           },
         },
       },
@@ -34,7 +30,7 @@ const ctaModuleDefaultRenderAttributes: Metadata.DefaultAttributes<CtaAttrs> = {
           desktop: {
             value: {
               orientation: 'center',
-              color:       'dark',
+              color: 'dark',
             },
           },
         },
@@ -60,7 +56,7 @@ const ctaModuleDefaultRenderAttributes: Metadata.DefaultAttributes<CtaAttrs> = {
         desktop: {
           value: {
             enable: 'off',
-            icon:   {
+            icon: {
               enable: 'on',
             },
           },
@@ -70,6 +66,4 @@ const ctaModuleDefaultRenderAttributes: Metadata.DefaultAttributes<CtaAttrs> = {
   },
 };
 
-export {
-  ctaModuleDefaultRenderAttributes,
-};
+export { ctaModuleDefaultRenderAttributes };

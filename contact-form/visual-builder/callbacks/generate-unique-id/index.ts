@@ -1,11 +1,6 @@
-import {
-  type ContactFormAttrs,
-  type ModuleFlatObject,
-} from '@divi/types';
+import { type ContactFormAttrs, type ModuleFlatObject } from '@divi/types';
 
-import {
-  contactFormModuleMetaData,
-} from '../../module.json-source';
+import { contactFormModuleMetaData } from '../../module.json-source';
 
 /**
  * Set unique ID for Contact Form modules.
@@ -47,10 +42,10 @@ import {
 export const generateUniqueId = (
   attrs: ContactFormAttrs,
   info: {
-    name: string,
-    parentId: string,
-    state: Record<string, ModuleFlatObject<ContactFormAttrs>>,
-    id: string,
+    name: string;
+    parentId: string;
+    state: Record<string, ModuleFlatObject<ContactFormAttrs>>;
+    id: string;
   },
 ): ContactFormAttrs => {
   const { name, id } = info;

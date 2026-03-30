@@ -1,8 +1,4 @@
-import {
-  type BlogAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type BlogAttrs, type Metadata } from '@divi/types';
 
 /**
  * Blog Module Default Render Attributes.
@@ -145,8 +141,8 @@ const blogModuleDefaultRenderAttributes: Metadata.DefaultAttributes<BlogAttrs> =
         desktop: {
           value: {
             unicode: '&#xe050;',
-            type:    'divi',
-            weight:  '400',
+            type: 'divi',
+            weight: '400',
           },
         },
       },
@@ -161,8 +157,18 @@ const blogModuleDefaultRenderAttributes: Metadata.DefaultAttributes<BlogAttrs> =
       },
     },
   },
+  blogGrid: {
+    decoration: {
+      layout: {
+        desktop: {
+          value: {
+            display: 'grid',
+            gridColumnCount: '3',
+          },
+        },
+      },
+    },
+  },
 };
 
-export {
-  blogModuleDefaultRenderAttributes,
-};
+export { blogModuleDefaultRenderAttributes };

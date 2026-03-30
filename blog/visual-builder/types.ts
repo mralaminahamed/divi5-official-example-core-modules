@@ -1,26 +1,6 @@
-import {
-  type BlogAttrs,
-  type Module,
-} from '@divi/types';
+import { type BlogAttrs, type Module } from '@divi/types';
 
-import {
-  type ModuleEditProps,
-} from '../types-module';
-
-
-declare global {
-  interface Window {
-    divi: {
-      scriptLibrary: {
-        scriptLibrarySalvattore: {
-          recreateColumns: (dom: HTMLElement) => void;
-          registerGrid: (dom: HTMLElement) => void;
-        }
-      }
-    }
-  }
-}
-
+import { type ModuleEditProps } from '../types-module';
 
 export type BlogEditProps = ModuleEditProps<BlogAttrs>;
 

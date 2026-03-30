@@ -1,10 +1,5 @@
-import {
-  getAttrValue,
-} from '@divi/module-utils';
-import {
-  type ContactFormAttrs,
-  type Module,
-} from '@divi/types';
+import { getAttrValue } from '@divi/module-utils';
+import { type ContactFormAttrs, type Module } from '@divi/types';
 
 /**
  * Determines the visibility of setting fields based on specific parameters and conditions.
@@ -15,22 +10,20 @@ import {
  *
  * @returns {boolean} Whether the field should be visible or not.
  */
-export const isVisibleFields = (
-  {
-    attrs,
-    breakpoint,
-    baseBreakpoint,
-    breakpointNames,
-    state,
-    attrName,
-    subName,
-  }: Module.Settings.Field.CallbackParams<ContactFormAttrs>,
-): boolean => {
+export const isVisibleFields = ({
+  attrs,
+  breakpoint,
+  baseBreakpoint,
+  breakpointNames,
+  state,
+  attrName,
+  subName,
+}: Module.Settings.Field.CallbackParams<ContactFormAttrs>): boolean => {
   const attrNameWithSubName = subName ? `${attrName}.*.${subName}` : attrName;
 
   switch (attrNameWithSubName) {
-    case 'redirect.innerContent': // Content >> Redirect >> Redirect URL.
-    {
+    case 'redirect.innerContent': {
+      // Content >> Redirect >> Redirect URL.
       const useRedirect = getAttrValue({
         mode: 'getAndInheritAll',
         attr: attrs?.redirect?.advanced?.useRedirect,
@@ -43,8 +36,7 @@ export const isVisibleFields = (
       return 'on' === useRedirect;
     }
 
-    default:
-    {
+    default: {
       return true;
     }
   }

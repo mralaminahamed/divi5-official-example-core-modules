@@ -1,11 +1,6 @@
-import React, {
-  type ReactElement,
-  useRef,
-} from 'react';
+import React, { type ReactElement, useRef } from 'react';
 
-import {
-  ModuleContainer,
-} from '@divi/module';
+import { ChildModulesContainer, ModuleContainer } from '@divi/module';
 
 import { moduleClassnames } from './module-classnames';
 import { ModuleScriptData } from './module-script-data';
@@ -23,17 +18,23 @@ import { type CtaEditProps } from './types';
  */
 const CtaEdit = ({
   attrs,
+  defaultPrintedStyleAttrs,
   id,
   isFirst,
   isLast,
   name,
   elements,
+  isLooped,
+  loopIndex,
+  childrenIds,
+  canvasId,
 }: CtaEditProps): ReactElement => {
   const ctaRef = useRef(null);
 
   return (
     <ModuleContainer
       attrs={attrs}
+      defaultPrintedStyleAttrs={defaultPrintedStyleAttrs}
       domRef={ctaRef}
       elements={elements}
       id={id}
@@ -43,6 +44,8 @@ const CtaEdit = ({
       stylesComponent={ModuleStyles}
       scriptDataComponent={ModuleScriptData}
       classnamesFunction={moduleClassnames}
+      isLooped={isLooped}
+      loopIndex={loopIndex}
     >
       {elements.styleComponents({
         attrName: 'module',
@@ -58,10 +61,11 @@ const CtaEdit = ({
       {elements.render({
         attrName: 'button',
       })}
+      {childrenIds && childrenIds.length > 0 && (
+        <ChildModulesContainer ids={childrenIds} isLooped={isLooped} loopIndex={loopIndex} canvasId={canvasId} />
+      )}
     </ModuleContainer>
   );
 };
 
-export {
-  CtaEdit,
-};
+export { CtaEdit };

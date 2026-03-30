@@ -1,7 +1,4 @@
-import {
-  type FieldLibrary,
-} from '@divi/types';
-
+import { type FieldLibrary } from '@divi/types';
 
 /**
  * Converts predefined field options into a format suitable for FieldLibrary.SortableList.Value.
@@ -13,7 +10,7 @@ import {
  */
 export const populatePredefinedFieldsOptions = (
   predefinedFieldsOptions: string[] | Record<string, string>,
-):FieldLibrary.SortableList.Value => {
+): FieldLibrary.SortableList.Value => {
   if (Array.isArray(predefinedFieldsOptions)) {
     return predefinedFieldsOptions.map(value => ({
       value,

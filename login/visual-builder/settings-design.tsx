@@ -2,16 +2,9 @@
 import React, { type ReactElement } from 'react';
 import { set } from 'lodash';
 
-import {
-  ModuleGroups,
-} from '@divi/module';
-import {
-  getAttrValue,
-} from '@divi/module-utils';
-import {
-  type LoginAttrs,
-  type Module,
-} from '@divi/types';
+import { ModuleGroups } from '@divi/module';
+import { getAttrValue } from '@divi/module-utils';
+import { type LoginAttrs, type Module } from '@divi/types';
 
 /**
  * Design panel component for the Menu module settings modal.
@@ -22,32 +15,28 @@ import {
  *
  * @returns {ReactElement}
  */
-export const SettingsDesign = ({
-  groupConfiguration,
-}: Module.Settings.Panel.Props<LoginAttrs>): ReactElement => {
-  const useFocusBordersCallback = (
-    params: Module.Settings.Group.VisibleCallback.Params<LoginAttrs>,
-  ) => {
+export const SettingsDesign = ({ groupConfiguration }: Module.Settings.Panel.Props<LoginAttrs>): ReactElement => {
+  const useFocusBordersCallback = (params: Module.Settings.Group.VisibleCallback.Params<LoginAttrs>) => {
     const useFocusBorderValue = getAttrValue({
-      attr:            params?.attrs?.field?.advanced?.focusUseBorder,
-      baseBreakpoint:  params?.baseBreakpoint,
-      breakpoint:      params?.breakpoint,
+      attr: params?.attrs?.field?.advanced?.focusUseBorder,
+      baseBreakpoint: params?.baseBreakpoint,
+      breakpoint: params?.breakpoint,
       breakpointNames: params?.breakpointNames,
-      state:           params?.state,
+      state: params?.state,
     });
-    const useFocusBorders     = params?.isActivePreset ? true : 'on' === useFocusBorderValue;
+    const useFocusBorders = params?.isActivePreset ? true : 'on' === useFocusBorderValue;
 
     return useFocusBorders;
   };
 
   // Insert props value to `designFieldField` group.
   if (groupConfiguration?.designFieldField?.component?.props) {
-    set(groupConfiguration, ['designFieldField', 'component', 'props', 'fields', 'focusBorderGroup', 'component', 'props', 'visible'], useFocusBordersCallback);
+    set(
+      groupConfiguration,
+      ['designFieldField', 'component', 'props', 'fields', 'focusBorderGroup', 'component', 'props', 'visible'],
+      useFocusBordersCallback,
+    );
   }
 
-  return (
-    <ModuleGroups
-      groups={groupConfiguration}
-    />
-  );
+  return <ModuleGroups groups={groupConfiguration} />;
 };

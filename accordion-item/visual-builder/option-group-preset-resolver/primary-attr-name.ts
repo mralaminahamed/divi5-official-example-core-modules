@@ -1,7 +1,4 @@
-import {
-  type OptionGroupPresetPrimaryAttrNameResolverFilterParams,
-} from '@divi/module-utils';
-
+import { type OptionGroupPresetPrimaryAttrNameResolverFilterParams } from '@divi/module-utils';
 
 export const optionGroupPresetPrimaryAttrNameResolverAccordionItem = (
   primaryAttrName: string,

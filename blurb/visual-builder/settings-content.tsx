@@ -1,17 +1,11 @@
 import React, { type ReactElement } from 'react';
 import { set } from 'lodash';
 
-import {
-  ModuleGroups,
-} from '@divi/module';
-import {
-  type BlurbAttrs,
-  type Module,
-} from '@divi/types';
-
+import { ModuleGroups } from '@divi/module';
+import { type BlurbAttrs, type Module } from '@divi/types';
 
 /**
- * Content panel component for the Search module settings modal.
+ * Content panel component for the Blurb module settings modal.
  *
  * @since ??
  *
@@ -25,20 +19,20 @@ export const SettingsContent = ({
 }: Module.Settings.Panel.Props<BlurbAttrs>): ReactElement => {
   // Show Icon or Image.
   const showImageCallback = (params: Module.Settings.Field.CallbackParams<BlurbAttrs>) => {
-    const { attrs }      = params;
+    const { attrs } = params;
     const useIconDefault = defaultSettingsAttrs?.imageIcon?.innerContent?.desktop?.value?.useIcon;
-    const useIcon        = attrs?.imageIcon?.innerContent?.desktop?.value?.useIcon;
-    const showIcon       = 'on' === (useIcon ?? useIconDefault);
-    const showImage      = ! showIcon;
+    const useIcon = attrs?.imageIcon?.innerContent?.desktop?.value?.useIcon;
+    const showIcon = 'on' === (useIcon ?? useIconDefault);
+    const showImage = !showIcon;
 
     return showImage;
   };
 
   const showIconCallback = (params: Module.Settings.Field.CallbackParams<BlurbAttrs>) => {
-    const { attrs }      = params;
+    const { attrs } = params;
     const useIconDefault = defaultSettingsAttrs?.imageIcon?.innerContent?.desktop?.value?.useIcon;
-    const useIcon        = attrs?.imageIcon?.innerContent?.desktop?.value?.useIcon;
-    const showIcon       = 'on' === (useIcon ?? useIconDefault);
+    const useIcon = attrs?.imageIcon?.innerContent?.desktop?.value?.useIcon;
+    const showIcon = 'on' === (useIcon ?? useIconDefault);
 
     return showIcon;
   };
@@ -49,9 +43,5 @@ export const SettingsContent = ({
     set(groupConfiguration, ['contentImageIcon', 'component', 'props', 'fields', 'icon', 'visible'], showIconCallback);
   }
 
-  return (
-    <ModuleGroups
-      groups={groupConfiguration}
-    />
-  );
+  return <ModuleGroups groups={groupConfiguration} />;
 };

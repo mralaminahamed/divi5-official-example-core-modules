@@ -121,6 +121,137 @@ class BlogPresetAttrsMap {
 					'html',
 				],
 			],
+			'blogGrid.advanced.flexType'                   => [
+				'attrName' => 'blogGrid.advanced.flexType',
+				'preset'   => [
+					'html',
+				],
+			],
+			'blogGrid.decoration.layout__alignContent'     => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'alignContent',
+			],
+			'blogGrid.decoration.layout__alignItems'       => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'alignItems',
+			],
+			'blogGrid.decoration.layout__collapseEmptyColumns' => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'collapseEmptyColumns',
+			],
+			'blogGrid.decoration.layout__columnGap'        => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'columnGap',
+			],
+			'blogGrid.decoration.layout__display'          => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style', 'html' ],
+				'subName'  => 'display',
+			],
+			'blogGrid.decoration.layout__flexDirection'    => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'flexDirection',
+			],
+			'blogGrid.decoration.layout__flexWrap'         => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'flexWrap',
+			],
+			'blogGrid.decoration.layout__gridAutoColumns'  => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAutoColumns',
+			],
+			'blogGrid.decoration.layout__gridAutoFlow'     => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAutoFlow',
+			],
+			'blogGrid.decoration.layout__gridAutoRows'     => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAutoRows',
+			],
+			'blogGrid.decoration.layout__gridColumnCount'  => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnCount',
+			],
+			'blogGrid.decoration.layout__gridColumnMinWidth' => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnMinWidth',
+			],
+			'blogGrid.decoration.layout__gridColumnWidth'  => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnWidth',
+			],
+			'blogGrid.decoration.layout__gridColumnWidths' => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnWidths',
+			],
+			'blogGrid.decoration.layout__gridDensity'      => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridDensity',
+			],
+			'blogGrid.decoration.layout__gridJustifyItems' => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridJustifyItems',
+			],
+			'blogGrid.decoration.layout__gridOffsetRules'  => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridOffsetRules',
+			],
+			'blogGrid.decoration.layout__gridRowCount'     => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowCount',
+			],
+			'blogGrid.decoration.layout__gridRowHeight'    => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowHeight',
+			],
+			'blogGrid.decoration.layout__gridRowHeights'   => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowHeights',
+			],
+			'blogGrid.decoration.layout__gridRowMinHeight' => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowMinHeight',
+			],
+			'blogGrid.decoration.layout__gridTemplateColumns' => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridTemplateColumns',
+			],
+			'blogGrid.decoration.layout__gridTemplateRows' => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridTemplateRows',
+			],
+			'blogGrid.decoration.layout__justifyContent'   => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'justifyContent',
+			],
+			'blogGrid.decoration.layout__rowGap'           => [
+				'attrName' => 'blogGrid.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'rowGap',
+			],
 			'module.advanced.link__url'                    => [
 				'attrName' => 'module.advanced.link',
 				'preset'   => 'content',
@@ -361,6 +492,7 @@ class BlogPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'pattern.transform',
 			],
@@ -440,6 +572,7 @@ class BlogPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'mask.color',
 			],
@@ -447,6 +580,7 @@ class BlogPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'mask.transform',
 			],
@@ -454,6 +588,7 @@ class BlogPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'mask.aspectRatio',
 			],
@@ -510,10 +645,14 @@ class BlogPresetAttrsMap {
 				'attrName' => 'module.meta.adminLabel',
 				'preset'   => 'meta',
 			],
+			'module.meta.meta.forceVisible'                => [
+				'attrName' => 'module.meta.meta.forceVisible',
+				'preset'   => 'meta',
+			],
 			'fullwidth.advanced.enable'                    => [
 				'attrName' => 'fullwidth.advanced.enable',
 				'preset'   => [
-					'style',
+					'html',
 				],
 			],
 			'overlay.advanced.enable'                      => [
@@ -1851,6 +1990,20 @@ class BlogPresetAttrsMap {
 				],
 				'subName'  => 'maxWidth',
 			],
+			'module.decoration.sizing__flexType'           => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'html',
+				],
+				'subName'  => 'flexType',
+			],
+			'module.decoration.sizing__alignSelf'          => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'alignSelf',
+			],
 			'module.decoration.sizing__alignment'          => [
 				'attrName' => 'module.decoration.sizing',
 				'preset'   => [
@@ -1858,12 +2011,73 @@ class BlogPresetAttrsMap {
 				],
 				'subName'  => 'alignment',
 			],
+			'module.decoration.sizing__flexGrow'           => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'flexGrow',
+			],
+			'module.decoration.sizing__flexShrink'         => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'flexShrink',
+			],
+			'module.decoration.sizing__gridAlignSelf'      => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAlignSelf',
+			],
+			'module.decoration.sizing__gridColumnEnd'      => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnEnd',
+			],
+			'module.decoration.sizing__gridColumnSpan'     => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnSpan',
+			],
+			'module.decoration.sizing__gridColumnStart'    => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnStart',
+			],
+			'module.decoration.sizing__gridJustifySelf'    => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridJustifySelf',
+			],
+			'module.decoration.sizing__gridRowEnd'         => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowEnd',
+			],
+			'module.decoration.sizing__gridRowSpan'        => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowSpan',
+			],
+			'module.decoration.sizing__gridRowStart'       => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowStart',
+			],
 			'module.decoration.sizing__minHeight'          => [
 				'attrName' => 'module.decoration.sizing',
 				'preset'   => [
 					'style',
 				],
 				'subName'  => 'minHeight',
+			],
+			'module.decoration.sizing__size'               => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'size',
 			],
 			'module.decoration.sizing__height'             => [
 				'attrName' => 'module.decoration.sizing',
@@ -2374,6 +2588,25 @@ class BlogPresetAttrsMap {
 				'preset'   => 'content',
 				'subName'  => 'id',
 			],
+			'module.advanced.elements.structure'           => [
+				'attrName' => 'module.advanced.elements.structure',
+				'preset'   => 'content',
+			],
+			'module.advanced.html__elementType'            => [
+				'attrName' => 'module.advanced.html',
+				'preset'   => [ 'html' ],
+				'subName'  => 'elementType',
+			],
+			'module.advanced.html__htmlAfter'              => [
+				'attrName' => 'module.advanced.html',
+				'preset'   => [ 'html' ],
+				'subName'  => 'htmlAfter',
+			],
+			'module.advanced.html__htmlBefore'             => [
+				'attrName' => 'module.advanced.html',
+				'preset'   => [ 'html' ],
+				'subName'  => 'htmlBefore',
+			],
 			'module.advanced.htmlAttributes__class'        => [
 				'attrName' => 'module.advanced.htmlAttributes',
 				'preset'   => [
@@ -2462,6 +2695,12 @@ class BlogPresetAttrsMap {
 				'preset'   => [
 					'style',
 					'html',
+				],
+			],
+			'module.decoration.interactions'               => [
+				'attrName' => 'module.decoration.interactions',
+				'preset'   => [
+					'script',
 				],
 			],
 			'module.decoration.overflow__x'                => [
@@ -2677,6 +2916,10 @@ class BlogPresetAttrsMap {
 			'module.decoration.zIndex'                     => [
 				'attrName' => 'module.decoration.zIndex',
 				'preset'   => [ 'style' ],
+			],
+			'module.decoration.attributes'                 => [
+				'attrName' => 'module.decoration.attributes',
+				'preset'   => [ 'html' ],
 			],
 		];
 	}

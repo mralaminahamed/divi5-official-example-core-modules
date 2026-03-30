@@ -1,11 +1,7 @@
-import {
-  escapeFontIcon,
-  processFontIcon,
-} from '@divi/icon-library';
+import { escapeFontIcon, processFontIcon } from '@divi/icon-library';
 import { type DeclarationFunctionProps } from '@divi/module';
 import { StyleDeclarations } from '@divi/style-library';
 import { type Icon } from '@divi/types';
-
 
 /**
  * Style declaration for blurb's icon.
@@ -18,14 +14,13 @@ import { type Icon } from '@divi/types';
  */
 export const iconStyleDeclaration = ({
   attrValue,
-}: DeclarationFunctionProps<{icon?: Icon.Font.AttributeValue}>): string => {
+}: DeclarationFunctionProps<{ icon?: Icon.Font.AttributeValue }>): string => {
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  {
+    important: {
       'font-family': true,
     },
   });
-
 
   if (attrValue?.icon?.type) {
     const fontFamily = 'fa' === attrValue?.icon?.type ? 'FontAwesome' : 'ETmodules';

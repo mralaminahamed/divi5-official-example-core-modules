@@ -1,10 +1,5 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
 import { type ButtonAttrs } from '@divi/types';
-
 
 /**
  * Module classnames function for button module.

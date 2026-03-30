@@ -384,7 +384,7 @@ class LoginPresetAttrsMap {
 				],
 				'button.decoration.background__pattern.transform' => [
 					'attrName' => 'button.decoration.background',
-					'preset'   => [ 'style' ],
+					'preset'   => [ 'style', 'html' ],
 					'subName'  => 'pattern.transform',
 				],
 				'button.decoration.background__pattern.size' => [
@@ -444,12 +444,12 @@ class LoginPresetAttrsMap {
 				],
 				'button.decoration.background__mask.transform' => [
 					'attrName' => 'button.decoration.background',
-					'preset'   => [ 'style' ],
+					'preset'   => [ 'style', 'html' ],
 					'subName'  => 'mask.transform',
 				],
 				'button.decoration.background__mask.aspectRatio' => [
 					'attrName' => 'button.decoration.background',
-					'preset'   => [ 'style' ],
+					'preset'   => [ 'style', 'html' ],
 					'subName'  => 'mask.aspectRatio',
 				],
 				'button.decoration.background__mask.size'  => [
@@ -811,6 +811,21 @@ class LoginPresetAttrsMap {
 					'attrName' => 'field.advanced.focus.border',
 					'preset'   => [ 'style' ],
 					'subName'  => 'styles.left.style',
+				],
+				'module.advanced.html__elementType'        => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'elementType',
+				],
+				'module.advanced.html__htmlAfter'          => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'htmlAfter',
+				],
+				'module.advanced.html__htmlBefore'         => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'htmlBefore',
 				],
 			]
 		);

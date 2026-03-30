@@ -1,8 +1,5 @@
 import { elementsCallbacks } from '@divi/module-utils';
-import {
-  type LoginAttrs,
-  type ModuleLibrary,
-} from '@divi/types';
+import { type LoginAttrs, type ModuleLibrary } from '@divi/types';
 
 import { conversionOutline } from './conversion-outline';
 import { LoginEdit } from './edit';
@@ -13,17 +10,16 @@ import { ModuleStyles } from './module-styles';
 import { placeholderContent } from './placeholder-content';
 import { SettingsDesign } from './settings-design';
 
-
 /**
  * Defines `Login` module for Visual Builder.
  *
  * @since ??
  */
 export const login: ModuleLibrary.Module.RegisterDefinition<LoginAttrs> = {
-  metadata:                 loginModuleMetaData,
-  defaultAttrs:             loginModuleDefaultRenderAttributes,
+  metadata: loginModuleMetaData,
+  defaultAttrs: loginModuleDefaultRenderAttributes,
   defaultPrintedStyleAttrs: loginModuleDefaultPrintedStyleAttributes,
-  callbacks:                {
+  callbacks: {
     content: {
       elements: elementsCallbacks,
     },
@@ -32,7 +28,7 @@ export const login: ModuleLibrary.Module.RegisterDefinition<LoginAttrs> = {
     design: SettingsDesign,
   },
   renderers: {
-    edit:   LoginEdit,
+    edit: LoginEdit,
     styles: ModuleStyles,
   },
   placeholderContent,

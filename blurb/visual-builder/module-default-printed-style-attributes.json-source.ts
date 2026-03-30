@@ -1,8 +1,4 @@
-import {
-  type BlurbAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type BlurbAttrs, type Metadata } from '@divi/types';
 
 /**
  * Blurb Module Default Printed Style Attributes.
@@ -11,12 +7,23 @@ import {
  * `module-default-printed-style-attributes.json` upon build.
  */
 const blurbModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<BlurbAttrs> = {
+  module: {
+    decoration: {
+      layout: {
+        desktop: {
+          value: {
+            flexDirection: 'column',
+          },
+        },
+      },
+    },
+  },
   imageIcon: {
     advanced: {
       width: {
         desktop: {
           value: {
-            icon:  '96px',
+            icon: '96px',
             image: '100%',
           },
         },
@@ -45,6 +52,4 @@ const blurbModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Blurb
   },
 };
 
-export {
-  blurbModuleDefaultPrintedStyleAttributes,
-};
+export { blurbModuleDefaultPrintedStyleAttributes };

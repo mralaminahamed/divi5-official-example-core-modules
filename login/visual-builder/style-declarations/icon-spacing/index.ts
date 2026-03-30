@@ -1,12 +1,7 @@
 import { escapeFontIcon, processFontIcon } from '@divi/icon-library';
 import { type DeclarationFunctionProps } from '@divi/module';
-import {
-  StyleDeclarations,
-} from '@divi/style-library';
-import {
-  type Module,
-} from '@divi/types';
-
+import { StyleDeclarations } from '@divi/style-library';
+import { type Module } from '@divi/types';
 
 /**
  * Style declaration for button's icon.
@@ -26,9 +21,9 @@ export const iconSpacingDeclaration = ({
 
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  {
+    important: {
       'font-family': true,
-      'font-size':   true,
+      'font-size': true,
     },
   });
 

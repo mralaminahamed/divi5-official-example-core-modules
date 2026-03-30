@@ -1,12 +1,7 @@
-import {
-  type ReactElement,
-} from 'react';
+import { type ReactElement } from 'react';
 
-import {
-  type ModuleScriptDataProps,
-} from '@divi/module';
+import { type ModuleScriptDataProps } from '@divi/module';
 import { type AccordionAttrs } from '@divi/types';
-
 
 /**
  * Accordion module's script data component.
@@ -15,8 +10,7 @@ import { type AccordionAttrs } from '@divi/types';
  *
  * @returns {ReactElement}
  */
-export const ModuleScriptData = ({
-  elements,
-}: ModuleScriptDataProps<AccordionAttrs>): ReactElement => elements.scriptData({
-  attrName: 'module',
-});
+export const ModuleScriptData = ({ elements }: ModuleScriptDataProps<AccordionAttrs>): ReactElement =>
+  elements.scriptData({
+    attrName: 'module',
+  });

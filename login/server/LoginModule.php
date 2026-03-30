@@ -32,7 +32,9 @@ use ET\Builder\Packages\Module\Options\Text\TextStyle;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
+use ET\Builder\Packages\GlobalData\GlobalData;
 use WP_Block;
 
 
@@ -82,7 +84,7 @@ class LoginModule implements DependencyInterface {
 
 		$current_user = wp_get_current_user();
 		$redirect_url = ( isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) && 'on' === $current_page_redirect )
-			? ( is_ssl() ? 'https://' : 'http://' ) . sanitize_text_field( $_SERVER['HTTP_HOST'] ) . sanitize_text_field( $_SERVER['REQUEST_URI'] )
+			? ( is_ssl() ? 'https://' : 'http://' ) . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) )
 			: '';
 
 		$content .= sprintf( esc_html__( 'Logged in as %1$s', 'et_builder_5' ), esc_html( $current_user->display_name ) );
@@ -497,73 +499,6 @@ class LoginModule implements DependencyInterface {
 		return $style_declarations->value();
 	}
 
-	/**
-	 * Style declaration for login's border overflow.
-	 *
-	 * This function is used to generate the style declaration for the border overflow of a login module.
-	 *
-	 * @since ??
-	 *
-	 * @param array $params An array of arguments.
-	 *
-	 * @return string The generated CSS style declaration.
-	 *
-	 * @example
-	 * ```php
-	 * $args = [
-	 *   'attrValue' => [
-	 *     'radius' => [
-	 *       'desktop' => [
-	 *         'default' => '10px',
-	 *         'hover'   => '8px',
-	 *       ],
-	 *     ],
-	 *   ],
-	 *   'important'  => true,
-	 *   'returnType' => 'string',
-	 * ];
-	 * $styleDeclaration = AccordionModule::overflow_style_declaration( $args );
-	 * ```
-	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
-
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * Adds Login module styles to the stylesheet.
@@ -616,10 +551,12 @@ class LoginModule implements DependencyInterface {
 	 * ```
 	 */
 	public static function module_styles( array $args ): void {
-		$attrs       = $args['attrs'] ?? [];
-		$elements    = $args['elements'];
-		$settings    = $args['settings'] ?? [];
-		$order_class = $args['orderClass'] ?? '';
+		$attrs                     = $args['attrs'] ?? [];
+		$elements                  = $args['elements'];
+		$settings                  = $args['settings'] ?? [];
+		$order_class               = $args['orderClass'] ?? '';
+		$is_inside_sticky_module   = $elements->get_is_inside_sticky_module();
+		$sticky_parent_order_class = $elements->get_sticky_parent_order_class();
 
 		$main_selector = "{$args['orderClass']}.et_pb_login";
 
@@ -673,7 +610,10 @@ class LoginModule implements DependencyInterface {
 										'componentName' => 'divi/common',
 										'props'         => [
 											'attr' => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 								],
@@ -682,7 +622,7 @@ class LoginModule implements DependencyInterface {
 					),
 					FormFieldStyle::style(
 						[
-							'selector'          => implode(
+							'selector'               => implode(
 								', ',
 								[
 									"{$args['orderClass']} input[type='password']",
@@ -691,8 +631,11 @@ class LoginModule implements DependencyInterface {
 									"{$args['orderClass']} input",
 								]
 							),
-							'attr'              => $attrs['field'] ?? [],
-							'important'         => [
+							'attr'                   => $attrs['field'] ?? [],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'important'              => [
 								'spacing' => [
 									'desktop' => [
 										'value' => [
@@ -701,7 +644,7 @@ class LoginModule implements DependencyInterface {
 									],
 								],
 							],
-							'propertySelectors' => [
+							'propertySelectors'      => [
 								'font'        => [
 									'font' => [
 										'desktop' => [
@@ -771,7 +714,6 @@ class LoginModule implements DependencyInterface {
 									],
 								],
 							],
-							'orderClass'        => $order_class,
 						]
 					),
 					// Title.
@@ -856,7 +798,7 @@ class LoginModule implements DependencyInterface {
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => $args['orderClass'] . '.et_pb_login',
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -907,7 +849,7 @@ class LoginModule implements DependencyInterface {
 
 		$current_page_redirect = $attrs['module']['advanced']['currentPageRedirect']['desktop']['value'] ?? 'off';
 		$redirect_url          = ( isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) && 'on' === $current_page_redirect )
-			? ( is_ssl() ? 'https://' : 'http://' ) . sanitize_text_field( $_SERVER['HTTP_HOST'] ) . sanitize_text_field( $_SERVER['REQUEST_URI'] )
+			? ( is_ssl() ? 'https://' : 'http://' ) . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) )
 			: '';
 
 		$output = '';
@@ -1126,7 +1068,7 @@ class LoginModule implements DependencyInterface {
 				'stylesComponent'     => [ self::class, 'module_styles' ],
 				'scriptDataComponent' => [ self::class, 'module_script_data' ],
 				'parentId'            => $parent->id ?? '',
-				'parentName'          => $parent->blockName ?? '', // phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+				'parentName'          => $parent->blockName ?? '', // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 				'parentAttrs'         => $parent->attrs ?? [],
 				'childrenIds'         => $children_ids,
 				'children'            => $elements->style_components(
@@ -1152,7 +1094,7 @@ class LoginModule implements DependencyInterface {
 	public function load(): void {
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/login/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( LoginPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ LoginPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

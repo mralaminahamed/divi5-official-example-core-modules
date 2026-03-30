@@ -33,10 +33,11 @@
       "elementType": "element",
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
           "elements": {},
+          "html": {},
           "link": {},
           "loop": {},
           "text": {}
@@ -87,7 +88,7 @@
     "title": {
       "type": "object",
       "label": "Title",
-      "selector": "{{selector}} h2, {{selector}} h1.et_pb_module_header, {{selector}} h3.et_pb_module_header, {{selector}} h4.et_pb_module_header, {{selector}} h5.et_pb_module_header, {{selector}} h6.et_pb_module_header",
+      "selector": "{{selector}} .et_pb_newsletter_description h2, {{selector}} .et_pb_newsletter_description h1.et_pb_module_header, {{selector}} .et_pb_newsletter_description h3.et_pb_module_header, {{selector}} .et_pb_newsletter_description h4.et_pb_module_header, {{selector}} .et_pb_newsletter_description h5.et_pb_module_header, {{selector}} .et_pb_newsletter_description h6.et_pb_module_header",
       "supportsCustomAttributes": true,
       "elementType": "heading",
       "attributes": {
@@ -150,9 +151,9 @@
               "font": {
                 "desktop": {
                   "value": {
-                    "font-family": "{{selector}}.et_pb_subscribe .et_pb_newsletter_description a",
-                    "font-size": "{{selector}}.et_pb_subscribe .et_pb_newsletter_description a",
-                    "color": "{{selector}}.et_pb_subscribe .et_pb_newsletter_description a"
+                    "font-family": "{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer",
+                    "font-size": "{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer",
+                    "color": "{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer"
                   }
                 }
               }
@@ -188,6 +189,7 @@
             "attrName": "content.innerContent",
             "label": "Body",
             "description": "This content will appear below the title.",
+            "category": "basic_option",
             "features": {
               "dynamicContent": {
                 "type": "text"
@@ -244,7 +246,7 @@
     },
     "button": {
       "type": "object",
-      "selector": "{{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button",
+      "selector": "body #page-container {{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button",
       "supportsCustomAttributes": true,
       "elementType": "button",
       "tagName": "a",
@@ -258,7 +260,8 @@
       },
       "childrenSanitizer": "et_core_esc_previously",
       "styleProps": {
-        "selector": "{{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button",
+        "selector": "body #page-container {{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button",
+        "customPostTypeSelector": "body.et-db #page-container #et-boc .et-l {{baseSelector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button",
         "boxShadow": {
           "propertySelectors": {
             "desktop": {
@@ -287,6 +290,7 @@
                 "subName": "text",
                 "label": "Button",
                 "description": "Define the text which will be displayed on \"Read More\" button. leave blank for default ( Read More )",
+                "category": "basic_option",
                 "features": {
                   "dynamicContent": {
                     "type": "text"
@@ -407,6 +411,7 @@
               "attrName": "field.advanced.nameFieldOnly",
               "label": "Name",
               "description": "Whether or not the Name field should be included in the opt-in form.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -428,6 +433,7 @@
               "attrName": "field.advanced.nameField",
               "label": "Use Single Name Field",
               "description": "Whether or not to use a single Name field in the opt-in form.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -449,6 +455,7 @@
               "attrName": "field.advanced.firstNameField",
               "label": "Show First Name Field",
               "description": "Whether or not the First Name field should be included in the opt-in form.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -470,6 +477,7 @@
               "attrName": "field.advanced.lastNameField",
               "label": "Show Last Name Field",
               "description": "Whether or not the Last Name field should be included in the opt-in form.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -491,6 +499,7 @@
               "attrName": "field.advanced.nameFullwidth",
               "label": "Name Fullwidth",
               "description": "Enabling this will extend the input field to 100% of the width of the module.",
+              "category": "configuration",
               "features": {
                 "sticky": false,
                 "hover": false,
@@ -513,6 +522,7 @@
               "attrName": "field.advanced.firstNameFullwidth",
               "label": "First Name Fullwidth",
               "description": "Enabling this will extend the input field to 100% of the width of the module.",
+              "category": "configuration",
               "features": {
                 "sticky": false,
                 "hover": false,
@@ -535,6 +545,7 @@
               "attrName": "field.advanced.lastNameFullwidth",
               "label": "Last Name Fullwidth",
               "description": "Enabling this will extend the input field to 100% of the width of the module.",
+              "category": "configuration",
               "features": {
                 "sticky": false,
                 "hover": false,
@@ -557,6 +568,7 @@
               "attrName": "field.advanced.emailFullwidth",
               "label": "Email Fullwidth",
               "description": "Enabling this will extend the input field to 100% of the width of the module.",
+              "category": "configuration",
               "features": {
                 "sticky": false,
                 "hover": false,
@@ -579,6 +591,7 @@
               "attrName": "field.advanced.ipAddress",
               "label": "Include IP Address",
               "description": "Include the subscriber's ip address in the data sent to your email provider.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -625,6 +638,7 @@
             "attrName": "footerContent.innerContent",
             "label": "Footer",
             "description": "This content will appear below the subscribe button.",
+            "category": "basic_option",
             "features": {
               "dynamicContent": {
                 "type": "text"
@@ -653,6 +667,7 @@
               "attrName": "customFields.advanced.enable",
               "label": "Use Custom Fields",
               "description": "Enable this option to use custom fields in your opt-in form. Learn more <a href=\"https://www.elegantthemes.com/documentation/divi/modules/adding-custom-fields-to-the-divi-email-optin-module\">here</a>",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -692,6 +707,7 @@
               "attrName": "",
               "label": "",
               "render": true,
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -723,6 +739,7 @@
               "attrName": "success.advanced.action",
               "label": "Action",
               "description": "Choose what happens when a site visitor has been successfully subscribed to your list.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -754,6 +771,7 @@
               "attrName": "success.advanced.message",
               "label": "Message",
               "description": "The message that will be shown to site visitors who subscribe to your list.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -778,6 +796,7 @@
               "attrName": "success.advanced.redirectUrl",
               "label": "Redirect URL",
               "description": "Site visitors who subscribe to your list will be redirected to this URL.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,
@@ -802,6 +821,7 @@
               "attrName": "success.advanced.redirectQuery",
               "label": "Redirect URL Query",
               "description": "Choose what data (if any) to include in the redirect URL as query arguments.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "sticky": false,

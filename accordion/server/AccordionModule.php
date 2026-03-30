@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\SanitizerUtility;
@@ -25,9 +25,12 @@ use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\ModuleLibrary\Accordion\AccordionPresetAttrsMap;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
+use ET\Builder\Packages\GlobalData\GlobalData;
 use WP_Block_Type_Registry;
 use WP_Block;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroup;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 
 /**
  * AccordionModule class.
@@ -324,7 +327,7 @@ class AccordionModule implements DependencyInterface {
 										'props'         => [
 											'selector' => $order_class . '.et_pb_accordion .et_pb_accordion_item',
 											'attr'     => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => [ Declarations::class, 'overflow_for_border_radius_style_declaration' ],
 										],
 									],
 									[
@@ -384,7 +387,7 @@ class AccordionModule implements DependencyInterface {
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => $args['orderClass'] . '.et_pb_accordion',
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -394,73 +397,6 @@ class AccordionModule implements DependencyInterface {
 		);
 	}
 
-	/**
-	 * Style declaration for accordion's border overflow.
-	 *
-	 * This function is used to generate the style declaration for the border overflow of an accordion module.
-	 *
-	 * @since ??
-	 *
-	 * @param array $params An array of arguments.
-	 *
-	 * @return string The generated CSS style declaration.
-	 *
-	 * @example
-	 * ```php
-	 * $args = [
-	 *   'attrValue' => [
-	 *     'radius' => [
-	 *       'desktop' => [
-	 *         'default' => '10px',
-	 *         'hover'   => '8px',
-	 *       ],
-	 *     ],
-	 *   ],
-	 *   'important'  => true,
-	 *   'returnType' => 'string',
-	 * ];
-	 * $styleDeclaration = AccordionModule::overflow_style_declaration( $args );
-	 * ```
-	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
-
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * Style declaration for accordion's toggle icon.
@@ -491,9 +427,10 @@ class AccordionModule implements DependencyInterface {
 	 * ```
 	 */
 	public static function toggle_icon_style_declaration( array $args ): string {
-		$use_size = $args['attr']['desktop']['value']['useSize'] ?? '';
+		$use_size                   = $args['attr']['desktop']['value']['useSize'] ?? '';
+		$maybe_global_variable_size = $args['attrValue']['size'] ?? '';
 
-		$size = $args['attrValue']['size'] ?? '';
+		$size = GlobalData::resolve_global_variable_value( $maybe_global_variable_size );
 
 		$style_declarations = new StyleDeclarations(
 			[
@@ -503,13 +440,29 @@ class AccordionModule implements DependencyInterface {
 		);
 
 		if ( 'on' === $use_size && $size ) {
-			$icon_size         = SanitizerUtility::numeric_parse_value( $size );
-			$default_attrs     = ModuleRegistration::get_default_attrs( 'divi/accordion', 'defaultPrintedStyle' );
-			$default_icon_size = SanitizerUtility::numeric_parse_value(
-				$default_attrs['closedToggleIcon']['decoration']['icon']['desktop']['value']['size']
-			);
-			$size_diff         = ( $default_icon_size['valueNumber'] ?? 0 ) - ( $icon_size['valueNumber'] ?? 0 );
-			$style_declarations->add( 'right', 0 !== $size_diff ? round( $size_diff / 2 ) . $icon_size['valueUnit'] : 0 );
+			// Hence we can not directly calculate the css math functions in PHP, It can only be calculated on the Browser in runtime.
+			// So, the numeric_parse_value( $size ) will return null for the CSS math functions.
+			// And now, we have added is_css_math_function() to check, if it is a CSS math function or not.
+			// If it is a CSS math function, we are sending the right: property value with its original format.
+			// Same applies to CSS variables and CSS keywords (inherit, unset, etc.).
+			if ( ModuleUtils::is_css_math_function( $size ) || ModuleUtils::is_css_variable( $size ) || ModuleUtils::is_css_keyword( $size ) ) {
+				$style_declarations->add( 'right', $size );
+			} else {
+				$icon_size = SanitizerUtility::numeric_parse_value( $size );
+				if ( $icon_size && ModuleUtils::is_non_relative_css_unit( $icon_size['valueUnit'] ) ) {
+					$default_attrs     = ModuleRegistration::get_default_attrs( 'divi/accordion', 'defaultPrintedStyle' );
+					$default_icon_size = SanitizerUtility::numeric_parse_value(
+						$default_attrs['closedToggleIcon']['decoration']['icon']['desktop']['value']['size']
+					);
+					if ( $default_icon_size ) {
+						$size_diff = ( $default_icon_size['valueNumber'] ?? 0 ) - ( $icon_size['valueNumber'] ?? 0 );
+						$style_declarations->add( 'right', 0 !== $size_diff ? round( $size_diff / 2 ) . $icon_size['valueUnit'] : 0 );
+					}
+				} elseif ( $icon_size ) {
+					// Set line-height to normal for relative units to override the general Icon style declaration.
+					$style_declarations->add( 'line-height', 'normal' );
+				}
+			}
 		}
 
 		return $style_declarations->value();
@@ -554,7 +507,7 @@ class AccordionModule implements DependencyInterface {
 	public function load(): void {
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/accordion/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( AccordionPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ AccordionPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

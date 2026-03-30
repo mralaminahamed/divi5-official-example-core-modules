@@ -140,6 +140,81 @@ class ContactFieldPresetAttrsMap {
 					'preset'   => [ 'html' ],
 					'subName'  => 'headingLevel',
 				],
+				'fieldTitle.decoration.font.font__color'   => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'color',
+				],
+				'fieldTitle.decoration.font.font__family'  => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'family',
+				],
+				'fieldTitle.decoration.font.font__letterSpacing' => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'letterSpacing',
+				],
+				'fieldTitle.decoration.font.font__lineColor' => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'lineColor',
+				],
+				'fieldTitle.decoration.font.font__lineHeight' => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'lineHeight',
+				],
+				'fieldTitle.decoration.font.font__lineStyle' => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'lineStyle',
+				],
+				'fieldTitle.decoration.font.font__size'    => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'size',
+				],
+				'fieldTitle.decoration.font.font__style'   => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'style',
+				],
+				'fieldTitle.decoration.font.font__textAlign' => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'textAlign',
+				],
+				'fieldTitle.decoration.font.font__weight'  => [
+					'attrName' => 'fieldTitle.decoration.font.font',
+					'preset'   => [ 'style' ],
+					'subName'  => 'weight',
+				],
+				'fieldTitle.decoration.font.textShadow__blur' => [
+					'attrName' => 'fieldTitle.decoration.font.textShadow',
+					'preset'   => [ 'style' ],
+					'subName'  => 'blur',
+				],
+				'fieldTitle.decoration.font.textShadow__color' => [
+					'attrName' => 'fieldTitle.decoration.font.textShadow',
+					'preset'   => [ 'style' ],
+					'subName'  => 'color',
+				],
+				'fieldTitle.decoration.font.textShadow__horizontal' => [
+					'attrName' => 'fieldTitle.decoration.font.textShadow',
+					'preset'   => [ 'style' ],
+					'subName'  => 'horizontal',
+				],
+				'fieldTitle.decoration.font.textShadow__style' => [
+					'attrName' => 'fieldTitle.decoration.font.textShadow',
+					'preset'   => [ 'style' ],
+					'subName'  => 'style',
+				],
+				'fieldTitle.decoration.font.textShadow__vertical' => [
+					'attrName' => 'fieldTitle.decoration.font.textShadow',
+					'preset'   => [ 'style' ],
+					'subName'  => 'vertical',
+				],
 				'field.advanced.focus.border__radius'      => [
 					'attrName' => 'field.advanced.focus.border',
 					'preset'   => [ 'style' ],
@@ -229,6 +304,21 @@ class ContactFieldPresetAttrsMap {
 					'attrName' => 'module.advanced.text',
 					'preset'   => [ 'html' ],
 					'subName'  => 'orientation',
+				],
+				'module.advanced.html__elementType'        => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'elementType',
+				],
+				'module.advanced.html__htmlAfter'          => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'htmlAfter',
+				],
+				'module.advanced.html__htmlBefore'         => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'htmlBefore',
 				],
 			]
 		);

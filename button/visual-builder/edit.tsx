@@ -1,20 +1,10 @@
 import React, { Fragment, type ReactElement, useRef } from 'react';
-import {
-  isEmpty,
-  isNull,
-} from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 
-import {
-  DynamicData,
-  useDynamicData,
-} from '@divi/dynamic-data';
+import { DynamicData, useDynamicData } from '@divi/dynamic-data';
 import { processFontIcon } from '@divi/icon-library';
-import {
-  ModuleContainer,
-} from '@divi/module';
-import {
-  getAttrByMode,
-} from '@divi/module-utils';
+import { ChildModulesContainer, ModuleContainer } from '@divi/module';
+import { getAttrByMode } from '@divi/module-utils';
 
 import { moduleClassnames } from './module-classnames';
 import { ModuleScriptData } from './module-script-data';
@@ -35,11 +25,16 @@ import './style.scss';
  */
 const ButtonEdit = ({
   attrs,
+  defaultPrintedStyleAttrs,
   id,
   isFirst,
   isLast,
   name,
   elements,
+  isLooped,
+  loopIndex,
+  childrenIds,
+  canvasId,
 }: ButtonEditProps): ReactElement => {
   const buttonRef = useRef(null);
 
@@ -50,43 +45,60 @@ const ButtonEdit = ({
   const linkValueDynamic = useDynamicData(linkValue);
 
   const hasCustomButton = 'on' === attrs?.button?.decoration?.button?.desktop?.value?.enable;
+  const isIconEnabled = 'on' === attrs?.button?.decoration?.button?.desktop?.value?.icon?.enable;
 
-  const buttonIcon    = hasCustomButton
-    ? attrs?.button?.decoration?.button?.desktop?.value?.icon?.settings
-    : null;
-  const hasButtonIcon = hasCustomButton && ! isNull(buttonIcon);
+  // Dynamically process all breakpoints in button decoration.
+  const buttonDecoration = attrs?.button?.decoration?.button;
+  const iconDataAttrs: Record<string, string | null> = {};
 
-  const iconDesktop = hasButtonIcon
-    ? processFontIcon(attrs?.button?.decoration?.button?.desktop?.value?.icon?.settings)
-    : null;
-  const iconTablet  = hasButtonIcon
-    ? processFontIcon(attrs?.button?.decoration?.button?.tablet?.value?.icon?.settings)
-    : null;
-  const iconPhone   = hasButtonIcon
-    ? processFontIcon(attrs?.button?.decoration?.button?.phone?.value?.icon?.settings)
-    : null;
+  // Convert camelCase breakpoint name to kebab-case for data attribute (e.g., phoneWide -> phone-wide).
+  const breakpointToDataAttr = (breakpoint: string): string => {
+    if ('desktop' === breakpoint) {
+      return 'data-icon';
+    }
+    return `data-icon-${breakpoint.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+  };
+
+  if (buttonDecoration) {
+    Object.keys(buttonDecoration).forEach(breakpoint => {
+      const breakpointValue = buttonDecoration[breakpoint as keyof typeof buttonDecoration];
+      const iconSettings = breakpointValue?.value?.icon?.settings;
+
+      if (hasCustomButton && isIconEnabled && !isNil(iconSettings) && iconSettings) {
+        const processedIcon = processFontIcon(iconSettings);
+        const dataAttrName = breakpointToDataAttr(breakpoint);
+        iconDataAttrs[dataAttrName] = processedIcon;
+      }
+    });
+  }
 
   const renderedRel = attrs?.button?.innerContent?.desktop?.value?.rel;
-  const linkTarget  = 'on' === attrs?.module?.advanced?.link?.desktop?.value?.target ? '_blank' : null;
+  const linkTarget = 'on' === attrs?.module?.advanced?.link?.desktop?.value?.target ? '_blank' : null;
+  const hasChildren = Boolean(childrenIds && childrenIds.length > 0);
+  const shouldSeparateChildren = hasChildren;
+  const childModules = hasChildren ? (
+    <ChildModulesContainer ids={childrenIds} isLooped={isLooped} loopIndex={loopIndex} canvasId={canvasId} />
+  ) : null;
 
   return (
     <ModuleContainer
       attrs={attrs}
+      defaultPrintedStyleAttrs={defaultPrintedStyleAttrs}
       domRef={buttonRef}
       elements={elements}
       htmlAttrs={{
-        href:               linkValueDynamic?.resolvedValue,
-        target:             linkTarget,
-        'data-icon':        iconDesktop,
-        'data-icon-tablet': iconTablet,
-        'data-icon-phone':  iconPhone,
-        rel:                isEmpty(renderedRel) ? null : renderedRel.join(' '),
+        href: linkValueDynamic?.resolvedValue,
+        target: linkTarget,
+        rel: isEmpty(renderedRel) ? null : renderedRel.join(' '),
+        draggable: 'false',
+        ...iconDataAttrs,
       }}
       classnamesFunction={moduleClassnames}
       id={id}
       isFirst={isFirst}
       isLast={isLast}
-      hasModuleClassName={false}
+      hasModuleClassName
+      hasModuleWrapper
       name={name}
       stylesComponent={ModuleStyles}
       scriptDataComponent={ModuleScriptData}
@@ -96,24 +108,21 @@ const ButtonEdit = ({
       wrapperHtmlAttrs={{
         'data-wrapper-id': id,
       }}
+      isLooped={isLooped}
+      loopIndex={loopIndex}
+      wrapperChildren={shouldSeparateChildren ? childModules : null}
     >
       {elements.styleComponents({
         attrName: 'button',
       })}
-      <DynamicData
-        value={textValue}
-        loaderWidth={60}
-      >
+      <DynamicData value={textValue} loaderWidth={60}>
         {({ resolvedValue }) => (
-          <Fragment>
-            {'string' === typeof resolvedValue ? extractLinkTitle(resolvedValue) : resolvedValue}
-          </Fragment>
+          <Fragment>{'string' === typeof resolvedValue ? extractLinkTitle(resolvedValue) : resolvedValue}</Fragment>
         )}
       </DynamicData>
+      {!shouldSeparateChildren && childModules}
     </ModuleContainer>
   );
 };
 
-export {
-  ButtonEdit,
-};
+export { ButtonEdit };

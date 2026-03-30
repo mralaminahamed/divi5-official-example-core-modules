@@ -2,7 +2,6 @@ import { type DeclarationFunctionProps } from '@divi/module';
 import { StyleDeclarations } from '@divi/style-library';
 import { type Module } from '@divi/types';
 
-
 /**
  * Style declaration for toggle close overlay sizing.
  *
@@ -19,8 +18,8 @@ export const toggleCloseOverlaySizingStyleDeclaration = ({
 
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  {
-      width:  true,
+    important: {
+      width: true,
       height: true,
     },
   });

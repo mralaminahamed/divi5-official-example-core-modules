@@ -12,10 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
+use ET\Builder\Framework\Utility\SanitizerUtility;
 use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
 use ET\Builder\FrontEnd\Module\Style;
 use ET\Builder\Packages\Module\Layout\Components\ModuleElements\ModuleElements;
@@ -50,7 +51,7 @@ class ContactFieldModule implements DependencyInterface {
 	 *
 	 * @return array The array of custom CSS fields.
 	 */
-	public static function custom_css():array {
+	public static function custom_css(): array {
 		return WP_Block_Type_Registry::get_instance()->get_registered( 'divi/contact-field' )->customCssFields;
 	}
 
@@ -199,12 +200,14 @@ class ContactFieldModule implements DependencyInterface {
 	 *     @type ModuleElements $elements         The ModuleElements instance.
 	 * }
 	 */
-	public static function module_styles( array $args ) : void {
+	public static function module_styles( array $args ): void {
 		$attrs                       = $args['attrs'] ?? [];
 		$elements                    = $args['elements'];
 		$settings                    = $args['settings'] ?? [];
 		$order_class                 = $args['orderClass'] ?? '';
 		$default_printed_style_attrs = $args['defaultPrintedStyleAttrs'] ?? [];
+		$is_inside_sticky_module     = $elements->get_is_inside_sticky_module();
+		$sticky_parent_order_class   = $elements->get_sticky_parent_order_class();
 
 		Style::add(
 			[
@@ -243,10 +246,22 @@ class ContactFieldModule implements DependencyInterface {
 							],
 						]
 					),
+					// Field Title.
+					ElementStyle::style(
+						[
+							'selector'               => "{$order_class}.et_pb_contact_field .et_pb_contact_field_options_title",
+							'attrs'                  => [
+								'font' => $attrs['fieldTitle']['decoration']['font'] ?? [],
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+						]
+					),
 					FormFieldStyle::style(
 						[
-							'attr'              => $attrs['field'] ?? [],
-							'selector'          => implode(
+							'attr'                   => $attrs['field'] ?? [],
+							'selector'               => implode(
 								', ',
 								[
 									"{$order_class}.et_pb_contact_field .et_pb_contact_field_options_title",
@@ -255,7 +270,7 @@ class ContactFieldModule implements DependencyInterface {
 									"{$order_class}.et_pb_contact_field .input",
 								]
 							),
-							'important'         => [
+							'important'              => [
 								'font' => [
 									'font' => [
 										'desktop' => [
@@ -266,7 +281,7 @@ class ContactFieldModule implements DependencyInterface {
 									],
 								],
 							],
-							'propertySelectors' => [
+							'propertySelectors'      => [
 								'background'  => [
 									'desktop' => [
 										'value' => [
@@ -355,20 +370,22 @@ class ContactFieldModule implements DependencyInterface {
 									],
 								],
 							],
-							'orderClass'        => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					// Focus Element Selector is different for the checkbox and radio input.
 					ElementStyle::style(
 						[
-							'selector'   => implode(
+							'selector'               => implode(
 								', ',
 								[
 									"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active + label i",
 									"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:active + label i",
 								]
 							),
-							'background' => [
+							'background'             => [
 								'selectors' => [
 									'desktop' => [
 										'value' => implode(
@@ -388,15 +405,17 @@ class ContactFieldModule implements DependencyInterface {
 									],
 								],
 							],
-							'attrs'      => [
+							'attrs'                  => [
 								'font' => $attrs['field']['advanced']['focus']['background'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => implode(
+							'selector'               => implode(
 								', ',
 								[
 									"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active + label",
@@ -404,7 +423,7 @@ class ContactFieldModule implements DependencyInterface {
 									"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked:active + label i:before",
 								]
 							),
-							'font'       => [
+							'font'                   => [
 								'selectors' => [
 									'desktop' => [
 										'value' => implode(
@@ -426,48 +445,58 @@ class ContactFieldModule implements DependencyInterface {
 									],
 								],
 							],
-							'attrs'      => [
+							'attrs'                  => [
 								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 
 					// ::*placeholder style can't handle multiple selectors used the same statements.
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_field .input::placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_field .input::placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_field .input::-webkit-input-placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_field .input::-webkit-input-placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_field .input::-moz-placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_field .input::-moz-placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_field .input::-ms-input-placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_field .input::-ms-input-placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					// Module - Only for Custom CSS.
@@ -523,17 +552,20 @@ class ContactFieldModule implements DependencyInterface {
 		$conditional_logic_rules    = $attrs['conditionalLogic']['innerContent']['desktop']['value'] ?? '';
 		$field_id                   = strtolower( $field_id );
 		$required                   = 'off' === $field_required ? 'not_required' : 'required';
+		$field_unique_id            = self::get_field_unique_id( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
 
-		// Input field label.
+		// Input field label. Only add `for` when a single control with matching id exists (input, email, text, textarea, select).
+		// Checkbox and radio have multiple inputs with suffixed ids; their main label has no matching id.
+		$label_has_for = in_array( $field_type, [ 'input', 'email', 'text', 'textarea', 'select' ], true );
+
 		$label = $elements->render(
 			[
-				'attrName' => 'fieldItem',
+				'attrName'   => 'fieldItem',
+				'attributes' => $label_has_for ? [ 'for' => $field_unique_id ] : [],
 			]
 		);
 
 		$input = '';
-
-		$field_unique_id = self::get_field_unique_id( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
 
 		$pattern         = null;
 		$title           = '';
@@ -542,10 +574,11 @@ class ContactFieldModule implements DependencyInterface {
 		$symbols_pattern = '.';
 		$length_pattern  = '*';
 
-		if ( in_array( $allowed_symbols, array( 'letters', 'numbers', 'alphanumeric' ), true ) ) {
+		if ( in_array( $allowed_symbols, [ 'letters', 'numbers', 'alphanumeric' ], true ) ) {
 			switch ( $allowed_symbols ) {
+				// regex101 link: https:// regex101.com/r/HSbiBN/1.
 				case 'letters':
-					$symbols_pattern = '[A-Za-z\s\-]';
+					$symbols_pattern = '[\p{L}\s\-]';
 					$title           = __( 'Only letters allowed.', 'et_builder_5' );
 					break;
 				case 'numbers':
@@ -608,7 +641,7 @@ class ContactFieldModule implements DependencyInterface {
 							'data-original_id'   => $field_id,
 							'placeholder'        => $field_title,
 						],
-						'children'   => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( $_POST[ $field_unique_id ] ) ) : '' ),
+						'children'   => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( wp_unslash( $_POST[ $field_unique_id ] ) ) ) : '' ),
 					]
 				);
 				break;
@@ -633,7 +666,7 @@ class ContactFieldModule implements DependencyInterface {
 							'pattern'            => $pattern,
 							'title'              => $title,
 							'maxlength'          => $max_length > 0 ? $max_length : null,
-							'value'              => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( $_POST[ $field_unique_id ] ) ) : '' ),
+							'value'              => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( wp_unslash( $_POST[ $field_unique_id ] ) ) ) : '' ),
 						],
 					]
 				);
@@ -666,6 +699,9 @@ class ContactFieldModule implements DependencyInterface {
 							);
 						}
 
+						$option_value          = SanitizerUtility::wp_strip_all_tags_no_trim( $option['value'] ?? '' );
+						$option_link_separator = ( '' !== $option_link && '' !== $option_value ) ? ' ' : '';
+
 						$checkbox_input = HTMLUtility::render(
 							[
 								'tag'        => 'input',
@@ -674,7 +710,7 @@ class ContactFieldModule implements DependencyInterface {
 									'type'               => 'checkbox',
 									'id'                 => $field_unique_id . '_' . $index,
 									'class'              => 'input',
-									'value'              => wp_strip_all_tags( $option['value'] ?? '' ),
+									'value'              => $option_value,
 									'data-required_mark' => $required,
 									'data-field_type'    => $field_type,
 									'data-original_id'   => $field_id,
@@ -698,7 +734,8 @@ class ContactFieldModule implements DependencyInterface {
 											'tagEscaped' => true,
 										]
 									),
-									wp_strip_all_tags( $option['value'] ?? '' ),
+									$option_value,
+									$option_link_separator,
 									$option_link,
 								],
 							]
@@ -797,6 +834,9 @@ class ContactFieldModule implements DependencyInterface {
 							);
 						}
 
+						$option_value          = SanitizerUtility::wp_strip_all_tags_no_trim( $option['value'] ?? '' );
+						$option_link_separator = ( '' !== $option_link && '' !== $option_value ) ? ' ' : '';
+
 						$radio_input = HTMLUtility::render(
 							[
 								'tag'        => 'input',
@@ -806,7 +846,7 @@ class ContactFieldModule implements DependencyInterface {
 									'name'               => $field_unique_id,
 									'id'                 => $field_unique_id . '_' . $index,
 									'class'              => 'input',
-									'value'              => wp_strip_all_tags( $option['value'] ?? '' ),
+									'value'              => $option_value,
 									'data-required_mark' => $required,
 									'data-field_type'    => $field_type,
 									'data-original_id'   => $field_id,
@@ -831,7 +871,8 @@ class ContactFieldModule implements DependencyInterface {
 											'tagEscaped' => true,
 										]
 									),
-									wp_strip_all_tags( $option['value'] ?? '' ),
+									$option_value,
+									$option_link_separator,
 									$option_link,
 								],
 							]
@@ -896,7 +937,7 @@ class ContactFieldModule implements DependencyInterface {
 						'tag'        => 'option',
 						'tagEscaped' => true,
 						'attributes' => [
-							'value' => $field_title,
+							'value' => '',
 						],
 						'children'   => $field_title,
 					]
@@ -941,16 +982,16 @@ class ContactFieldModule implements DependencyInterface {
 		$conditional_logic_rules_value    = '';
 		$conditional_logic_relation_value = '';
 		if ( 'on' === $use_conditional_logic && ! empty( $conditional_logic_rules ) ) {
-			$ruleset = array();
+			$ruleset = [];
 			foreach ( $conditional_logic_rules as $condition_row ) {
 				$condition_value = isset( $condition_row['value'] ) ? $condition_row['value'] : '';
 				$condition_value = trim( $condition_value );
 
-				$ruleset[] = array(
+				$ruleset[] = [
 					strtolower( $condition_row['field'] ),
 					$condition_row['condition'],
 					$condition_value,
-				);
+				];
 			}
 
 			if ( ! empty( $ruleset ) ) {
@@ -1013,11 +1054,11 @@ class ContactFieldModule implements DependencyInterface {
 	 *
 	 * @return string Field unique id.
 	 */
-	public static function get_field_unique_id( string $module_id, int $store_instance ):string {
+	public static function get_field_unique_id( string $module_id, int $store_instance ): string {
 		$parent             = BlockParserStore::get_parent( $module_id, $store_instance );
 		$current            = BlockParserStore::get( $module_id, $store_instance );
-		$parent_order_index = $parent->orderIndex ?? 0; // phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
-		$order_index        = $current->orderIndex ?? 0;// phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+		$parent_order_index = $parent->orderIndex ?? 0; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+		$order_index        = $current->orderIndex ?? 0;// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
 		$field_id           = strtolower( $current->attrs['fieldItem']['advanced']['id']['desktop']['value'] ?? '' );
 
 		return "et_pb_contact_{$parent_order_index}_{$field_id}_{$order_index}";
@@ -1034,7 +1075,7 @@ class ContactFieldModule implements DependencyInterface {
 		// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.dirname_levelsFound -- We have PHP 7 support now, This can be deleted once PHPCS config is updated.
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/contact-field/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( ContactFieldPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ ContactFieldPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.
@@ -1045,5 +1086,4 @@ class ContactFieldModule implements DependencyInterface {
 			]
 		);
 	}
-
 }

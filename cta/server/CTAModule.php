@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
@@ -28,9 +28,12 @@ use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\CTA\CTAPresetAttrsMap;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
+use ET\Builder\Packages\GlobalData\GlobalData;
 use WP_Block_Type_Registry;
 use WP_Block;
+use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 
 /**
@@ -60,7 +63,7 @@ class CTAModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array          $attrs                       Block attributes that were saved by Divi Builder.
-	 * @param string         $content                     The block's content.
+	 * @param string         $child_modules_content       The block's content (child modules content).
 	 * @param WP_Block       $block                       Parsed block object that is being rendered.
 	 * @param ModuleElements $elements                    An instance of the ModuleElements class.
 	 *
@@ -79,7 +82,7 @@ class CTAModule implements DependencyInterface {
 	 * CTAModule::render_callback( $attrs, $content, $block, $elements );
 	 * ```
 	 */
-	public static function render_callback( array $attrs, string $content, WP_Block $block, ModuleElements $elements ): string {
+	public static function render_callback( array $attrs, string $child_modules_content, WP_Block $block, ModuleElements $elements ): string {
 		// Title.
 		$header = $elements->render(
 			[
@@ -121,6 +124,9 @@ class CTAModule implements DependencyInterface {
 			]
 		);
 
+		// Extract child modules IDs using helper utility.
+		$children_ids = ChildrenUtils::extract_children_ids( $block );
+
 		$parent = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
 
 		return Module::render(
@@ -141,11 +147,12 @@ class CTAModule implements DependencyInterface {
 				'parentAttrs'         => $parent->attrs ?? [],
 				'parentId'            => $parent->id ?? '',
 				'parentName'          => $parent->blockName ?? '',
+				'childrenIds'         => $children_ids,
 				'children'            => $elements->style_components(
 					[
 						'attrName' => 'module',
 					]
-				) . $description . $button,
+				) . $description . $button . $child_modules_content,
 			]
 		);
 	}
@@ -199,6 +206,7 @@ class CTAModule implements DependencyInterface {
 		$classnames_instance->add(
 			ElementClassnames::classnames(
 				[
+					// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 					// TODO feat(D5, Module Attribute Refactor) Once link is merged as part of options property, remove this.
 					'attrs' => array_merge(
 						$attrs['module']['decoration'] ?? [],
@@ -280,23 +288,6 @@ class CTAModule implements DependencyInterface {
 				'name'          => $name,
 				'storeInstance' => $store_instance,
 				'hoverSelector' => $selector,
-				'setContent'    => [
-					[
-						'selector'      => $selector . ' .et_pb_module_header',
-						'data'          => $attrs['title']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
-							return $value ?? '';
-						},
-					],
-					[
-						'selector'      => $selector . ' .et_pb_promo_description > div:nth-child(2)',
-						'data'          => $attrs['content']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
-							return $value ?? '';
-						},
-						'sanitizer'     => 'et_core_esc_previously',
-					],
-				],
 				'setVisibility' => [
 					[
 						'selector'      => $selector . ' .et_pb_promo_description',
@@ -346,73 +337,6 @@ class CTAModule implements DependencyInterface {
 		return WP_Block_Type_Registry::get_instance()->get_registered( 'divi/cta' )->customCssFields;
 	}
 
-	/**
-	 * Style declaration for call to action's border.
-	 *
-	 * This function is used to generate the style declaration for the border of a call to action module.
-	 *
-	 * @since ??
-	 *
-	 * @param array $params An array of arguments.
-	 *
-	 * @return string The generated CSS style declaration.
-	 *
-	 * @example
-	 * ```php
-	 * $args = [
-	 *   'attrValue' => [
-	 *     'radius' => [
-	 *       'desktop' => [
-	 *         'default' => '10px',
-	 *         'hover'   => '8px',
-	 *       ],
-	 *     ],
-	 *   ],
-	 *   'important'  => true,
-	 *   'returnType' => 'string',
-	 * ];
-	 * $styleDeclaration = AccordionModule::overflow_style_declaration( $args );
-	 * ```
-	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
-
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * CTA Module's style components.
@@ -489,7 +413,10 @@ class CTAModule implements DependencyInterface {
 										'componentName' => 'divi/common',
 										'props'         => [
 											'attr' => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 								],
@@ -518,7 +445,7 @@ class CTAModule implements DependencyInterface {
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => $args['orderClass'] . '.et_pb_promo',
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -539,7 +466,7 @@ class CTAModule implements DependencyInterface {
 		// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.dirname_levelsFound -- We have PHP 7 support now, This can be deleted once PHPCS config is updated.
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/cta/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( CTAPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ CTAPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

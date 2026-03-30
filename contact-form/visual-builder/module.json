@@ -73,7 +73,7 @@
       },
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
           "elements": {
@@ -91,6 +91,7 @@
               }
             }
           },
+          "html": {},
           "link": {},
           "loop": {},
           "text": {
@@ -113,6 +114,7 @@
               "attrName": "module.advanced.successMessage",
               "label": "Success Message",
               "description": "Type the message you want to display after successful form submission. Leave blank for default",
+              "category": "configuration",
               "features": {
                 "dynamicContent": {
                   "type": "text"
@@ -180,6 +182,7 @@
             "attrName": "title.innerContent",
             "label": "Title",
             "description": "Define a title for your contact form.",
+            "category": "basic_option",
             "features": {
               "dynamicContent": {
                 "type": "text"
@@ -306,6 +309,7 @@
             "subName": "text",
             "label": "Submit Button",
             "description": "Define the text of the form submit button.",
+            "category": "basic_option",
             "features": {
               "dynamicContent": {
                 "type": "text"
@@ -342,6 +346,7 @@
               "attrName": "email.advanced.receiver",
               "label": "Email Address",
               "description": "Input the email address where messages should be sent.<br /><br /> Note: email delivery and spam prevention are complex processes. We recommend using a delivery service such as <a href=\"http://mandrill.com/\">Mandrill</a>, <a href=\"https://sendgrid.com/\">SendGrid</a>, or other similar service to ensure the deliverability of messages that are submitted through this form",
+              "category": "basic_option",
               "features": {
                 "responsive": false,
                 "hover": false,
@@ -367,6 +372,7 @@
             "attrName": "email.innerContent",
             "label": "Message Pattern",
             "description": "Here you can define the custom pattern for the email Message. Fields should be included in following format - <strong>%%field_id%%</strong>. For example if you want to include the field with id = <strong>phone</strong> and field with id = <strong>message</strong>, then you can use the following pattern: <strong>My message is %%message%% and phone number is %%phone%%</strong>. Leave blank for default.",
+            "category": "configuration",
             "features": {
               "responsive": false,
               "hover": false,
@@ -400,6 +406,7 @@
               "attrName": "redirect.advanced.useRedirect",
               "label": "Enable Redirect URL",
               "description": "Redirect users after successful form submission.",
+              "category": "configuration",
               "features": {
                 "responsive": false,
                 "hover": false,
@@ -422,6 +429,7 @@
             "attrName": "redirect.innerContent",
             "label": "Redirect URL",
             "description": "Type the Redirect URL",
+            "category": "configuration",
             "features": {
               "responsive": false,
               "hover": false,
@@ -486,7 +494,8 @@
         "component": {
           "name": "divi/composite",
           "props": {
-            "groupLabel": "Elements"
+            "groupLabel": "Elements",
+            "preset": "content"
           }
         }
       },

@@ -1,9 +1,6 @@
 import { isArray } from 'lodash';
 
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams } from '@divi/module';
 import { getAttrByMode } from '@divi/module-utils';
 import { type PricingTablesAttrs } from '@divi/types';
 
@@ -23,7 +20,7 @@ export const moduleClassnames = ({
 }: ModuleClassnamesParams<PricingTablesAttrs>): void => {
   // Module components.
   const showBullet = getAttrByMode(attrs?.content?.advanced?.showBullet);
-  const index      = isArray(childrenIds) ? childrenIds?.length : '0';
+  const index = isArray(childrenIds) ? childrenIds?.length : '0';
 
   classnamesInstance.add('et_pb_pricing');
   classnamesInstance.add('clearfix');

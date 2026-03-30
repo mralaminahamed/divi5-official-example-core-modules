@@ -1,6 +1,5 @@
 import { type DeclarationFunctionProps } from '@divi/module';
 
-
 /**
  * Style declaration for blurb's content alignment.
  *
@@ -10,6 +9,5 @@ import { type DeclarationFunctionProps } from '@divi/module';
  *
  * @returns {string}
  */
-export const contentAlignmentStyleDeclaration = ({
-  attrValue,
-}: DeclarationFunctionProps<string>): string => (attrValue ? `text-align: ${attrValue};` : '');
+export const contentAlignmentStyleDeclaration = ({ attrValue }: DeclarationFunctionProps<string>): string =>
+  attrValue ? `text-align: ${attrValue};` : '';

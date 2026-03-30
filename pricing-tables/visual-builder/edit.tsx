@@ -1,20 +1,12 @@
-import React, {
-  type ReactElement,
-  useRef,
-} from 'react';
+import React, { type ReactElement, useRef } from 'react';
 
-import {
-  ChildModulesContainer,
-  ModuleContainer,
-} from '@divi/module';
+import { ChildModulesContainer, ModuleContainer } from '@divi/module';
 
 import { moduleClassnames } from './module-classnames';
 import { ModuleScriptData } from './module-script-data';
 import { ModuleStyles } from './module-styles';
 import { type PricingTablesEditProps } from './types';
-import {
-  getFeaturedPricingTablesClassname,
-} from './utils';
+import { getFeaturedPricingTablesClassname } from './utils';
 import './style.scss';
 
 /**
@@ -35,6 +27,9 @@ export const PricingTablesEdit = ({
   childrenIds,
   elements,
   defaultPrintedStyleAttrs,
+  isLooped,
+  loopIndex,
+  canvasId,
 }: PricingTablesEditProps): ReactElement => {
   const pricingTablesRef = useRef(null);
 
@@ -56,13 +51,15 @@ export const PricingTablesEdit = ({
       stylesComponent={ModuleStyles}
       scriptDataComponent={ModuleScriptData}
       cssPosition="before"
+      isLooped={isLooped}
+      loopIndex={loopIndex}
     >
       {elements.styleComponents({
         attrName: 'module',
       })}
-      <div className="et_pb_pricing_table_wrap">
-        <ChildModulesContainer ids={childrenIds} />
-      </div>
+      {childrenIds && childrenIds.length > 0 && (
+        <ChildModulesContainer ids={childrenIds} isLooped={isLooped} loopIndex={loopIndex} canvasId={canvasId} />
+      )}
     </ModuleContainer>
   );
 };

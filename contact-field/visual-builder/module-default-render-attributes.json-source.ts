@@ -1,8 +1,4 @@
-import {
-  type ContactFieldAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type ContactFieldAttrs, type Metadata } from '@divi/types';
 
 /**
  * Contact Field Module Default Render Attributes.
@@ -48,6 +44,4 @@ const contactFieldModuleDefaultRenderAttributes: Metadata.DefaultAttributes<Cont
   },
 };
 
-export {
-  contactFieldModuleDefaultRenderAttributes,
-};
+export { contactFieldModuleDefaultRenderAttributes };

@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block.
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
 use ET\Builder\Framework\Utility\PostUtility;
 use ET\Builder\Framework\Utility\SanitizerUtility;
+use ET\Builder\FrontEnd\Assets\DetectFeature;
 use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
-use ET\Builder\FrontEnd\Module\Script;
 use ET\Builder\FrontEnd\Module\Style;
 use ET\Builder\Packages\IconLibrary\IconFont\Utils;
 use ET\Builder\Packages\Module\Layout\Components\MultiView\MultiViewScriptData;
@@ -31,12 +31,16 @@ use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextStyle;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
+use ET\Builder\Packages\ModuleUtils\ImageUtils;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use WP_Query;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroupAttrNameResolver;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroupAttrNameResolved;
 use ET\Builder\Framework\Utility\ArrayUtility;
+use ET\Builder\Framework\Breakpoint\Breakpoint;
 
 /**
  * `BlogModule` is consisted of functions used for Blog Module such as Front-End rendering, REST API Endpoints etc.
@@ -54,13 +58,6 @@ class BlogModule implements DependencyInterface {
 	protected static $_rendering = false;
 
 	/**
-	 * Track if the module is currently rendering content to prevent unnecessary rendering and recursion.
-	 *
-	 * @var bool
-	 */
-	protected static $_rendering_content = false;
-
-	/**
 	 * Custom CSS fields
 	 *
 	 * This function is equivalent of JS const cssFields located in
@@ -75,59 +72,105 @@ class BlogModule implements DependencyInterface {
 	}
 
 	/**
-	 * Style declaration for Blog Module If it has border radius set.
+	 * Keep Blog Custom CSS hover behavior scoped to the child element target.
 	 *
-	 * This function is the equivalent of the `borderStyleDeclaration` JS function located in
-	 * visual-builder/packages/module-library/src/components/blog/style-declarations/border/index.ts.
-	 *
-	 * @param array $args {
-	 *     An array of arguments.
-	 *
-	 *     @type array      $attrValue  The value (breakpoint > state > value) of module attribute.
-	 *     @type bool|array $important  If set to true, the CSS will be added with !important.
-	 *     @type string     $returnType This is the type of value that the function will return. Can be either string or key_value_pair.
-	 * }
+	 * For hover-state custom CSS on multi-part selectors (e.g. title, content,
+	 * postMeta, featuredImage, readMore), append `:hover` to the child element
+	 * selector so frontend output targets only the hovered element. For sticky
+	 * state, retain `.et_pb_sticky` targeting on the parent (module) selector.
+	 * Single-part selectors pass through unchanged.
 	 *
 	 * @since ??
+	 *
+	 * @param array $params Selector function params.
+	 *
+	 * @return string
 	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
+	public static function custom_css_selector_function( array $params ): string {
+		$selector = (string) ( $params['selector'] ?? '' );
+		$state    = (string) ( $params['state'] ?? 'value' );
 
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
+		if ( ! str_contains( $selector, ' ' ) ) {
+			return $selector;
+		}
+
+		if ( 'sticky' === $state ) {
+			$selectors = array_filter(
+				array_map( 'trim', explode( ',', $selector ) ),
+				static function ( string $item ): bool {
+					return '' !== $item;
+				}
+			);
+
+			$sticky_selectors = array_map(
+				static function ( string $item ): string {
+					$parts = explode( ' ', $item );
+
+					if ( count( $parts ) < 2 ) {
+						return str_contains( $item, '.et_pb_sticky' ) ? $item : $item . '.et_pb_sticky';
+					}
+
+					$module_selector = $parts[0];
+					$child_parts     = implode( ' ', array_slice( $parts, 1 ) );
+					$sticky_module   = str_contains( $module_selector, '.et_pb_sticky' )
+						? $module_selector
+						: $module_selector . '.et_pb_sticky';
+
+					return $sticky_module . ' ' . $child_parts;
+				},
+				$selectors
+			);
+
+			return implode( ', ', array_unique( $sticky_selectors ) );
+		}
+
+		if ( 'hover' !== $state ) {
+			return $selector;
+		}
+
+		$selectors = array_filter(
+			array_map( 'trim', explode( ',', $selector ) ),
+			static function ( string $item ): bool {
+				return '' !== $item;
+			}
 		);
 
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
+		$hover_selectors = array_map(
+			static function ( string $item ): string {
+				if ( str_contains( $item, ':hover' ) ) {
+					return $item;
+				}
 
-		$all_corners_zero = true;
+				return $item . ':hover';
+			},
+			$selectors
+		);
 
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
+		return implode( ', ', $hover_selectors );
+	}
 
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
 
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
+	/**
+	 * Blog Grid Item's CSS declaration for horizontal gap.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params {
+	 *     An array of parameters.
+	 *
+	 *     @type string $selector    Selector.
+	 *     @type array  $attr        Attribute.
+	 *     @type bool   $important   Important.
+	 *     @type string $returnType  Return type.
+	 * }
+	 *
+	 * @return string
+	 */
+	public static function blog_grid_item_style_declaration( array $params ): string {
+		$declarations = new StyleDeclarations( $params );
+		$attr         = $params['attr'] ?? [];
 
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
+		return $declarations->value();
 	}
 
 	/**
@@ -151,14 +194,96 @@ class BlogModule implements DependencyInterface {
 	 *      @type string         $settings          Custom settings.
 	 *      @type string         $state             Attributes state.
 	 *      @type string         $mode              Style mode.
+	 *      @type bool           $isInsideStickyModule Optional. Whether the module is inside a sticky module or not. Default `false`.
+	 *      @type string|null    $stickyParentOrderClass Optional. The sticky parent order class name. Default `null`.
 	 *      @type ModuleElements $elements          ModuleElements instance.
 	 * }
 	 */
 	public static function module_styles( array $args ): void {
-		$attrs       = $args['attrs'] ?? [];
-		$elements    = $args['elements'];
-		$settings    = $args['settings'] ?? [];
-		$order_class = $args['orderClass'] ?? '';
+		$attrs                     = $args['attrs'] ?? [];
+		$elements                  = $args['elements'];
+		$settings                  = $args['settings'] ?? [];
+		$order_class               = $args['orderClass'] ?? '';
+		$is_inside_sticky_module   = $elements->get_is_inside_sticky_module();
+		$sticky_parent_order_class = $elements->get_sticky_parent_order_class();
+		$pagination_font_attr      = $attrs['pagination']['decoration']['font']['font'] ?? [];
+
+		// Determine layout display for conditional border rendering.
+		$layout_display = $attrs['blogGrid']['decoration']['layout']['desktop']['value']['display'] ?? 'grid';
+		$is_grid_layout = 'grid' === $layout_display;
+
+		// Build the border style element based on layout mode.
+		if ( $is_grid_layout ) {
+			// Post Item (Grid Layout).
+			$border_style = $elements->style(
+				[
+					'attrName'   => 'post',
+					'styleProps' => [
+						'border'         => [
+							'selector'         => "{$args['orderClass']} article.et_pb_post",
+							'selectorFunction' => function ( $params ) use ( $args ) {
+								$selector = $params['selector'];
+
+								// Task 44550: Fix hover placement - move :hover to the end (on article, not module).
+								if ( str_contains( $selector, ':hover' ) ) {
+									// Remove :hover from wherever it is.
+									$selector = str_replace( ':hover', '', $selector );
+									// Add :hover at the end.
+									$selector = $selector . ':hover';
+								}
+
+								return $selector;
+							},
+						],
+						'advancedStyles' => [
+							[
+								'componentName' => 'divi/common',
+								'props'         => [
+									'selector'            => "{$args['orderClass']} article.et_pb_post",
+									'attr'                => $attrs['post']['decoration']['border'] ?? [],
+									'declarationFunction' => [ Declarations::class, 'overflow_for_border_radius_style_declaration' ],
+								],
+							],
+						],
+					],
+				]
+			);
+		} else {
+			// Fullwidth Item.
+			$border_style = $elements->style(
+				[
+					'attrName'   => 'fullwidth',
+					'styleProps' => [
+						'border'         => [
+							'selector'         => "{$args['orderClass']}:not(.et_pb_blog_grid_wrapper) article.et_pb_post",
+							'selectorFunction' => function ( $params ) use ( $args ) {
+								$selector = $params['selector'];
+
+								// Task 44550: Fix hover placement - move :hover to the end (on article, not module).
+								if ( str_contains( $selector, ':hover' ) ) {
+									// Remove :hover from wherever it is.
+									$selector = str_replace( ':hover', '', $selector );
+									// Add :hover at the end.
+									$selector = $selector . ':hover';
+								}
+
+								return $selector;
+							},
+						],
+						'advancedStyles' => [
+							[
+								'componentName' => 'divi/common',
+								'props'         => [
+									'selector'            => "{$args['orderClass']}:not(.et_pb_blog_grid_wrapper) article.et_pb_post",
+									'attr'                => $attrs['fullwidth']['decoration']['border'] ?? [],
+									'declarationFunction' => [ Declarations::class, 'overflow_for_border_radius_style_declaration' ],
+								],
+							],
+						],
+					],
+				]
+			);
+		}
 
 		Style::add(
 			[
@@ -175,14 +300,46 @@ class BlogModule implements DependencyInterface {
 								'disabledOn' => [
 									'disabledModuleVisibility' => $settings['disabledModuleVisibility'] ?? null,
 								],
+								'boxShadow'  => [
+									'selectorFunction' => function ( $params ) use ( $is_grid_layout ) {
+										if ( $is_grid_layout ) {
+											return $params['selector'] . ' article.et_pb_post';
+										}
+
+										return $params['selector'];
+									},
+								],
 							],
 						]
 					),
 					TextStyle::style(
 						[
-							'selector'   => $args['orderClass'],
-							'attr'       => $attrs['module']['advanced']['text'] ?? [],
-							'orderClass' => $order_class,
+							'selector'               => $args['orderClass'],
+							'attr'                   => $attrs['module']['advanced']['text'] ?? [],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+						]
+					),
+
+					// Blog Grid.
+					$elements->style(
+						[
+							'attrName'   => 'blogGrid',
+							'styleProps' => [
+								'advancedStyles' => [
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'attr' => $attrs['blogGrid']['decoration']['layout'] ?? [],
+											'declarationFunction' => [ self::class, 'blog_grid_item_style_declaration' ],
+											'selectorFunction' => function ( $params ) {
+												return $params['selector'] . ' > .et_flex_column';
+											},
+										],
+									],
+								],
+							],
 						]
 					),
 
@@ -197,7 +354,7 @@ class BlogModule implements DependencyInterface {
 						[
 							'selector'            => "{$args['orderClass']} .et_pb_post .entry-featured-image-url, {$args['orderClass']} .et_pb_post .et_pb_slides, {$args['orderClass']} .et_pb_post .et_pb_video_overlay",
 							'attr'                => $attrs['image']['decoration']['border'] ?? [],
-							'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+							'declarationFunction' => [ Declarations::class, 'overflow_for_border_radius_style_declaration' ],
 							'orderClass'          => $order_class,
 						]
 					),
@@ -230,35 +387,8 @@ class BlogModule implements DependencyInterface {
 						]
 					),
 
-					// Post Item.
-					$elements->style(
-						[
-							'attrName' => 'post',
-						]
-					),
-					CommonStyle::style(
-						[
-							'selector'            => "{$args['orderClass']} .et_pb_post",
-							'attr'                => $attrs['post']['decoration']['border'] ?? [],
-							'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
-							'orderClass'          => $order_class,
-						]
-					),
-
-					// Fullwidth.
-					$elements->style(
-						[
-							'attrName' => 'fullwidth',
-						]
-					),
-					CommonStyle::style(
-						[
-							'selector'            => "{$args['orderClass']}:not(.et_pb_blog_grid_wrapper) .et_pb_post",
-							'attr'                => $attrs['fullwidth']['decoration']['border'] ?? [],
-							'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
-							'orderClass'          => $order_class,
-						]
-					),
+					// Conditionally rendered border (set above based on layout display).
+					$border_style,
 
 					// Overlay.
 					$elements->style(
@@ -287,14 +417,32 @@ class BlogModule implements DependencyInterface {
 							'attrName' => 'pagination',
 						]
 					),
+					CommonStyle::style(
+						[
+							'selector'               => "{$order_class} .wp-pagenavi",
+							'attr'                   => $pagination_font_attr,
+							'declarationFunction'    => function ( $params ) {
+								$attr_value = $params['attrValue'] ?? [];
+								$text_align = is_array( $attr_value ) ? ( $attr_value['textAlign'] ?? '' ) : '';
+
+								return '' !== $text_align ? "text-align: {$text_align} !important;" : '';
+							},
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+						]
+					),
 
 					// Placed the very end only for custom css.
 					CssStyle::style(
 						[
-							'selector'   => $args['orderClass'],
-							'attr'       => $attrs['css'] ?? [],
-							'cssFields'  => self::custom_css(),
-							'orderClass' => $order_class,
+							'selector'               => $args['orderClass'],
+							'attr'                   => $attrs['css'] ?? [],
+							'cssFields'              => self::custom_css(),
+							'selectorFunction'       => [ self::class, 'custom_css_selector_function' ],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 				],
@@ -321,15 +469,21 @@ class BlogModule implements DependencyInterface {
 		$classnames_instance = $args['classnamesInstance'];
 		$attrs               = $args['attrs'];
 
-		$fullwidth = $attrs['fullwidth']['advanced']['enable']['desktop']['value'] ?? 'on';
+		// Determine if layout is fullwidth based on Layout Style setting.
+		$blog_grid_layout_display = $attrs['blogGrid']['decoration']['layout']['desktop']['value']['display'] ?? 'grid';
+		$fullwidth                = 'grid' === $blog_grid_layout_display ? 'off' : 'on';
+
+		// Select border based on layout display:
+		// - Grid layout: Use post.decoration.border (targets individual posts).
+		// - Fullwidth/flex/block layout: Use fullwidth.decoration.border (targets posts in fullwidth mode).
+		$is_grid_layout = 'grid' === $blog_grid_layout_display;
+		$border_attr    = $is_grid_layout
+			? ( $attrs['post']['decoration']['border'] ?? [] )
+			: ( $attrs['fullwidth']['decoration']['border'] ?? [] );
 
 		$classnames_instance->add( TextClassnames::text_options_classnames( $attrs['module']['advanced']['text'] ?? [] ), true );
 
-		if ( 'on' === $fullwidth ) {
-			$classnames_instance->add( 'et_pb_posts', true );
-		} else {
-			$classnames_instance->add( 'et_pb_blog_grid_wrapper', true );
-		}
+		$classnames_instance->add( 'et_pb_posts', true );
 
 		// Module.
 		$classnames_instance->add(
@@ -338,7 +492,7 @@ class BlogModule implements DependencyInterface {
 					'attrs' => array_merge(
 						$attrs['module']['decoration'] ?? [],
 						[
-							'border' => $attrs['post']['decoration']['border'] ?? $attrs['fullwidth']['decoration']['border'] ?? [],
+							'border' => $border_attr,
 							'link'   => $attrs['module']['advanced']['link'] ?? [],
 						]
 					),
@@ -377,6 +531,13 @@ class BlogModule implements DependencyInterface {
 		$elements->script_data(
 			[
 				'attrName' => 'module',
+			]
+		);
+
+		// Blog Grid Script Data.
+		$elements->script_data(
+			[
+				'attrName' => 'blogGrid',
 			]
 		);
 
@@ -442,6 +603,7 @@ class BlogModule implements DependencyInterface {
 								'excerpt_manual'  => $excerpt_manual,
 								'excerpt_length'  => $excerpt_length,
 								'post_id'         => $post_id,
+								'append_styles'   => true, // Blog module needs styles for full post content.
 							]
 						);
 					},
@@ -519,15 +681,19 @@ class BlogModule implements DependencyInterface {
 		$post_type      = $attrs['post']['advanced']['type']['desktop']['value'] ?? '';
 		$posts_per_page = $attrs['post']['advanced']['number']['desktop']['value'] ?? '';
 		$categories     = $attrs['post']['advanced']['categories']['desktop']['value'] ?? [];
-		$fullwidth      = $attrs['fullwidth']['advanced']['enable']['desktop']['value'] ?? 'on';
-		$offset         = $attrs['post']['advanced']['offset']['desktop']['value'] ?? '';
 
-		$query_args = array(
+		// Determine if layout is fullwidth based on Layout Style setting.
+		$blog_grid_layout_display = $attrs['blogGrid']['decoration']['layout']['desktop']['value']['display'] ?? 'grid';
+		$fullwidth                = 'grid' === $blog_grid_layout_display ? 'off' : 'on';
+
+		$offset = $attrs['post']['advanced']['offset']['desktop']['value'] ?? '';
+
+		$query_args = [
 			'posts_per_page' => $posts_per_page,
-			'post_status'    => array( 'publish', 'private', 'inherit' ),
+			'post_status'    => [ 'publish', 'private', 'inherit' ],
 			'perm'           => 'readable',
 			'post_type'      => $post_type,
-		);
+		];
 
 		if ( $et_blog_module_page > 1 ) {
 			$et_paged            = $et_blog_module_page;
@@ -535,9 +701,26 @@ class BlogModule implements DependencyInterface {
 			$query_args['paged'] = $et_blog_module_page;
 		}
 
-		if ( ! empty( $categories ) ) {
-			$query_args['cat'] = $categories;
-		} else {
+		// Check if "All Categories" is selected (either explicitly as 'all' or when categories is empty).
+		$is_all_category_selected = empty( $categories ) || in_array( 'all', $categories, true );
+
+		// Apply category filtering using the consolidated utility method.
+		$query_args = ModuleUtils::add_category_query_args( $query_args, $categories, $post_type, self::_get_current_post_id_for_exclusion() );
+
+		// Exclude current post when using "Current Category" on post pages or Theme Builder context.
+		if ( is_array( $categories ) && in_array( 'current', $categories, true ) ) {
+			$current_post_id = self::_get_current_post_id_for_exclusion();
+			if ( $current_post_id > 0 ) {
+				if ( isset( $query_args['post__not_in'] ) ) {
+					$query_args['post__not_in'] = array_unique( array_merge( $query_args['post__not_in'], [ $current_post_id ] ) );
+				} else {
+					$query_args['post__not_in'] = [ $current_post_id ];
+				}
+			}
+		}
+
+		// Handle "All Categories" case - show all posts without category filtering.
+		if ( $is_all_category_selected ) {
 			// WP_Query doesn't return sticky posts when it performed via Ajax.
 			// This happens because `is_home` is false in this case, but on FE it's true if no category set for the query.
 			// Set `is_home` = true to emulate the FE behavior with sticky posts in VB.
@@ -554,26 +737,50 @@ class BlogModule implements DependencyInterface {
 		}
 
 		if ( '' !== $offset && ! empty( $offset ) ) {
-			$query_args['offset'] = $offset;
+			/**
+			 * Offset + pagination don't play well. Manual offset calculation required
+			 *
+			 * @see: https://codex.wordpress.org/Making_Custom_Queries_using_Offset_and_Pagination
+			 */
+			if ( $paged > 1 ) {
+				$query_args['offset'] = ( ( $paged - 1 ) * intval( $posts_per_page ) ) + intval( $offset );
+			} else {
+				$query_args['offset'] = intval( $offset );
+			}
 		}
 
 		// Stash properties that will not be the same after wp_reset_query().
-		$wp_query_props = array(
+		$wp_query_props = [
 			'current_post' => $wp_query->current_post,
 			'in_the_loop'  => $wp_query->in_the_loop,
-		);
+		];
 
 		if ( 'off' === $use_current_loop ) {
+			// Build module-driven query from module attrs (post type/count/categories/offset/pagination).
+			// This ensures parity with VB/REST behavior for non-singular contexts like 404 pages.
+			// Exclude current post from results when on singular pages (D4 pattern with Theme Builder support).
+			if ( is_singular() ) {
+				$current_post_id = self::_get_current_post_id_for_exclusion();
+				if ( $current_post_id > 0 ) {
+					if ( isset( $query_args['post__not_in'] ) ) {
+						$query_args['post__not_in'] = array_unique( array_merge( $query_args['post__not_in'], [ $current_post_id ] ) );
+					} else {
+						$query_args['post__not_in'] = [ $current_post_id ];
+					}
+				}
+			}
+
 			query_posts( $query_args ); //phpcs:ignore WordPress.WP.DiscouragedFunctions.query_posts_query_posts -- intentionally done.
 		} elseif ( is_singular() ) {
-			// Force an empty result set in order to avoid loops over the current post.
-			query_posts( array( 'post__in' => array( 0 ) ) ); //phpcs:ignore WordPress.WP.DiscouragedFunctions.query_posts_query_posts -- intentionally done.
+			// When `useCurrentLoop=on` on singular pages, force an empty result set to avoid loops over the current post.
+			query_posts( [ 'post__in' => [ 0 ] ] ); //phpcs:ignore WordPress.WP.DiscouragedFunctions.query_posts_query_posts -- intentionally done.
 		} else {
+			// When `useCurrentLoop=on` on non-singular pages, use current page loop semantics.
 			// Only allow certain args when `Posts For Current Page` is set.
 			$original = $wp_query->query_vars;
-			$custom   = array_intersect_key( $query_args, array_flip( array( 'posts_per_page', 'offset', 'paged' ) ) );
+			$custom   = array_intersect_key( $query_args, array_flip( [ 'posts_per_page', 'offset', 'paged' ] ) );
 
-			// Trick WP into reporting this query as the main query so third party filters
+			// Trick WP into reporting this query as the main query so third party filters.
 			// that check for is_main_query() are applied.
 			$wp_the_query = $wp_query = new WP_Query( array_merge( $original, $custom ) ); //phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited,Squiz.PHP.DisallowMultipleAssignments.Found -- intentionally done.
 		}
@@ -600,18 +807,29 @@ class BlogModule implements DependencyInterface {
 		if ( $wp_query->have_posts() ) {
 			$sticky_posts = get_option( 'sticky_posts' );
 			if ( ! empty( $sticky_posts ) ) {
-				$sticky_args  = array(
-					'post_type'      => 'post',
+				$sticky_args = [
+					'post_type'      => $post_type,
 					'post__in'       => $sticky_posts,
 					'posts_per_page' => -1,
-					'cat'            => $categories,
 					'orderby'        => 'post__in',
-				);
+				];
+
+				// Add category filtering for sticky posts using the consolidated utility method.
+				$sticky_args = ModuleUtils::add_category_query_args( $sticky_args, $categories, $post_type, self::_get_current_post_id_for_exclusion() );
+
+				// Exclude current post from sticky posts when using "Current Category".
+				if ( is_array( $categories ) && in_array( 'current', $categories, true ) ) {
+					$current_post_id_for_exclusion = self::_get_current_post_id_for_exclusion();
+					if ( $current_post_id_for_exclusion > 0 ) {
+						$sticky_args['post__not_in'] = [ $current_post_id_for_exclusion ];
+					}
+				}
+
 				$sticky_query = new WP_Query( $sticky_args );
 				while ( $sticky_query->have_posts() ) {
 					$sticky_query->the_post();
 					$post_ids[] = get_the_ID();
-					$output    .= self::process_post_data( $sticky_query->post, $attrs, $block->parsed_block['orderIndex'], $items_count );
+					$output    .= self::process_post_data( $sticky_query->post, $attrs, $block->parsed_block['orderIndex'], $items_count, $elements );
 
 					++$items_count;
 				}
@@ -622,7 +840,7 @@ class BlogModule implements DependencyInterface {
 				$wp_query->the_post();
 				if ( ! in_array( get_the_ID(), $sticky_posts, true ) ) {
 					$post_ids[] = get_the_ID();
-					$output    .= self::process_post_data( $wp_query->post, $attrs, $block->parsed_block['orderIndex'], $items_count );
+					$output    .= self::process_post_data( $wp_query->post, $attrs, $block->parsed_block['orderIndex'], $items_count, $elements );
 
 					++$items_count;
 				}
@@ -653,49 +871,46 @@ class BlogModule implements DependencyInterface {
 			$no_posts_output = ob_get_clean();
 		}
 
-		$posts_output = 'on' === $fullwidth ? HTMLUtility::render(
+		// Configure content wrapper class based on layout display.
+		$layout_display  = $attrs['blogGrid']['decoration']['layout']['desktop']['value']['display'] ?? 'grid';
+		$is_block_layout = 'block' === $layout_display;
+		$is_flex_layout  = 'flex' === $layout_display;
+		$is_grid_layout  = 'grid' === $layout_display;
+
+		if ( $is_flex_layout ) {
+			$content_wrapper_attributes = [
+				'class' => 'et_pb_posts et_flex_module',
+			];
+		} elseif ( $is_grid_layout ) {
+			$content_wrapper_attributes = [
+				'class' => 'et_pb_posts et_grid_module',
+			];
+		} else {
+			$content_wrapper_attributes = [
+				'class' => 'et_pb_posts et_block_module',
+			];
+		}
+
+		$posts_output = HTMLUtility::render(
 			[
 				'tag'               => 'div',
 				'attributes'        => [
 					'class' => 'et_pb_ajax_pagination_container',
 				],
 				'children'          => [
-					$output,
+					HTMLUtility::render(
+						[
+							'tag'               => 'div',
+							'attributes'        => $content_wrapper_attributes,
+							'children'          => [
+								$output,
+								$content,
+							],
+							'childrenSanitizer' => 'et_core_esc_previously',
+						]
+					),
 					$pagination,
 				],
-				'childrenSanitizer' => 'et_core_esc_previously',
-			]
-		) : HTMLUtility::render(
-			[
-				'tag'               => 'div',
-				'attributes'        => [
-					'class' => 'et_pb_blog_grid clearfix',
-				],
-				'children'          => HTMLUtility::render(
-					[
-						'tag'               => 'div',
-						'attributes'        => [
-							'class' => 'et_pb_ajax_pagination_container',
-						],
-						'children'          => [
-							HTMLUtility::render(
-								[
-									'tag'               => 'div',
-									'attributes'        => [
-										'class'        => 'et_pb_salvattore_content',
-										'data-columns' => '',
-									],
-									'children'          => [
-										$output,
-									],
-									'childrenSanitizer' => 'et_core_esc_previously',
-								]
-							),
-							$pagination,
-						],
-						'childrenSanitizer' => 'et_core_esc_previously',
-					]
-				),
 				'childrenSanitizer' => 'et_core_esc_previously',
 			]
 		);
@@ -703,6 +918,9 @@ class BlogModule implements DependencyInterface {
 		if ( empty( $post_ids ) ) {
 			$posts_output = $no_posts_output;
 		}
+
+		// Extract child modules IDs using helper utility.
+		$children_ids = ChildrenUtils::extract_children_ids( $block );
 
 		$parent = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
 
@@ -733,6 +951,7 @@ class BlogModule implements DependencyInterface {
 				'parentAttrs'         => $parent->attrs ?? [],
 				'parentId'            => $parent->id ?? '',
 				'parentName'          => $parent->blockName ?? '',
+				'childrenIds'         => $children_ids,
 				'children'            => $elements->style_components(
 					[
 						'attrName' => 'module',
@@ -754,11 +973,17 @@ class BlogModule implements DependencyInterface {
 	 * @param array    $attrs The attributes for the post.
 	 * @param int      $order_index The order index of the post.
 	 * @param int      $item_index The items index of the post.
+	 * @param object   $elements The ModuleElements instance.
 	 * @return string The HTML for the post.
 	 */
-	public static function process_post_data( \WP_Post $post, array $attrs, int $order_index, int $item_index ): string {
+	public static function process_post_data( \WP_Post $post, array $attrs, int $order_index, int $item_index, $elements ): string {
 
-		$fullwidth       = $attrs['fullwidth']['advanced']['enable']['desktop']['value'] ?? 'on';
+		// Determine if layout is fullwidth based on Layout Style setting.
+		// Fullwidth if Layout Style is not set to 'grid'.
+		$blog_grid_layout_display = $attrs['blogGrid']['decoration']['layout']['desktop']['value']['display'] ?? 'grid';
+		$is_fullwidth             = 'grid' !== $blog_grid_layout_display;
+		$fullwidth                = $is_fullwidth ? 'on' : 'off';
+
 		$date_format     = $attrs['post']['advanced']['dateFormat']['desktop']['value'] ?? '';
 		$excerpt_content = $attrs['post']['advanced']['excerptContent']['desktop']['value'] ?? 'off';
 		$excerpt_length  = $attrs['post']['advanced']['excerptLength']['desktop']['value'] ?? '270';
@@ -769,7 +994,7 @@ class BlogModule implements DependencyInterface {
 
 		$post_format = et_pb_post_format();
 
-		$show_title_meta_content = 'off' === $fullwidth || ! in_array( $post_format, array( 'link', 'audio', 'quote' ), true ) || post_password_required( $post );
+		$show_title_meta_content = 'off' === $fullwidth || ! in_array( $post_format, [ 'link', 'audio', 'quote' ], true ) || post_password_required( $post );
 
 		$show_thumbnail  = ModuleUtils::has_value(
 			$attrs['image']['advanced']['enable'] ?? [],
@@ -821,21 +1046,40 @@ class BlogModule implements DependencyInterface {
 		);
 		$heading_level   = $attrs['title']['decoration']['font']['font']['desktop']['value']['headingLevel'] ?? 'h2';
 
-		$has_thumbnail = has_post_thumbnail() || 'attachment' === get_post_type();
-
 		$post_thumb = '';
+		$thumb      = '';
 
-		if ( ! in_array( $post_format, array( 'link', 'audio', 'quote' ), true ) || post_password_required( $post ) ) {
-			$thumb          = '';
-			$width          = 'on' === $fullwidth ? 1080 : 400;
-			$width          = (int) apply_filters( 'et_pb_blog_image_width', $width );
-			$height         = 'on' === $fullwidth ? 675 : 250;
-			$height         = (int) apply_filters( 'et_pb_blog_image_height', $height );
-			$class          = 'on' === $fullwidth ? 'et_pb_post_main_image' : '';
-			$alt            = get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
+		if ( ! in_array( $post_format, [ 'link', 'audio', 'quote' ], true ) || post_password_required( $post ) ) {
+
+			// Determine layout based on Layout Style setting.
+			// Grid mode uses smaller thumbnails, other modes (flex/block) use larger thumbnails.
+			$blog_grid_layout_display = $attrs['blogGrid']['decoration']['layout']['desktop']['value']['display'] ?? 'grid';
+			$is_grid_mode             = 'grid' === $blog_grid_layout_display;
+
+			// Select image size directly based on layout mode.
+			// Grid mode: 400×250, Flex/Block mode: 1080×675.
+			$selected_image_size = $is_grid_mode ? 'et-pb-portfolio-image' : 'et-pb-post-main-image-fullwidth';
+
+			// Get image dimensions from WordPress image size.
+			$image_size_data = wp_get_attachment_image_src( get_post_thumbnail_id(), $selected_image_size );
+			$width           = is_array( $image_size_data ) ? (int) $image_size_data[1] : ( $is_grid_mode ? 400 : 1080 );
+			$height          = is_array( $image_size_data ) ? (int) $image_size_data[2] : ( $is_grid_mode ? 250 : 675 );
+
+			// Apply legacy filters for backward compatibility.
+			$width  = (int) apply_filters( 'et_pb_blog_image_width', $width );
+			$height = (int) apply_filters( 'et_pb_blog_image_height', $height );
+			$class  = $is_grid_mode ? '' : 'et_pb_post_main_image';
+			$alt    = get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
+
 			$thumbnail_data = get_thumbnail( $width, $height, $class, $alt, get_the_title(), false, 'Blogimage' );
 			$thumb          = $thumbnail_data['thumb'];
-			$first_video    = PostUtility::get_first_video();
+
+			// Get actual image dimensions from WordPress attachment data.
+			$actual_thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id(), [ $width, $height ] );
+			$actual_width     = is_array( $actual_thumbnail ) ? (int) $actual_thumbnail[1] : $width;
+			$actual_height    = is_array( $actual_thumbnail ) ? (int) $actual_thumbnail[2] : $height;
+
+			$first_video = PostUtility::get_first_video();
 
 			if ( 'video' === $post_format && false !== $first_video ) {
 
@@ -849,11 +1093,12 @@ class BlogModule implements DependencyInterface {
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'children'          => HTMLUtility::render(
 							[
-								'tag'        => 'div',
-								'attributes' => [
+								'tag'               => 'div',
+								'attributes'        => [
 									'class' => 'et_pb_video_overlay_hover',
 								],
-								'children'   => HTMLUtility::render(
+								'childrenSanitizer' => 'et_core_esc_previously',
+								'children'          => HTMLUtility::render(
 									[
 										'tag'        => 'a',
 										'attributes' => [
@@ -884,7 +1129,39 @@ class BlogModule implements DependencyInterface {
 				ob_start();
 				et_pb_gallery_images( 'slider' );
 				$post_thumb = ob_get_clean();
-			} elseif ( $has_thumbnail && $show_thumbnail ) {
+			} elseif ( '' !== $thumb && $show_thumbnail ) {
+
+				// Build responsive image attributes using actual image dimensions.
+				$image_attributes = [
+					'src'    => $thumb,
+					'width'  => $actual_width,
+					'height' => $actual_height,
+					'alt'    => ! empty( $alt ) ? $alt : esc_attr( get_the_title() ),
+					'class'  => $class,
+				];
+
+				// Add responsive image attributes (srcset and sizes) if enabled.
+				if ( $width < 480 && et_is_responsive_images_enabled() ) {
+					// Get thumbnail with size for responsive images.
+					global $et_theme_image_sizes;
+					$image_size_name                = $width . 'x' . $height;
+					$et_size                        = isset( $et_theme_image_sizes ) && array_key_exists( $image_size_name, $et_theme_image_sizes ) ? $et_theme_image_sizes[ $image_size_name ] : [ $width, $height ];
+					$et_attachment_image_attributes = wp_get_attachment_image_src( get_post_thumbnail_id(), $et_size );
+					$thumbnail_with_size            = ! empty( $et_attachment_image_attributes[0] ) ? $et_attachment_image_attributes[0] : '';
+
+					if ( $thumbnail_with_size ) {
+						$image_attributes['srcset'] = $thumb . ' 479w, ' . $thumbnail_with_size . ' 480w';
+						$image_attributes['sizes']  = '(max-width:479px) 479px, 100vw';
+					}
+				}
+
+				$image_html = $elements->render(
+					[
+						'attrName'   => 'image',
+						'tagName'    => 'img',
+						'attributes' => $image_attributes,
+					]
+				);
 
 				$post_thumbnail = HTMLUtility::render(
 					[
@@ -895,7 +1172,7 @@ class BlogModule implements DependencyInterface {
 						],
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'children'          => [
-							print_thumbnail( $thumb, $thumbnail_data['use_timthumb'], get_the_title(), $width, $height, '', false ),
+							$image_html,
 							HTMLUtility::render(
 								[
 									'tag'        => 'span',
@@ -923,14 +1200,16 @@ class BlogModule implements DependencyInterface {
 		}
 
 		$title = $show_title_meta_content && (
-			! in_array( $post_format, array( 'link', 'audio' ), true ) ||
+			! in_array( $post_format, [ 'link', 'audio' ], true ) ||
 			post_password_required( $post )
-		) ? HTMLUtility::render(
+		) ? $elements->render(
 			[
-				'tag'               => $heading_level,
+				'attrName'          => 'title',
+				'tagName'           => $heading_level,
 				'attributes'        => [
 					'class' => 'entry-title',
 				],
+				'skipAttrChildren'  => true,
 				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => HTMLUtility::render(
 					[
@@ -944,12 +1223,14 @@ class BlogModule implements DependencyInterface {
 			]
 		) : '';
 
-		$meta = $show_title_meta_content ? HTMLUtility::render(
+		$meta = $show_title_meta_content ? $elements->render(
 			[
-				'tag'               => 'p',
+				'attrName'          => 'meta',
+				'tagName'           => 'p',
 				'attributes'        => [
 					'class' => 'post-meta',
 				],
+				'skipAttrChildren'  => true,
 				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => self::render_meta(
 					[
@@ -971,7 +1252,7 @@ class BlogModule implements DependencyInterface {
 
 					'class' => 'post-content-inner',
 				],
-				'childrenSanitizer' => 'wp_kses_post',
+				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => self::render_content(
 					[
 						'excerpt_content' => $excerpt_content,
@@ -979,29 +1260,32 @@ class BlogModule implements DependencyInterface {
 						'excerpt_manual'  => $excerpt_manual,
 						'excerpt_length'  => $excerpt_length,
 						'post_id'         => $post->ID,
+						'append_styles'   => true, // Blog module needs styles for full post content.
 					]
 				),
 			]
 		) : '';
 
-		$read_more = $show_read_more ? HTMLUtility::render(
+		$read_more = $show_read_more ? $elements->render(
 			[
-				'tag'        => 'a',
-				'attributes' => [
+				'attrName'          => 'readMore',
+				'tagName'           => 'a',
+				'attributes'        => [
 					'href'  => get_permalink(),
 					'class' => 'more-link',
 				],
-				'children'   => esc_html__(
-					'Read More',
-					'et_builder'
-				),
+				'skipAttrChildren'  => true,
+				'childrenSanitizer' => 'esc_html',
+				'children'          => esc_html__( 'read more...', 'et_builder_5' ),
 			]
 		) : '';
 
-		$content = HTMLUtility::render(
+		$content = $elements->render(
 			[
-				'tag'               => 'div',
+				'attrName'          => 'content',
+				'tagName'           => 'div',
 				'attributes'        => [ 'class' => 'post-content' ],
+				'skipAttrChildren'  => true,
 				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => $post_content_render . $read_more,
 			]
@@ -1026,7 +1310,7 @@ class BlogModule implements DependencyInterface {
 							'et_pb_post'        => true,
 							$post_id_class      => true,
 							'clearfix'          => true,
-							'et_pb_no_thumb'    => $show_thumbnail && ! $has_thumbnail,
+							'et_pb_no_thumb'    => $show_thumbnail && '' === $thumb,
 							'et_pb_has_overlay' => $show_overlay,
 							$item_class         => true,
 						],
@@ -1140,7 +1424,7 @@ class BlogModule implements DependencyInterface {
 		$post_meta = [];
 
 		$author = sprintf(
-			__( 'by %s', 'et_builder' ),
+			__( 'by %s', 'et_builder_5' ),
 			HTMLUtility::render(
 				[
 					'tag'               => 'span',
@@ -1153,7 +1437,7 @@ class BlogModule implements DependencyInterface {
 							'tag'        => 'a',
 							'attributes' => [
 								'href'  => get_author_posts_url( get_the_author_meta( 'ID' ) ),
-								'title' => sprintf( __( 'Posts by %s', 'et_builder' ), get_the_author() ),
+								'title' => sprintf( __( 'Posts by %s', 'et_builder_5' ), get_the_author() ),
 								'rel'   => 'author',
 							],
 							'children'   => get_the_author(),
@@ -1181,22 +1465,25 @@ class BlogModule implements DependencyInterface {
 			$post_meta[] = $date;
 		}
 
-			$taxonomy   = et_builder_get_category_taxonomy( get_post_type( $post_id ) );
+			$post_type  = get_post_type( $post_id );
+			$taxonomy   = ModuleUtils::get_taxonomy_for_post_type( $post_type );
 			$terms      = get_the_terms( $post_id, $taxonomy );
 			$categories = [];
 
-		if ( ! empty( $terms ) ) {
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 			foreach ( $terms as $term ) {
-				$categories[] = HTMLUtility::render(
-					[
-						'tag'        => 'a',
-						'attributes' => [
-							'href' => get_term_link( $term, $taxonomy ),
-							'rel'  => 'tag',
-						],
-						'children'   => $term->name,
-					]
-				);
+				if ( is_object( $term ) && property_exists( $term, 'name' ) ) {
+					$categories[] = HTMLUtility::render(
+						[
+							'tag'        => 'a',
+							'attributes' => [
+								'href' => get_term_link( $term, $taxonomy ),
+								'rel'  => 'tag',
+							],
+							'children'   => $term->name,
+						]
+					);
+				}
 			}
 		}
 
@@ -1213,7 +1500,7 @@ class BlogModule implements DependencyInterface {
 			);
 		}
 
-		$comments = sprintf( esc_html( _nx( '%s Comment', '%s Comments', get_comments_number(), 'number of comments', 'et_builder' ) ), number_format_i18n( get_comments_number( $post_id ) ) );
+		$comments = sprintf( esc_html( _nx( '%s Comment', '%s Comments', get_comments_number(), 'number of comments', 'et_builder_5' ) ), number_format_i18n( get_comments_number( $post_id ) ) );
 
 		if ( $show_comments ) {
 			$post_meta[] = HTMLUtility::render(
@@ -1236,55 +1523,117 @@ class BlogModule implements DependencyInterface {
 	 *
 	 * @since ??
 	 *
-	 * @param array $args {
-	 *    Optional. An array of arguments for render the post content.
+	 * @param array       $args {
+	 *          Optional. An array of arguments for render the post content.
 	 *
 	 *    @type string $excerpt_content Show content or excerpt. Could be 'on' or 'off'. Default is 'off'.
 	 *    @type string $show_excerpt    Show or hide the excerpt. Could be 'on' or 'off'. Default is 'on'.
 	 *    @type string $excerpt_manual  Show or hide the manual excerpt. Could be 'on' or 'off'. Default is 'on'.
 	 *    @type string $excerpt_length  The length of the excerpt. Default is '270'.
 	 *    @type string $post_id         The post ID. Default is '0'.
+	 *    @type bool   $append_styles   Whether to append styles to content. Default is 'false'.
+	 *                                   Only Blog module should set this to 'true' when rendering full post content.
 	 * }
+	 * @param string|null $styles Optional. Reference parameter to return styles when $append_styles is false.
 	 *
 	 * @return string
 	 */
-	public static function render_content( array $args ) {
-		if ( self::$_rendering_content ) {
-			return '';
-		}
-
-		self::$_rendering_content = true;
-
+	public static function render_content( array $args, &$styles = null ) {
 		$excerpt_content = $args['excerpt_content'] ?? 'off';
 		$show_excerpt    = $args['show_excerpt'] ?? 'on';
 		$excerpt_manual  = $args['excerpt_manual'] ?? 'on';
 		$excerpt_length  = (int) $args['excerpt_length'] ?? 270;
 		$post_id         = (int) $args['post_id'] ?? 0;
+		$append_styles   = $args['append_styles'] ?? false;
 
 		$post_content = et_strip_shortcodes( PostUtility::delete_post_first_video( get_the_content( null, false, $post_id ) ), true );
 		$content      = '';
 
 		if ( 'on' === $excerpt_content ) {
+			// Detect module types for default preset style generation.
+			// This ensures default preset styles are generated even if all module instances use explicit presets.
+			$detected_module_names = DetectFeature::get_block_names( get_the_content( null, false, $post_id ) );
+			$filtered_module_names = array_filter(
+				$detected_module_names,
+				function ( $module_name ) {
+					return ! in_array( $module_name, [ 'divi/section', 'divi/row', 'divi/column' ], true );
+				}
+			);
+
+			// Set detected module types for inner content rendering.
+			Style::set_detected_module_types_for_inner_content( $filtered_module_names );
+
 			global $more;
 
 			if ( et_pb_is_pagebuilder_used( $post_id ) ) {
 				$more = 1; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- intentionally done.
 
-				$content = et_core_intentionally_unescaped( apply_filters( 'the_content', $post_content ), 'html' );
+				$content = et_core_intentionally_unescaped( BlockParserStore::render_inner_content( $post_content ), 'html' );
 			} else {
 				$more    = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- intentionally done.
-				$content = et_core_intentionally_unescaped( apply_filters( 'the_content', PostUtility::delete_post_first_video( get_the_content( esc_html__( 'read more...', 'et_builder' ), false, $post_id ) ) ), 'html' );
+				$content = et_core_intentionally_unescaped( BlockParserStore::render_inner_content( PostUtility::delete_post_first_video( get_the_content( esc_html__( 'read more...', 'et_builder_5' ), false, $post_id ) ) ), 'html' );
+			}
+
+			// Capture styles generated during content rendering for this post.
+			// Match VB approach: capture styles under 'post' key and output inline.
+			$content_styles = Style::render( 'default', 'preset', 'post' )
+				. Style::render( 'default', 'module', 'post' );
+
+			// Include global color CSS variables inline.
+			// Global colors are output in footer (when Dynamic Assets disabled) or head (when enabled),
+			// but blog post content renders before footer, so we need to include them inline.
+			$global_color_css = Style::get_global_colors_style();
+			if ( ! empty( $global_color_css ) ) {
+				// Prepend global color CSS variables before the styles that use them.
+				$content_styles = $global_color_css . $content_styles;
+			}
+
+			// Clear detected module types after rendering to prevent affecting other posts.
+			Style::set_detected_module_types_for_inner_content( [] );
+
+			// Return styles via reference if not appending to content.
+			if ( ! $append_styles ) {
+				$styles = $content_styles;
+			} elseif ( ! empty( $content_styles ) ) {
+				// Append inline styles to content if styles were generated.
+				$content .= sprintf(
+					'<style id="et-blog-post-content-%d">%s</style>',
+					$post_id,
+					$content_styles
+				);
 			}
 		} elseif ( 'on' === $show_excerpt ) {
 			if ( has_excerpt( $post_id ) && 'off' !== $excerpt_manual ) {
-				$content = apply_filters( 'the_excerpt', get_the_excerpt( $post_id ) );
+				$manual_excerpt = get_the_excerpt( $post_id );
+
+				// Apply excerpt length truncation to manual excerpts if excerpt_length is set and greater than 0.
+				// Use character-based truncation instead of word-based truncation.
+				if ( $excerpt_length > 0 && strlen( $manual_excerpt ) > $excerpt_length ) {
+					$excerpt_more    = apply_filters( 'excerpt_more', '&hellip;' );
+					$manual_excerpt  = substr( $manual_excerpt, 0, $excerpt_length );
+					$manual_excerpt .= $excerpt_more;
+				}
+
+				$content = apply_filters( 'the_excerpt', $manual_excerpt );
 			} elseif ( '' !== $post_content ) {
 					$content = et_core_intentionally_unescaped( wpautop( PostUtility::delete_post_first_video( strip_shortcodes( PostUtility::truncate_post( $excerpt_length, false, get_post( $post_id ), true ) ) ) ), 'html' );
 			}
 		}
 
-		self::$_rendering_content = false;
 		return $content;
+	}
+
+	/**
+	 * Check if the Blog module is currently rendering content.
+	 *
+	 * This method is used by other modules to determine if they should use
+	 * descendant selectors instead of direct child selectors for proper CSS generation.
+	 *
+	 * @since ??
+	 * @return bool True if Blog module is rendering content, false otherwise.
+	 */
+	public static function is_rendering_content(): bool {
+		return BlockParserStore::is_rendering_inner_content();
 	}
 
 	/**
@@ -1296,7 +1645,7 @@ class BlogModule implements DependencyInterface {
 		// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.dirname_levelsFound -- We have PHP 7 support now, This can be deleted once PHPCS config is updated.
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/blog/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( BlogPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ BlogPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.
@@ -1316,7 +1665,7 @@ class BlogModule implements DependencyInterface {
 	 *
 	 * @return GlobalPresetItemGroupAttrNameResolved The resolved attribute name.
 	 */
-	public static function option_group_preset_resolver_attr_name( $attr_name_to_resolve, array $params ):?GlobalPresetItemGroupAttrNameResolved {
+	public static function option_group_preset_resolver_attr_name( $attr_name_to_resolve, array $params ): ?GlobalPresetItemGroupAttrNameResolved {
 		// Bydefault, $attr_name_to_resolve is a null value.
 		// If it is not null, it means that the attribute name is already resolved.
 		// In this case, we return the resolved attribute name.
@@ -1346,5 +1695,41 @@ class BlogModule implements DependencyInterface {
 		}
 
 		return $attr_name_to_resolve;
+	}
+
+	/**
+	 * Get the current post ID for exclusion, handling Theme Builder context.
+	 *
+	 * In Theme Builder context, the global $post is the template post, not the displayed post.
+	 * This method gets the actual post being displayed for proper post exclusion.
+	 *
+	 * @since ??
+	 *
+	 * @return int Current post ID, or 0 if not found.
+	 */
+	private static function _get_current_post_id_for_exclusion(): int {
+		// Check if we're in Theme Builder context.
+		$is_theme_builder = class_exists( '\ET_Theme_Builder_Layout' ) && \ET_Theme_Builder_Layout::is_theme_builder_layout();
+
+		if ( $is_theme_builder ) {
+			// In Theme Builder, get the main post ID (the actual post being displayed).
+			$main_post_id = class_exists( '\ET_Post_Stack' ) ? \ET_Post_Stack::get_main_post_id() : 0;
+			if ( $main_post_id > 0 ) {
+				return $main_post_id;
+			}
+		}
+
+		// Standard context - use global $post on singular pages.
+		if ( is_singular() ) {
+			global $post;
+			if ( $post && $post->ID > 0 ) {
+				return $post->ID;
+			}
+		}
+
+		// Fallback to get_the_ID() but only return it if we're on a singular page.
+		// On archive/category pages, get_the_ID() returns random loop post IDs which would cause unintended exclusions.
+		$post_id = get_the_ID();
+		return $post_id > 0 && is_singular() ? $post_id : 0;
 	}
 }

@@ -1,11 +1,6 @@
-import React, {
-  createElement,
-  type ReactElement,
-  type ReactNode,
-} from 'react';
+import React, { createElement, type ReactElement, type ReactNode } from 'react';
 
 import { type HeadingProps } from './types';
-
 
 /**
  * Renders a heading element based on the specified heading level.
@@ -17,10 +12,7 @@ import { type HeadingProps } from './types';
  * @param {ReactNode} props.children The content to be rendered inside the heading element.
  * @returns {ReactElement} The rendered heading element.
  */
-const Heading = ({
-  headingLevel = 'h2',
-  children,
-}: HeadingProps): ReactElement => {
+const Heading = ({ headingLevel = 'h2', children }: HeadingProps): ReactElement => {
   switch (headingLevel) {
     case 'h1':
     case 'h3':
@@ -34,6 +26,4 @@ const Heading = ({
   }
 };
 
-export {
-  Heading,
-};
+export { Heading };

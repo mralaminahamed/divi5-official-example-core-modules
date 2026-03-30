@@ -1,12 +1,6 @@
-import {
-  type BlurbAttrs,
-  type Module,
-} from '@divi/types';
+import { type BlurbAttrs, type Module } from '@divi/types';
 
-import {
-  type ModuleEditProps,
-} from '../types-module';
-
+import { type ModuleEditProps } from '../types-module';
 
 export type BlurbEditProps = ModuleEditProps<BlurbAttrs>;
 

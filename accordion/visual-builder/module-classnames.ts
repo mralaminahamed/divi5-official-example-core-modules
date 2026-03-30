@@ -1,7 +1,4 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams } from '@divi/module';
 import { type AccordionAttrs } from '@divi/types';
 
 /**

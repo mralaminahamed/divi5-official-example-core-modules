@@ -1,5 +1,6 @@
-import { type CtaAttrs, type Metadata } from '@divi/types';
+import { __ } from '@wordpress/i18n';
 
+import { type CtaAttrs, type Metadata } from '@divi/types';
 
 /**
  * CTA Module Meta Data.
@@ -8,58 +9,65 @@ import { type CtaAttrs, type Metadata } from '@divi/types';
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
-  name:                 'divi/cta',
-  d4Shortcode:          'et_pb_cta',
-  moduleClassName:      'et_pb_promo',
+  name: 'divi/cta',
+  d4Shortcode: 'et_pb_cta',
+  moduleClassName: 'et_pb_promo',
   moduleOrderClassName: 'et_pb_cta',
-  title:                'Call To Action',
-  titles:               'Call To Actions',
-  moduleIcon:           'divi/module-cta',
-  category:             'module',
-  videos:               [
+  title: __('Call To Action', 'et_builder_5'),
+  titles: __('Call To Actions', 'et_builder_5'),
+  moduleIcon: 'divi/module-cta',
+  category: 'module',
+  childrenName: [], // Supports any module type as child elements
+  videos: [
     {
-      id:   'gV-l14jA2hE',
+      id: 'gV-l14jA2hE',
       name: 'An introduction to the Call To Action module',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}}',
       settings: {
         meta: {
-          adminLabel: {},
+          meta: {},
         },
         advanced: {
-          link:           {},
-          htmlAttributes: {},
-          text:           {},
+          elements: {},
+          html: {},
+          link: {},
+          loop: {},
+          text: {},
         },
         decoration: {
-          animation:  {},
+          layout: {},
+          animation: {},
+          attributes: {},
           background: {},
-          border:     {},
-          boxShadow:  {},
+          border: {},
+          boxShadow: {},
           conditions: {},
           disabledOn: {},
-          filters:    {},
-          overflow:   {},
-          position:   {},
-          scroll:     {},
-          sizing:     {},
-          spacing:    {},
-          sticky:     {},
-          transform:  {},
+          filters: {},
+          interactions: {},
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {},
+          sizing: {},
+          spacing: {},
+          sticky: {},
+          transform: {},
           transition: {},
-          zIndex:     {},
+          zIndex: {},
         },
       },
       styleProps: {
@@ -73,14 +81,14 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
           selector: '{{selector}}.et_pb_promo',
         },
         spacing: {
-          selector:  '{{selector}}.et_pb_promo',
+          selector: '{{selector}}.et_pb_promo',
           important: true,
         },
         sizing: {
           propertySelectors: {
             desktop: {
               value: {
-                'margin-left':  '{{selector}}.et_pb_promo.et_pb_module',
+                'margin-left': '{{selector}}.et_pb_promo.et_pb_module',
                 'margin-right': '{{selector}}.et_pb_promo.et_pb_module',
               },
             },
@@ -88,7 +96,7 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
           important: {
             desktop: {
               value: {
-                'margin-left':  true,
+                'margin-left': true,
                 'margin-right': true,
               },
             },
@@ -97,40 +105,67 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
       },
     },
     title: {
-      type:     'object',
-      label:    'Title',
-      selector: '{{selector}} h2, {{selector}} h1.et_pb_module_header, {{selector}} h3.et_pb_module_header, {{selector}} h4.et_pb_module_header, {{selector}} h5.et_pb_module_header, {{selector}} h6.et_pb_module_header',
+      type: 'object',
+      label: __('Title', 'et_builder_5'),
+      selector:
+        '{{selector}} h2, {{selector}} h1.et_pb_module_header, {{selector}} h3.et_pb_module_header, {{selector}} h4.et_pb_module_header, {{selector}} h5.et_pb_module_header, {{selector}} h6.et_pb_module_header',
+      supportsCustomAttributes: true,
       settings: {
-        innerContent: {},
-        decoration:   {
+        innerContent: {
+          groupType: 'group-item',
+          item: {
+            groupSlug: 'contentText',
+            priority: 10,
+            render: true,
+            attrName: 'title.innerContent',
+            label: 'Title',
+            description: 'Input your value to action title here.',
+            category: 'basic_option',
+            features: {
+              dynamicContent: {
+                type: 'text',
+              },
+              sticky: false,
+              preset: 'content',
+            },
+            component: {
+              name: 'divi/text',
+              type: 'field',
+            },
+          },
+        },
+        decoration: {
           font: {},
         },
       },
       attributes: {
         class: 'et_pb_module_header',
       },
-      tagName:           'h2',
-      inlineEditor:      'plainText',
-      elementType:       'heading',
+      tagName: 'h2',
+      inlineEditor: 'plainText',
+      elementType: 'heading',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
-        selector: '{{selector}}.et_pb_promo h2, {{selector}}.et_pb_promo h1.et_pb_module_header, {{selector}}.et_pb_promo h3.et_pb_module_header, {{selector}}.et_pb_promo h4.et_pb_module_header, {{selector}}.et_pb_promo h5.et_pb_module_header, {{selector}}.et_pb_promo h6.et_pb_module_header',
-        font:     {
+      styleProps: {
+        selector:
+          '{{selector}}.et_pb_promo h2, {{selector}}.et_pb_promo h1.et_pb_module_header, {{selector}}.et_pb_promo h3.et_pb_module_header, {{selector}}.et_pb_promo h4.et_pb_module_header, {{selector}}.et_pb_promo h5.et_pb_module_header, {{selector}}.et_pb_promo h6.et_pb_module_header',
+        font: {
           important: true,
         },
       },
     },
     content: {
-      type:        'object',
-      label:       'Body',
+      type: 'object',
+      label: __('Body', 'et_builder_5'),
       elementType: 'content',
-      selector:    '{{selector}} .et_pb_promo_description .et_pb_promo_content',
-      settings:    {
+      selector: '{{selector}} .et_pb_promo_description .et_pb_promo_content',
+      supportsCustomAttributes: true,
+      settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
+          item: {
             groupSlug: 'contentText',
-            features:  {
+            category: 'basic_option',
+            features: {
               dynamicContent: { type: 'text' },
             },
           },
@@ -160,28 +195,76 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
       },
     },
     button: {
-      type:     'object',
+      type: 'object',
       selector: 'body #page-container {{selector}} .et_pb_promo_button.et_pb_button',
+      supportsCustomAttributes: true,
       settings: {
-        innerContent: {},
-        decoration:   {
+        innerContent: {
+          groupType: 'into-multiple-groups',
+          groups: {
+            text: {
+              groupType: 'group-item',
+              item: {
+                priority: 20,
+                groupSlug: 'contentText',
+                render: true,
+                attrName: 'button.innerContent',
+                subName: 'text',
+                label: __('Button', 'et_builder_5'),
+                description: __('Input your desired button text, or leave blank for no button.', 'et_builder_5'),
+                category: 'basic_option',
+                features: {
+                  dynamicContent: {
+                    type: 'text',
+                  },
+                  sticky: false,
+                  preset: 'content',
+                },
+                component: {
+                  name: 'divi/text',
+                  type: 'field',
+                },
+              },
+            },
+            link: {
+              groupType: 'group-item',
+              item: {
+                priority: 10,
+                groupSlug: 'contentLink',
+                render: true,
+                component: {
+                  name: 'divi/button-link',
+                  type: 'group',
+                  props: {
+                    grouped: false,
+                    attrName: 'button.innerContent',
+                    fieldLabel: __('Button', 'et_builder_5'),
+                  },
+                },
+              },
+            },
+          },
+        },
+        decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          button:     {},
-          font:       {},
-          spacing:    {},
+          border: {},
+          boxShadow: {},
+          button: {},
+          font: {},
+          spacing: {},
         },
       },
       attributes: {
         class: 'et_pb_promo_button',
       },
-      elementType:  'button',
+      elementType: 'button',
       elementProps: {
         hasWrapper: true,
       },
       styleProps: {
-        selector:  'body #page-container {{selector}}.et_pb_promo .et_pb_promo_button.et_pb_button',
+        selector: 'body #page-container {{selector}}.et_pb_promo .et_pb_promo_button.et_pb_button',
+        customPostTypeSelector:
+          'body.et-db #page-container #et-boc .et-l {{baseSelector}}.et_pb_promo .et_pb_promo_button.et_pb_button',
         boxShadow: {
           propertySelectors: {
             desktop: {
@@ -205,7 +288,7 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
             font: {
               desktop: {
                 value: {
-                  color:         true,
+                  color: true,
                   'line-height': true,
                 },
               },
@@ -216,7 +299,7 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
           propertySelectors: {
             desktop: {
               value: {
-                margin:  '{{selector}}.et_pb_promo  .et_pb_button_wrapper .et_pb_promo_button.et_pb_button',
+                margin: '{{selector}}.et_pb_promo  .et_pb_button_wrapper .et_pb_promo_button.et_pb_button',
                 padding: '{{selector}}.et_pb_promo  .et_pb_button_wrapper .et_pb_promo_button.et_pb_button',
               },
             },
@@ -224,7 +307,7 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
           important: {
             desktop: {
               value: {
-                margin:  true,
+                margin: true,
                 padding: true,
               },
             },
@@ -235,28 +318,57 @@ const ctaModuleMetaData: Metadata.Values<CtaAttrs> = {
   },
   customCssFields: {
     description: {
-      label:          'Promo Description',
-      subName:        'description',
+      label: __('Promo Description', 'et_builder_5'),
+      subName: 'description',
       selectorSuffix: ' .et_pb_promo_description',
     },
     button: {
-      label:          'Promo Button',
-      subName:        'button',
+      label: __('Promo Button', 'et_builder_5'),
+      subName: 'button',
       selectorSuffix: '.et_pb_promo .et_pb_button.et_pb_promo_button',
     },
     title: {
-      label:          'Promo Title',
-      subName:        'title',
+      label: __('Promo Title', 'et_builder_5'),
+      subName: 'title',
       selectorSuffix: ' .et_pb_promo_description h2',
     },
   },
   settings: {
-    content:  'auto',
-    design:   'auto',
+    content: 'auto',
+    design: 'auto',
     advanced: 'auto',
+
+    groups: {
+      // Content > Text.
+      contentText: {
+        panel: 'content',
+        priority: 10,
+        groupName: 'text',
+        multiElements: true,
+        component: {
+          name: 'divi/composite',
+          props: {
+            groupLabel: __('Text', 'et_builder_5'),
+            preset: 'content',
+          },
+        },
+      },
+
+      // Content > Link.
+      contentLink: {
+        panel: 'content',
+        priority: 20,
+        groupName: 'link',
+        component: {
+          name: 'divi/composite',
+          props: {
+            groupLabel: __('Link', 'et_builder_5'),
+            preset: 'content',
+          },
+        },
+      },
+    },
   },
 };
 
-export {
-  ctaModuleMetaData,
-};
+export { ctaModuleMetaData };

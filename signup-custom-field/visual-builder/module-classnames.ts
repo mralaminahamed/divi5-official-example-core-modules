@@ -1,13 +1,6 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
 import { getAttrValue } from '@divi/module-utils';
-import {
-  type SignupCustomFieldAttrs,
-} from '@divi/types';
-
+import { type SignupCustomFieldAttrs } from '@divi/types';
 
 /**
  * Set CSS class names to the module.
@@ -24,14 +17,14 @@ export const moduleClassnames = ({
   classnamesInstance,
   state,
 }: ModuleClassnamesParams<SignupCustomFieldAttrs>): void => {
-  const fullwidth   = getAttrValue({
+  const fullwidth = getAttrValue({
     attr: attrs?.fieldItem?.advanced?.fullwidth,
     baseBreakpoint,
     breakpoint,
     breakpointNames,
     state,
   });
-  const hidden      = getAttrValue({
+  const hidden = getAttrValue({
     attr: attrs?.fieldItem?.advanced?.hidden,
     baseBreakpoint,
     breakpoint,
@@ -46,14 +39,16 @@ export const moduleClassnames = ({
   classnamesInstance.add('et_pb_contact_field--hidden', 'on' === hidden);
 
   // Add If field is not fullwidth.
-  if (! isFullwidth) {
+  if (!isFullwidth) {
     classnamesInstance.add('et_pb_contact_field_half');
   }
 
   // Text Options.
-  classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text, {
-    orientation: true,
-  }));
+  classnamesInstance.add(
+    textOptionsClassnames(attrs?.module?.advanced?.text, {
+      orientation: true,
+    }),
+  );
 
   // Add element classnames.
   classnamesInstance.add(

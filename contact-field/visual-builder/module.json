@@ -58,10 +58,11 @@
       },
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
           "elements": {},
+          "html": {},
           "link": {},
           "loop": {},
           "text": {
@@ -131,6 +132,36 @@
         }
       }
     },
+    "fieldTitle": {
+      "type": "object",
+      "selector": "{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title",
+      "settings": {
+        "decoration": {
+          "font": {
+            "priority": 10,
+            "component": {
+              "props": {
+                "groupLabel": "Title Text",
+                "fieldLabel": "Title"
+              }
+            }
+          }
+        }
+      },
+      "styleProps": {
+        "font": {
+          "important": {
+            "font": {
+              "desktop": {
+                "value": {
+                  "color": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "fieldItem": {
       "type": "object",
       "label": "Field",
@@ -153,6 +184,7 @@
               "attrName": "fieldItem.advanced.id",
               "label": "Field ID",
               "description": "Define the unique ID of this field. You should use only English characters without special characters and spaces.",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -177,6 +209,7 @@
               "attrName": "fieldItem.advanced.type",
               "label": "Type",
               "description": "Choose the type of field",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -220,6 +253,7 @@
               "attrName": "fieldItem.advanced.minLength",
               "label": "Minimum Length",
               "description": "Leave at 0 to remove restriction",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -245,6 +279,7 @@
               "attrName": "fieldItem.advanced.maxLength",
               "label": "Maximum Length",
               "description": "Leave at 0 to remove restriction",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -269,6 +304,7 @@
               "render": true,
               "attrName": "fieldItem.advanced.allowedSymbols",
               "label": "Allowed Symbols",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -305,6 +341,7 @@
               "render": true,
               "attrName": "fieldItem.advanced.checkboxOptions",
               "label": "Options",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -337,6 +374,7 @@
               "render": true,
               "attrName": "fieldItem.advanced.radioOptions",
               "label": "Options",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -369,6 +407,7 @@
               "render": true,
               "attrName": "fieldItem.advanced.selectOptions",
               "label": "Options",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -400,6 +439,7 @@
               "attrName": "fieldItem.advanced.required",
               "label": "Required Field",
               "description": "Define whether the field should be required or optional",
+              "category": "configuration",
               "features": {
                 "sticky": false,
                 "responsive": false,
@@ -422,6 +462,7 @@
             "attrName": "fieldItem.innerContent",
             "label": "Title",
             "description": "Here you can define the content that will be placed within the current tab.",
+            "category": "basic_option",
             "features": {
               "sticky": false,
               "preset": "content",
@@ -448,6 +489,7 @@
             "render": true,
             "attrName": "conditionalLogic.innerContent",
             "label": "Rules",
+            "category": "layout",
             "features": {
               "responsive": false,
               "hover": false,
@@ -470,6 +512,7 @@
               "attrName": "conditionalLogic.advanced.enable",
               "label": "Enable",
               "description": "Enabling conditional logic makes this field only visible when any or all of the rules below are fulfilled<br><strong>Note:</strong> Only fields with an unique and non-empty field ID can be used",
+              "category": "layout",
               "features": {
                 "responsive": false,
                 "hover": false,
@@ -491,6 +534,7 @@
               "attrName": "conditionalLogic.advanced.relation",
               "label": "Relation",
               "description": "Choose whether any or all of the rules should be fulfilled",
+              "category": "layout",
               "features": {
                 "responsive": false,
                 "hover": false,

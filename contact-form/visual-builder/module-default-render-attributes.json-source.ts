@@ -1,8 +1,4 @@
-import {
-  type ContactFormAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type ContactFormAttrs, type Metadata } from '@divi/types';
 
 /**
  * Contact Form Module Default Render Attributes.
@@ -23,7 +19,7 @@ const contactFormModuleDefaultRenderAttributes: Metadata.DefaultAttributes<Conta
       spamProtection: {
         desktop: {
           value: {
-            enabled:         'off',
+            enabled: 'off',
             useBasicCaptcha: 'on',
           },
         },
@@ -74,6 +70,4 @@ const contactFormModuleDefaultRenderAttributes: Metadata.DefaultAttributes<Conta
   },
 };
 
-export {
-  contactFormModuleDefaultRenderAttributes,
-};
+export { contactFormModuleDefaultRenderAttributes };

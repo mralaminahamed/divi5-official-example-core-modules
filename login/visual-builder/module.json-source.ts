@@ -9,46 +9,46 @@ import { type LoginAttrs, type Metadata } from '@divi/types';
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
-  name:                 'divi/login',
-  moduleClassName:      'et_pb_login',
+  name: 'divi/login',
+  moduleClassName: 'et_pb_login',
   moduleOrderClassName: 'et_pb_login',
-  d4Shortcode:          'et_pb_login',
-  title:                'Login',
-  titles:               'Logins',
-  moduleIcon:           'divi/module-login',
-  category:             'module',
-  childrenName:         [], // Supports any module type as child elements
-  videos:               [
+  d4Shortcode: 'et_pb_login',
+  title: __('Login', 'et_builder_5'),
+  titles: __('Logins', 'et_builder_5'),
+  moduleIcon: 'divi/module-login',
+  category: 'module',
+  childrenName: [], // Supports any module type as child elements
+  videos: [
     {
-      id:   'PffCGMlUSTA',
+      id: 'PffCGMlUSTA',
       name: 'An introduction to the Login module',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:       'object',
-      selector:   '{{selector}}',
+      type: 'object',
+      selector: '{{selector}}',
       styleProps: {
         background: {
           selector: '{{selector}}.et_pb_login',
         },
         spacing: {
-          selector:  '{{selector}}.et_pb_login',
+          selector: '{{selector}}.et_pb_login',
           important: true,
         },
         sizing: {
           important: {
             desktop: {
               value: {
-                'margin-left':  true,
+                'margin-left': true,
                 'margin-right': true,
               },
             },
@@ -61,27 +61,32 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
           selector: '{{selector}}.et_pb_login',
         },
         position: {
-          selector:  '{{selector}}.et_pb_login',
+          selector: '{{selector}}.et_pb_login',
           important: true,
         },
       },
       settings: {
         meta: {
-          adminLabel: {},
+          meta: {},
         },
         advanced: {
-          elements:            {},
-          link:                {},
-          loop:                {},
-          text:                {},
+          elements: {},
+          html: {},
+          link: {},
+          loop: {},
+          text: {},
           currentPageRedirect: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentRedirect',
-              priority:    5,
-              render:      true,
-              label:       __('Redirect To The Current Page', 'et_builder'),
-              description: __('Here you can choose whether the user should be redirected back to the current page after logging in.', 'et_builder'),
+            item: {
+              groupSlug: 'contentRedirect',
+              priority: 5,
+              render: true,
+              label: __('Redirect To The Current Page', 'et_builder_5'),
+              description: __(
+                'Here you can choose whether the user should be redirected back to the current page after logging in.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
               defaultAttr: {
                 desktop: {
                   value: 'off',
@@ -89,17 +94,17 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
               },
               features: {
                 responsive: false,
-                hover:      false,
-                sticky:     false,
-                preset:     'content',
+                hover: false,
+                sticky: false,
+                preset: 'content',
               },
               component: {
-                type:  'field',
-                name:  'divi/toggle',
+                type: 'field',
+                name: 'divi/toggle',
                 props: {
                   options: {
-                    off: __('No', 'et_builder'),
-                    on:  __('Yes', 'et_builder'),
+                    off: __('No', 'et_builder_5'),
+                    on: __('Yes', 'et_builder_5'),
                   },
                 },
               },
@@ -107,41 +112,42 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
           },
         },
         decoration: {
-          animation:    {},
-          attributes:   {},
-          background:   {},
-          border:       {},
-          boxShadow:    {},
-          conditions:   {},
-          disabledOn:   {},
-          filters:      {},
+          animation: {},
+          attributes: {},
+          background: {},
+          border: {},
+          boxShadow: {},
+          conditions: {},
+          disabledOn: {},
+          filters: {},
           interactions: {},
-          layout:       {},
-          overflow:     {},
-          order:        {},
-          position:     {},
-          scroll:       {},
-          sizing:       {},
-          spacing:      {},
-          sticky:       {},
-          transform:    {},
-          transition:   {},
-          zIndex:       {},
+          layout: {},
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {},
+          sizing: {},
+          spacing: {},
+          sticky: {},
+          transform: {},
+          transition: {},
+          zIndex: {},
         },
       },
     },
     title: {
-      type:                     'object',
-      selector:                 '{{selector}}.et_pb_login h1.et_pb_module_header, {{selector}}.et_pb_login h2, {{selector}}.et_pb_login h3.et_pb_module_header, {{selector}}.et_pb_login h4.et_pb_module_header, {{selector}}.et_pb_login h5.et_pb_module_header, {{selector}}.et_pb_login h6.et_pb_module_header',
+      type: 'object',
+      selector:
+        '{{selector}}.et_pb_login h1.et_pb_module_header, {{selector}}.et_pb_login h2, {{selector}}.et_pb_login h3.et_pb_module_header, {{selector}}.et_pb_login h4.et_pb_module_header, {{selector}}.et_pb_login h5.et_pb_module_header, {{selector}}.et_pb_login h6.et_pb_module_header',
       supportsCustomAttributes: true,
-      attributes:               {
+      attributes: {
         class: 'et_pb_module_header',
       },
-      tagName:           'h2',
-      inlineEditor:      'plainText',
-      elementType:       'heading',
+      tagName: 'h2',
+      inlineEditor: 'plainText',
+      elementType: 'heading',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
+      styleProps: {
         font: {
           important: true,
         },
@@ -149,13 +155,14 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            groupSlug:   'contentText',
-            priority:    5,
-            render:      true,
-            label:       __('Title', 'et_builder'),
-            description: __('Choose a title of your login box.', 'et_builder'),
-            features:    {
+          item: {
+            groupSlug: 'contentText',
+            category: 'basic_option',
+            priority: 5,
+            render: true,
+            label: __('Title', 'et_builder_5'),
+            description: __('Choose a title of your login box.', 'et_builder_5'),
+            features: {
               dynamicContent: {
                 type: 'text',
               },
@@ -170,12 +177,12 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
         },
         decoration: {
           font: {
-            priority:  10,
+            priority: 10,
             component: {
               props: {
-                groupLabel: 'Title Text',
-                fieldLabel: 'Title',
-                fields:     {
+                groupLabel: __('Title Text', 'et_builder_5'),
+                fieldLabel: __('Title', 'et_builder_5'),
+                fields: {
                   headingLevel: {
                     render: true,
                   },
@@ -187,11 +194,12 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
       },
     },
     content: {
-      type:                     'object',
-      selector:                 '{{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
+      type: 'object',
+      selector:
+        '{{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
       supportsCustomAttributes: true,
-      elementType:              'content',
-      attributes:               {
+      elementType: 'content',
+      attributes: {
         class: 'et_pb_newsletter_description_content',
       },
       styleProps: {
@@ -201,13 +209,16 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
               font: {
                 desktop: {
                   value: {
-                    'line-height':    '{{selector}}.et_pb_login p',
-                    'font-family':    '{{selector}}.et_pb_login, {{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
-                    'font-weight':    '{{selector}}.et_pb_login, {{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
-                    'text-transform': '{{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
-                    'font-size':      '{{selector}}.et_pb_login',
-                    color:            '{{selector}}.et_pb_login',
-                    'text-align':     '{{selector}}.et_pb_login',
+                    'line-height': '{{selector}}.et_pb_login p',
+                    'font-family':
+                      '{{selector}}.et_pb_login, {{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
+                    'font-weight':
+                      '{{selector}}.et_pb_login, {{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
+                    'text-transform':
+                      '{{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
+                    'font-size': '{{selector}}.et_pb_login',
+                    color: '{{selector}}.et_pb_login',
+                    'text-align': '{{selector}}.et_pb_login',
                     'letter-spacing': '{{selector}}.et_pb_login',
                   },
                 },
@@ -215,7 +226,8 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
               textShadow: {
                 desktop: {
                   value: {
-                    'text-shadow': '{{selector}}.et_pb_login, {{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
+                    'text-shadow':
+                      '{{selector}}.et_pb_login, {{selector}}.et_pb_login .et_pb_newsletter_description_content, {{selector}}.et_pb_login p, {{selector}}.et_pb_login span',
                   },
                 },
               },
@@ -237,16 +249,17 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            groupSlug:   'contentText',
-            priority:    10,
-            render:      true,
-            label:       __('Body', 'et_builder'),
-            description: __('Input the main text content for your module here.', 'et_builder'),
-            features:    {
+          item: {
+            groupSlug: 'contentText',
+            category: 'basic_option',
+            priority: 10,
+            render: true,
+            label: __('Body', 'et_builder_5'),
+            description: __('Input the main text content for your module here.', 'et_builder_5'),
+            features: {
               dynamicContent: { type: 'text' },
-              sticky:         false,
-              preset:         'content',
+              sticky: false,
+              preset: 'content',
             },
             component: {
               name: 'divi/richtext',
@@ -256,13 +269,13 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
         },
         decoration: {
           bodyFont: {
-            priority:  21,
+            priority: 21,
             component: {
               props: {
                 groups: {
                   body: {
-                    groupLabel: 'Body Text',
-                    fieldLabel: 'Body',
+                    groupLabel: __('Body Text', 'et_builder_5'),
+                    fieldLabel: __('Body', 'et_builder_5'),
                   },
                 },
               },
@@ -272,29 +285,30 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
       },
     },
     field: {
-      type:        'object',
+      type: 'object',
       elementType: 'field',
-      selector:    '{{selector}} input[type="password"], {{selector}} input[type="text"], {{selector}} textarea, {{selector}} input',
-      attributes:  {
+      selector:
+        '{{selector}} input[type="password"], {{selector}} input[type="text"], {{selector}} textarea, {{selector}} input',
+      attributes: {
         class: 'input',
       },
       supportsCustomAttributes: true,
-      settings:                 {
+      settings: {
         decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          spacing:    {},
-          font:       {},
+          border: {},
+          boxShadow: {},
+          spacing: {},
+          font: {},
         },
         advanced: {
           focusUseBorder: {
             groupType: 'group-item',
-            item:      {
-              priority:    100,
-              render:      true,
-              groupSlug:   'designFieldField',
-              label:       __('Use Focus Borders', 'et_builder'),
+            item: {
+              priority: 100,
+              render: true,
+              groupSlug: 'designFieldField',
+              label: __('Use Focus Borders', 'et_builder_5'),
               description: '',
               defaultAttr: {
                 desktop: {
@@ -314,31 +328,31 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
       },
     },
     button: {
-      type:                     'object',
-      selector:                 '{{selector}}.et_pb_login .et_pb_newsletter_button.et_pb_button',
+      type: 'object',
+      selector: '{{selector}}.et_pb_login .et_pb_newsletter_button.et_pb_button',
       supportsCustomAttributes: true,
-      elementType:              'button',
-      tagName:                  'a',
-      attributes:               {
+      elementType: 'button',
+      tagName: 'a',
+      attributes: {
         class: 'et_pb_newsletter_button',
       },
       elementProps: {
         allowEmptyUrl: true,
-        type:          'link',
-        hasWrapper:    false,
+        type: 'link',
+        hasWrapper: false,
       },
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
+      styleProps: {
         type: 'button',
         font: {
           important: {
             font: {
               desktop: {
                 value: {
-                  'font-size':             true,
-                  'line-height':           true,
+                  'font-size': true,
+                  'line-height': true,
                   'text-decoration-color': true,
-                  'text-decoration-line':  true,
+                  'text-decoration-line': true,
                   'text-decoration-style': true,
                 },
               },
@@ -349,7 +363,7 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
           important: {
             desktop: {
               value: {
-                margin:  true,
+                margin: true,
                 padding: true,
               },
             },
@@ -359,18 +373,18 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
       settings: {
         innerContent: {
           groupType: 'into-multiple-groups',
-          groups:    {
+          groups: {
             text: {
               groupType: 'group-item',
-              item:      {
-                priority:    9,
-                groupSlug:   'contentText',
-                render:      true,
-                attrName:    'button.innerContent',
-                subName:     'text',
-                label:       __('Button', 'et_builder'),
-                description: __('Define the text which will be displayed on the login button.', 'et_builder'),
-                features:    {
+              item: {
+                priority: 9,
+                groupSlug: 'contentText',
+                render: true,
+                attrName: 'button.innerContent',
+                subName: 'text',
+                label: __('Button', 'et_builder_5'),
+                description: __('Define the text which will be displayed on the login button.', 'et_builder_5'),
+                features: {
                   dynamicContent: {
                     type: 'text',
                   },
@@ -385,9 +399,9 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
             },
             link: {
               groupType: 'group-item',
-              item:      {
+              item: {
                 groupSlug: 'contentText',
-                render:    false,
+                render: false,
               },
             },
           },
@@ -424,83 +438,80 @@ const loginModuleMetaData: Metadata.Values<LoginAttrs> = {
   },
   customCssFields: {
     newsletterTitle: {
-      label:          __('Login Title', 'et_builder'),
-      subName:        'newsletterTitle',
+      label: __('Login Title', 'et_builder_5'),
+      subName: 'newsletterTitle',
       selectorSuffix: '.et_pb_login h2',
     },
     newsletterDescription: {
-      label:          __('Login Description', 'et_builder'),
-      subName:        'newsletterDescription',
+      label: __('Login Description', 'et_builder_5'),
+      subName: 'newsletterDescription',
       selectorSuffix: ' .et_pb_newsletter_description',
     },
     newsletterForm: {
-      label:          __('Login Form', 'et_builder'),
-      subName:        'newsletterForm',
+      label: __('Login Form', 'et_builder_5'),
+      subName: 'newsletterForm',
       selectorSuffix: ' .et_pb_newsletter_form',
     },
     newsletterFields: {
-      label:          __('Login Fields', 'et_builder'),
-      subName:        'newsletterFields',
+      label: __('Login Fields', 'et_builder_5'),
+      subName: 'newsletterFields',
       selectorSuffix: ' .et_pb_newsletter_form input',
     },
     newsletterButton: {
-      label:          __('Login Button', 'et_builder'),
-      subName:        'newsletterButton',
+      label: __('Login Button', 'et_builder_5'),
+      subName: 'newsletterButton',
       selectorSuffix: '.et_pb_login .et_pb_login_form .et_pb_newsletter_button.et_pb_button',
     },
   },
   settings: {
-    content:  'auto',
+    content: 'auto',
     advanced: 'auto',
 
     groups: {
       // Content > Text.
       contentText: {
-        panel:         'content',
-        priority:      10,
-        groupName:     'text',
+        panel: 'content',
+        priority: 10,
+        groupName: 'text',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Text',
+            groupLabel: __('Text', 'et_builder_5'),
           },
         },
       },
 
       // Content > Redirect.
       contentRedirect: {
-        panel:         'content',
-        priority:      15,
-        groupName:     'redirect',
+        panel: 'content',
+        priority: 15,
+        groupName: 'redirect',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Redirect',
+            groupLabel: __('Redirect', 'et_builder_5'),
           },
         },
       },
 
       // Design > Fields.
       designFieldField: {
-        panel:         'design',
-        priority:      10,
-        groupName:     'field',
+        panel: 'design',
+        priority: 10,
+        groupName: 'field',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel:        'Fields',
+            groupLabel: __('Fields', 'et_builder_5'),
             clipboardCategory: 'style',
           },
         },
       },
-
     },
   },
 };
 
-export {
-  loginModuleMetaData,
-};
+export { loginModuleMetaData };

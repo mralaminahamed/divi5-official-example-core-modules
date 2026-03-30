@@ -28,10 +28,10 @@ export const optionGroupPresetResolverAttrNameBlog = (
     if ('divi/blog' === params.moduleName) {
       if (params.attrName.endsWith('.decoration.border')) {
         const attrNamesToPairs = getAttrNamesByGroup(params.dataModuleName, params.dataGroupId);
-        const attrNameMatch    = attrNamesToPairs.find(attrName => isAttrNameSuffixMatched(attrName, params.attrName));
+        const attrNameMatch = attrNamesToPairs.find(attrName => isAttrNameSuffixMatched(attrName, params.attrName));
 
         return {
-          attrName:    attrNameMatch,
+          attrName: attrNameMatch,
           attrSubName: params.attrSubName,
         };
       }

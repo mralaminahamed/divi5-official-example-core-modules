@@ -6,6 +6,7 @@
   "titles": "Accordion Items",
   "moduleIcon": "divi/module-accordion-item",
   "category": "child-module",
+  "childrenName": [],
   "videos": [
     {
       "id": "OBbuKXTJyj8",
@@ -37,11 +38,17 @@
         "spacing": {
           "selector": "{{selector}}.et_pb_toggle",
           "important": true
+        },
+        "layout": {
+          "selector": "{{selector}} .et_pb_toggle_content"
         }
       },
       "settings": {
         "advanced": {
+          "elements": {},
+          "html": {},
           "link": {},
+          "loop": {},
           "text": {
             "priority": 15,
             "component": {
@@ -56,13 +63,18 @@
           }
         },
         "decoration": {
+          "animation": {},
+          "attributes": {},
           "background": {},
           "conditions": {},
           "disabledOn": {},
           "filters": {},
+          "interactions": {},
           "border": {},
           "boxShadow": {},
+          "layout": {},
           "overflow": {},
+          "order": {},
           "position": {},
           "scroll": {},
           "sizing": {},
@@ -77,6 +89,7 @@
     "title": {
       "type": "object",
       "selector": "{{selector}} .et_pb_toggle_title",
+      "supportsCustomAttributes": true,
       "attributes": {
         "class": "et_pb_toggle_title"
       },
@@ -103,6 +116,7 @@
             "attrName": "title.innerContent",
             "label": "Title",
             "description": "The title will appear above the content and when the toggle is closed.",
+            "category": "basic_option",
             "priority": 10,
             "render": true,
             "features": {
@@ -184,6 +198,7 @@
                 "label": "Closed Icon",
                 "priority": 10,
                 "render": true,
+                "category": "basic_option",
                 "features": {
                   "preset": [
                     "style",
@@ -217,7 +232,18 @@
                         "render": true
                       },
                       "size": {
-                        "render": true
+                        "render": true,
+                        "component": {
+                          "type": "field",
+                          "name": "divi/range",
+                          "props": {
+                            "cssProperty": "icon-font-size",
+                            "defaultUnit": "px",
+                            "min": 1,
+                            "minLimit": 1,
+                            "max": 120
+                          }
+                        }
                       }
                     }
                   }
@@ -244,7 +270,10 @@
               "priority": 10,
               "render": true,
               "features": {
-                "sticky": false
+                "sticky": false,
+                "dynamicContent": {
+                  "type": "color"
+                }
               },
               "component": {
                 "type": "field",
@@ -263,7 +292,10 @@
               "priority": 5,
               "render": true,
               "features": {
-                "sticky": false
+                "sticky": false,
+                "dynamicContent": {
+                  "type": "color"
+                }
               },
               "component": {
                 "type": "field",
@@ -290,7 +322,10 @@
               "priority": 10,
               "render": true,
               "features": {
-                "sticky": false
+                "sticky": false,
+                "dynamicContent": {
+                  "type": "color"
+                }
               },
               "component": {
                 "type": "field",
@@ -310,7 +345,10 @@
                 "priority": 5,
                 "render": true,
                 "features": {
-                  "sticky": false
+                  "sticky": false,
+                  "dynamicContent": {
+                    "type": "color"
+                  }
                 },
                 "component": {
                   "type": "field",
@@ -345,9 +383,10 @@
     "content": {
       "type": "object",
       "selector": "{{selector}}.et_pb_toggle .et_pb_toggle_content",
+      "supportsCustomAttributes": true,
       "elementType": "content",
       "attributes": {
-        "class": "et_pb_toggle_content clearfix"
+        "class": "et_pb_toggle_content"
       },
       "styleProps": {
         "bodyFont": {
@@ -372,6 +411,7 @@
             "attrName": "content.innerContent",
             "label": "Body",
             "description": "Input the main text content for your module here.",
+            "category": "basic_option",
             "priority": 10,
             "render": true,
             "features": {

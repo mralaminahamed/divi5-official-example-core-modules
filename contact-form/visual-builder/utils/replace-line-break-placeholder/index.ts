@@ -11,4 +11,5 @@
  *
  * @returns {string} The string with the line break placeholder replaced by line break characters.
  */
-export const replaceLineBreakPlaceholder = (string: string):string => string.replace(/\|\|et_pb_line_break_holder\|\|/g, '\r\n');
+export const replaceLineBreakPlaceholder = (string: string): string =>
+  string.replace(/\|\|et_pb_line_break_holder\|\|/g, '\r\n');

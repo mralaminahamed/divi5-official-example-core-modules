@@ -2,6 +2,14 @@
   "_comment": "!!! THIS IS AN AUTOMATICALLY GENERATED FILE - DO NOT EDIT !!!",
   "module": {
     "decoration": {
+      "layout": {
+        "desktop": {
+          "value": {
+            "flexDirection": "column",
+            "rowGap": "20px"
+          }
+        }
+      },
       "spacing": {
         "desktop": {
           "value": {

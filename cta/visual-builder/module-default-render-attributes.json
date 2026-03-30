@@ -12,7 +12,7 @@
       "background": {
         "desktop": {
           "value": {
-            "color": "var(--gcid-primary-color)"
+            "color": "$variable({\"type\":\"color\",\"value\":{\"name\":\"gcid-primary-color\",\"settings\":{}}})$"
           }
         }
       }

@@ -26,7 +26,7 @@ export const optionGroupPresetResolverAttrNameSlider = (
     if ('divi/slider' === params.dataModuleName && 'divi/fullwidth-slider' !== params.moduleName) {
       if ('module.decoration.background' === params.attrName) {
         return {
-          attrName:    'children.module.decoration.background',
+          attrName: 'children.module.decoration.background',
           attrSubName: params.attrSubName,
         };
       }
@@ -35,13 +35,12 @@ export const optionGroupPresetResolverAttrNameSlider = (
     if ('divi/slider' === params.moduleName && 'divi/fullwidth-slider' !== params.dataModuleName) {
       if ('children.module.decoration.background' === params.attrName) {
         return {
-          attrName:    'module.decoration.background',
+          attrName: 'module.decoration.background',
           attrSubName: params.attrSubName,
         };
       }
     }
   }
-
 
   return attrNameToResolve;
 };

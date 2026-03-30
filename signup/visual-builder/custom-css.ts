@@ -1,10 +1,6 @@
-import {
-  type ModuleMetadata,
-} from '@divi/types';
+import { type ModuleMetadata } from '@divi/types';
 
-import {
-  signupModuleMetaData,
-} from './module.json-source';
+import { signupModuleMetaData } from './module.json-source';
 
 /**
  * Module custom CSS fields.
@@ -13,4 +9,4 @@ import {
  *
  * @returns {object} Custom CSS fields.
  */
-export const cssFields = ():ModuleMetadata['customCssFields'] => signupModuleMetaData?.customCssFields;
+export const cssFields = (): ModuleMetadata['customCssFields'] => signupModuleMetaData?.customCssFields;

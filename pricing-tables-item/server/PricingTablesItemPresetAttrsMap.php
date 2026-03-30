@@ -8,6 +8,8 @@
 
 namespace ET\Builder\Packages\ModuleLibrary\PricingTablesItem;
 
+use ET\Builder\Packages\Module\Options\Sizing\SizingPresetAttrsMap;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
@@ -39,7 +41,6 @@ class PricingTablesItemPresetAttrsMap {
 		// Keys to unset.
 		$keys_to_unset = [
 			'module.decoration.disabledOn',
-			'module.decoration.spacing__margin',
 			'module.advanced.text.text__color',
 			'button.decoration.button.innerContent__text',
 			'button.decoration.button.innerContent__linkUrl',
@@ -144,6 +145,7 @@ class PricingTablesItemPresetAttrsMap {
 			'button.decoration.button.decoration.font.textShadow__blur',
 			'button.decoration.button.decoration.font.textShadow__color',
 			'button.decoration.font.font__lineHeight',
+			'module.advanced.featured',
 		];
 
 		// Unset the keys.
@@ -154,6 +156,10 @@ class PricingTablesItemPresetAttrsMap {
 		return array_merge(
 			$map,
 			[
+				'module.advanced.featured'                 => [
+					'attrName' => 'module.advanced.featured',
+					'preset'   => [ 'html' ],
+				],
 				'button.innerContent__text'                => [
 					'attrName' => 'button.innerContent',
 					'preset'   => 'content',
@@ -168,10 +174,6 @@ class PricingTablesItemPresetAttrsMap {
 					'attrName' => 'button.innerContent',
 					'preset'   => 'content',
 					'subName'  => 'linkTarget',
-				],
-				'module.advanced.featured'                 => [
-					'attrName' => 'module.advanced.featured',
-					'preset'   => [ 'html' ],
 				],
 				'content.advanced.bulletColor'             => [
 					'attrName' => 'content.advanced.bulletColor',
@@ -222,7 +224,8 @@ class PricingTablesItemPresetAttrsMap {
 					'preset'   => [ 'html' ],
 					'subName'  => 'rel',
 				],
-			]
+			],
+			SizingPresetAttrsMap::get_map( 'module.decoration.sizing' )
 		);
 	}
 }

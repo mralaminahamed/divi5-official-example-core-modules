@@ -80,11 +80,28 @@
       },
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
+          "elements": {
+            "groupType": "group-item",
+            "item": {
+              "groupSlug": "contentElements",
+              "priority": 5,
+              "render": true,
+              "component": {
+                "type": "group",
+                "name": "divi/elements",
+                "props": {
+                  "grouped": false,
+                  "supportsStructureTemplates": false
+                }
+              }
+            }
+          },
+          "html": {},
           "link": {},
-          "htmlAttributes": {},
+          "loop": {},
           "text": {
             "priority": 30,
             "component": {
@@ -168,6 +185,7 @@
           }
         },
         "decoration": {
+          "layout": {},
           "animation": {
             "groupType": "group-item",
             "item": {
@@ -183,6 +201,7 @@
               }
             }
           },
+          "attributes": {},
           "conditions": {},
           "disabledOn": {
             "groupType": "group-item",
@@ -200,6 +219,7 @@
             }
           },
           "filters": {},
+          "interactions": {},
           "border": {},
           "boxShadow": {},
           "overflow": {
@@ -217,6 +237,7 @@
               }
             }
           },
+          "order": {},
           "position": {},
           "scroll": {},
           "sizing": {
@@ -256,6 +277,11 @@
               "description": "Pick a color to use for the slider arrows that are used to navigate through each slide.",
               "priority": 10,
               "render": true,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker"
@@ -269,7 +295,8 @@
               "attrName": "arrows.advanced.show",
               "label": "Show Arrows",
               "description": "This setting will turn on and off the navigation arrows.",
-              "priority": 10,
+              "category": "configuration",
+              "priority": 20,
               "render": true,
               "features": {
                 "sticky": false,
@@ -297,7 +324,8 @@
               "attrName": "pagination.advanced.show",
               "label": "Show Controls",
               "description": "This setting will turn on and off the circle buttons at the bottom of the slider.",
-              "priority": 10,
+              "category": "configuration",
+              "priority": 30,
               "render": true,
               "features": {
                 "sticky": false,
@@ -321,7 +349,17 @@
         "font": {
           "propertySelectors": {
             "font": {
+              "tabletWide": {
+                "value": {
+                  "font-size": "{{selector}}.et_pb_slider .et_pb_slides .et_pb_slide_description .et_pb_slide_title"
+                }
+              },
               "tablet": {
+                "value": {
+                  "font-size": "{{selector}}.et_pb_slider .et_pb_slides .et_pb_slide_description .et_pb_slide_title"
+                }
+              },
+              "phoneWide": {
                 "value": {
                   "font-size": "{{selector}}.et_pb_slider .et_pb_slides .et_pb_slide_description .et_pb_slide_title"
                 }
@@ -374,6 +412,7 @@
     },
     "button": {
       "type": "object",
+      "customPostTypeSelector": "body.et-db #page-container #et-boc .et-l {{baseSelector}} .et_pb_more_button.et_pb_button",
       "selector": "body #page-container {{selector}} .et_pb_more_button.et_pb_button",
       "styleProps": {
         "spacing": {
@@ -535,23 +574,6 @@
     "children": {
       "type": "object",
       "settings": {
-        "innerContent": {
-          "groupType": "group-item",
-          "item": {
-            "groupSlug": "advancedAttributes",
-            "priority": 20,
-            "render": true,
-            "component": {
-              "type": "group",
-              "name": "divi/attributes-rel",
-              "props": {
-                "grouped": false,
-                "fieldLabel": "Button",
-                "attrName": "children.button.innerContent"
-              }
-            }
-          }
-        },
         "advanced": {
           "slideOverlay": {
             "groupType": "group-item",
@@ -560,6 +582,7 @@
               "attrName": "children.slideOverlay.advanced.use",
               "label": "Use Background Overlay",
               "description": "When enabled, a custom overlay color will be added above your background image and behind your slider content.",
+              "category": "configuration",
               "priority": 10,
               "render": true,
               "features": {
@@ -583,6 +606,7 @@
               "attrName": "children.contentOverlay.advanced.use",
               "label": "Use Text Overlay",
               "description": "When enabled, a background color is added behind the slider text to make it more readable atop background images.",
+              "category": "configuration",
               "priority": 20,
               "render": true,
               "features": {
@@ -606,6 +630,7 @@
               "attrName": "children.content.advanced.showOnMobile",
               "label": "Show Content On Mobile",
               "description": "This setting will toggle visibility of content on mobile devices.",
+              "category": "layout",
               "priority": 10,
               "render": true,
               "features": {
@@ -634,6 +659,7 @@
               "attrName": "children.button.advanced.showOnMobile",
               "label": "Show CTA On Mobile",
               "description": "This setting will toggle visibility of CTA on mobile devices.",
+              "category": "layout",
               "priority": 20,
               "render": true,
               "features": {
@@ -679,11 +705,19 @@
                 "subName": "color",
                 "label": "Background Overlay Color",
                 "description": "Use the color picker to choose a color for the background overlay.",
+                "category": "configuration",
                 "priority": 10,
                 "render": true,
                 "features": {
                   "hover": false,
-                  "sticky": false
+                  "sticky": false,
+                  "preset": [
+                    "style",
+                    "html"
+                  ],
+                  "dynamicContent": {
+                    "type": "color"
+                  }
                 },
                 "component": {
                   "type": "field",
@@ -696,11 +730,19 @@
                 "subName": "color",
                 "label": "Text Overlay Color",
                 "description": "Use the color picker to choose a color for the text overlay.",
+                "category": "configuration",
                 "priority": 20,
                 "render": true,
                 "features": {
                   "hover": false,
-                  "sticky": false
+                  "sticky": false,
+                  "preset": [
+                    "style",
+                    "html"
+                  ],
+                  "dynamicContent": {
+                    "type": "color"
+                  }
                 },
                 "component": {
                   "type": "field",
@@ -717,11 +759,19 @@
               "subName": "radius",
               "label": "Text Overlay Border Radius",
               "description": "Increasing the border radius will increase the roundness of the overlay corners. Setting this value to 0 will result in squared corners.",
+              "category": "layout",
               "priority": 30,
               "render": true,
               "features": {
                 "hover": false,
-                "sticky": false
+                "sticky": false,
+                "preset": [
+                  "style",
+                  "html"
+                ],
+                "dynamicContent": {
+                  "type": "number-advanced"
+                }
               },
               "component": {
                 "type": "field",
@@ -744,6 +794,7 @@
               "attrName": "image.advanced.showOnMobile",
               "label": "Show Image / Video On Mobile",
               "description": "This setting will toggle visibility of Images/Video on mobile devices.",
+              "category": "layout",
               "priority": 20,
               "render": true,
               "features": {
@@ -772,7 +823,7 @@
                 "type": "group",
                 "name": "divi/border",
                 "props": {
-                  "grouped": false,
+                  "grouped": true,
                   "fieldLabel": "Image"
                 }
               }
@@ -788,7 +839,7 @@
                 "type": "group",
                 "name": "divi/box-shadow",
                 "props": {
-                  "grouped": false,
+                  "grouped": true,
                   "fieldLabel": "Image"
                 }
               }
@@ -812,6 +863,11 @@
               "description": "Pick a color to use for the dot navigation that appears at the bottom of the slider to designate which slide is active.",
               "priority": 10,
               "render": true,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker"
@@ -882,7 +938,8 @@
         "component": {
           "name": "divi/composite",
           "props": {
-            "groupLabel": "Elements"
+            "groupLabel": "Elements",
+            "preset": "content"
           }
         }
       },
@@ -967,17 +1024,6 @@
           }
         }
       },
-      "advancedAttributes": {
-        "panel": "advanced",
-        "priority": 30,
-        "groupName": "attributes",
-        "component": {
-          "name": "divi/composite",
-          "props": {
-            "groupLabel": "Attributes"
-          }
-        }
-      },
       "advancedVisibility": {
         "panel": "advanced",
         "priority": 40,
@@ -995,9 +1041,6 @@
   "mousetrap": {
     "inner": {
       "edited": true
-    },
-    "zIndex": {
-      "hovered": "aboveModuleElements"
     }
   }
 }

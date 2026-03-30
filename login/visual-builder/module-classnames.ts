@@ -1,11 +1,6 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
 import { getAttrValue } from '@divi/module-utils';
 import { type LoginAttrs } from '@divi/types';
-
 
 /**
  * Module classnames function for Login module.
@@ -30,7 +25,7 @@ export const moduleClassnames = ({
 
   const backgroundColor = attrs?.module?.decoration?.background?.desktop?.value?.color;
 
-  const title   = getAttrValue({
+  const title = getAttrValue({
     attr: attrs?.title?.innerContent,
     baseBreakpoint,
     breakpoint,
@@ -47,9 +42,9 @@ export const moduleClassnames = ({
     state,
   });
 
-  classnamesInstance.add('et_pb_newsletter_description_no_title', ! title);
-  classnamesInstance.add('et_pb_newsletter_description_no_content', ! content);
-  classnamesInstance.add('et_pb_no_bg', ! backgroundColor);
+  classnamesInstance.add('et_pb_newsletter_description_no_title', !title);
+  classnamesInstance.add('et_pb_newsletter_description_no_content', !content);
+  classnamesInstance.add('et_pb_no_bg', !backgroundColor);
 
   // Add element classnames.
   classnamesInstance.add(

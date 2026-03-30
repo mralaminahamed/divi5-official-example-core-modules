@@ -14,9 +14,9 @@ import { type ReadMoreProps } from './types';
  * @returns {ReactElement}
  */
 const ReadMore = ({ permalink }: ReadMoreProps): ReactElement => (
-  <a href={permalink} className="more-link">{__('read more', 'et_builder')}</a>
+  <a href={permalink} className="more-link">
+    {__('read more', 'et_builder_5')}
+  </a>
 );
 
-export {
-  ReadMore,
-};
+export { ReadMore };

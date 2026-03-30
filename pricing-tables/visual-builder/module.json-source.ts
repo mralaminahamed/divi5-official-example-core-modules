@@ -1,7 +1,6 @@
-import {
-  type Metadata,
-  type PricingTablesAttrs,
-} from '@divi/types';
+import { __ } from '@wordpress/i18n';
+
+import { type Metadata, type PricingTablesAttrs } from '@divi/types';
 
 /**
  * Pricing Tables Meta Data.
@@ -10,41 +9,57 @@ import {
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
-  name:             'divi/pricing-tables',
-  d4Shortcode:      'et_pb_pricing_tables',
-  title:            'Pricing Tables',
-  titles:           'Pricing Tables',
-  moduleIcon:       'divi/module-pricing-tables',
-  childModuleName:  'divi/pricing-table',
-  childModuleTitle: 'Pricing Table',
-  category:         'module',
-  childrenName:     ['divi/pricing-table'],
-  videos:           [
+  name: 'divi/pricing-tables',
+  d4Shortcode: 'et_pb_pricing_tables',
+  title: __('Pricing Tables', 'et_builder_5'),
+  titles: __('Pricing Tables', 'et_builder_5'),
+  moduleIcon: 'divi/module-pricing-tables',
+  childModuleName: 'divi/pricing-table',
+  childModuleTitle: __('Pricing Table', 'et_builder_5'),
+  category: 'module',
+  childrenName: ['divi/pricing-table'],
+  videos: [
     {
-      id:   'd2MTMey712I',
+      id: 'd2MTMey712I',
       name: 'An introduction to the Pricing Tables module',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}}',
       settings: {
         meta: {
-          adminLabel: {},
+          meta: {},
         },
         advanced: {
-          link:           {},
-          htmlAttributes: {},
-          text:           {
+          elements: {
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'contentElements',
+              priority: 5,
+              render: true,
+              component: {
+                type: 'group',
+                name: 'divi/elements',
+                props: {
+                  grouped: false,
+                },
+              },
+            },
+          },
+          html: {},
+          link: {},
+          loop: {},
+          text: {
             groupType: 'group',
             component: {
               props: {
@@ -58,22 +73,57 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
         },
         decoration: {
-          animation:  {},
+          animation: {},
+          attributes: {
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'advancedAttributes',
+              priority: 5,
+              render: true,
+              component: {
+                type: 'group',
+                name: 'divi/attributes',
+                props: {
+                  grouped: false,
+                },
+              },
+            },
+          },
           background: {},
-          border:     {},
-          boxShadow:  {},
+          border: {},
+          boxShadow: {},
           conditions: {},
           disabledOn: {},
-          filters:    {},
-          overflow:   {},
-          position:   {},
-          scroll:     {},
-          sizing:     {},
-          spacing:    {},
-          sticky:     {},
-          transform:  {},
+          filters: {},
+          interactions: {},
+          layout: {
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'designLayout',
+              priority: 10,
+              render: true,
+
+              // Built-in group component
+              component: {
+                type: 'group',
+                name: 'divi/layout',
+
+                props: {
+                  grouped: false,
+                },
+              },
+            },
+          },
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {},
+          sizing: {},
+          spacing: {},
+          sticky: {},
+          transform: {},
           transition: {},
-          zIndex:     {},
+          zIndex: {},
         },
       },
       styleProps: {
@@ -84,13 +134,17 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           selector: '{{selector}} .et_pb_pricing_table',
         },
         spacing: {
-          selector:          '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content',
+          selector:
+            '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content',
           propertySelectors: {
             desktop: {
               value: {
-                'padding-left':   '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
-                'padding-right':  '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
-                'padding-bottom': '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content',
+                'padding-left':
+                  '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
+                'padding-right':
+                  '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
+                'padding-bottom':
+                  '{{selector}} .et_pb_pricing_heading,{{selector}} .et_pb_pricing_content_top,{{selector}} .et_pb_pricing_content',
               },
             },
           },
@@ -100,7 +154,7 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           important: {
             desktop: {
               value: {
-                'margin-left':  true,
+                'margin-left': true,
                 'margin-right': true,
               },
             },
@@ -109,19 +163,25 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     title: {
-      type:     'object',
-      selector: '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title',
+      type: 'object',
+      selector:
+        '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title',
       settings: {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designTitleText',
-              subName:     'color',
-              label:       'Table Header Background Color',
-              description: 'Pick a color to use for the background behind pricing table titles.',
-              priority:    30,
-              render:      true,
+            item: {
+              groupSlug: 'designTitleText',
+              subName: 'color',
+              label: __('Table Header Background Color', 'et_builder_5'),
+              description: __('Pick a color to use for the background behind pricing table titles.', 'et_builder_5'),
+              priority: 30,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -132,19 +192,19 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
           font: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designTitleText',
-              priority:  40,
-              render:    true,
+              priority: 40,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/font',
-                type:  'group',
+                name: 'divi/font',
+                type: 'group',
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Title',
-                  fields:     {
+                  grouped: false,
+                  fieldLabel: __('Title', 'et_builder_5'),
+                  fields: {
                     headingLevel: {
                       render: true,
                     },
@@ -158,40 +218,41 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       attributes: {
         class: 'et_pb_pricing_title',
       },
-      tagName:           'h2',
-      inlineEditor:      'plainText',
-      elementType:       'heading',
+      tagName: 'h2',
+      inlineEditor: 'plainText',
+      elementType: 'heading',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
+      styleProps: {
         background: {
           selector: '{{selector}} .et_pb_pricing_heading',
         },
         font: {
-          selector:     '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title',
+          selector:
+            '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title',
           headingLevel: 'h2',
-          important:    true,
+          important: true,
         },
       },
     },
     subtitle: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_best_value',
       settings: {
         decoration: {
           font: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designSubtitleText',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/font',
-                type:  'group',
+                name: 'divi/font',
+                type: 'group',
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Subtitle',
+                  grouped: false,
+                  fieldLabel: __('Subtitle', 'et_builder_5'),
                 },
               },
             },
@@ -213,19 +274,27 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     price: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_et_price .et_pb_sum,{{selector}} .et_pb_pricing_content_top',
       settings: {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designPriceText',
-              subName:     'color',
-              label:       'Pricing Area Background Color',
-              description: 'Pick a color to use for the background area that appears behind the pricing text.',
-              priority:    30,
-              render:      true,
+            item: {
+              groupSlug: 'designPriceText',
+              subName: 'color',
+              label: __('Pricing Area Background Color', 'et_builder_5'),
+              description: __(
+                'Pick a color to use for the background area that appears behind the pricing text.',
+                'et_builder_5',
+              ),
+              priority: 30,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -236,33 +305,33 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
           font: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designPriceText',
-              priority:  40,
-              render:    true,
+              priority: 40,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/font',
-                type:  'group',
+                name: 'divi/font',
+                type: 'group',
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Price',
+                  grouped: false,
+                  fieldLabel: __('Price', 'et_builder_5'),
                 },
               },
             },
           },
           border: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designPriceText',
-              priority:  50,
-              render:    true,
+              priority: 50,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/border',
-                type:  'group',
+                name: 'divi/border',
+                type: 'group',
                 props: {
                   grouped: false,
                 },
@@ -279,7 +348,7 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           selector: '{{selector}} .et_pb_pricing_content_top',
         },
         font: {
-          selector:          '{{selector}} .et_pb_sum',
+          selector: '{{selector}} .et_pb_sum',
           propertySelectors: {
             font: {
               desktop: {
@@ -302,24 +371,24 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     currencyFrequency: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_frequency,{{selector}} .et_pb_dollar_sign',
       settings: {
         decoration: {
           font: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designCurrencyFrequencyText',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/font',
-                type:  'group',
+                name: 'divi/font',
+                type: 'group',
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Currency & Frequency',
+                  grouped: false,
+                  fieldLabel: __('Currency & Frequency', 'et_builder_5'),
                 },
               },
             },
@@ -341,26 +410,26 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     content: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_pricing li',
       settings: {
         decoration: {
           bodyFont: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designBodyText',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/font-body',
-                type:  'group',
+                name: 'divi/font-body',
+                type: 'group',
                 props: {
                   grouped: false,
-                  groups:  {
+                  groups: {
                     body: {
-                      fieldLabel: 'Body',
+                      fieldLabel: __('Body', 'et_builder_5'),
                     },
                   },
                 },
@@ -371,12 +440,20 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
         advanced: {
           bulletColor: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designBullet',
-              label:       'Bullet Color',
-              description: 'Pick a color to use for the bullets that appear next to each list item within the pricing table\'s feature area.',
-              priority:    20,
-              render:      true,
+            item: {
+              groupSlug: 'designBullet',
+              label: __('Bullet Color', 'et_builder_5'),
+              description: __(
+                "Pick a color to use for the bullets that appear next to each list item within the pricing table's feature area.",
+                'et_builder_5',
+              ),
+              priority: 20,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -386,33 +463,26 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
             },
           },
           showBullet: {
-            groupType:  'group',
-            panel:      'content',
-            priority:   10,
-            groupName:  'elements',
-            groupLabel: 'Elements',
-            component:  {
-              name:  'divi/composite',
-              props: {
-                groupLabel: 'Elements',
-                fields:     {
-                  showBullet: {
-                    render:      true,
-                    priority:    10,
-                    id:          'showBullet',
-                    label:       'Show Bullets',
-                    description: 'Disabling bullets will remove the bullet points that appear next to each list item within the pricing table\'s feature area.',
-                    features:    {
-                      sticky: false,
-                      preset: ['html'],
-                    },
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'contentElements',
+              label: __('Show Bullets', 'et_builder_5'),
+              description: __(
+                "Disabling bullets will remove the bullet points that appear next to each list item within the pricing table's feature area.",
+                'et_builder_5',
+              ),
+              category: 'layout',
+              priority: 10,
+              render: true,
+              features: {
+                sticky: false,
+                preset: ['html'],
+              },
 
-                    //
-                    component: {
-                      name: 'divi/toggle',
-                    },
-                  },
-                },
+              // Built-in component.
+              component: {
+                type: 'field',
+                name: 'divi/toggle',
               },
             },
           },
@@ -426,24 +496,25 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     excluded: {
-      type:     'object',
-      selector: '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
+      type: 'object',
+      selector:
+        '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
       settings: {
         decoration: {
           font: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designExcludedItemText',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/font',
-                type:  'group',
+                name: 'divi/font',
+                type: 'group',
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Excluded Item',
+                  grouped: false,
+                  fieldLabel: __('Excluded Item', 'et_builder_5'),
                 },
               },
             },
@@ -452,22 +523,29 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     featuredTable: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_featured_table',
       settings: {
         decoration: {
-
           // Featured table only displays background color instead of full background options.
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designLayout',
-              subName:     'color',
-              label:       'Featured Background Color',
-              description: 'Pick a unique color to be used for the background of featured pricing tables. This helps featured tables stand out from the rest.',
-              groupName:   'divi/background',
-              priority:    10,
-              render:      true,
+            item: {
+              groupSlug: 'designLayout',
+              subName: 'color',
+              label: __('Featured Background Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to be used for the background of featured pricing tables. This helps featured tables stand out from the rest.',
+                'et_builder_5',
+              ),
+              groupName: 'divi/background',
+              priority: 10,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -480,15 +558,19 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
         advanced: {
           showDropShadow: {
             groupType: 'group-item',
-            item:      {
-              description: 'Featured pricing tables have a drop shadow that helps them stand out from the rest. This shadow can be disabled if you wish.',
-              groupSlug:   'designLayout',
-              label:       'Show Featured Drop Shadow',
-              priority:    20,
-              render:      true,
+            item: {
+              description: __(
+                'Featured pricing tables have a drop shadow that helps them stand out from the rest. This shadow can be disabled if you wish.',
+                'et_builder_5',
+              ),
+              groupSlug: 'designLayout',
+              label: __('Show Featured Drop Shadow', 'et_builder_5'),
+              category: 'layout',
+              priority: 20,
+              render: true,
 
               features: {
-                hover:  false,
+                hover: false,
                 sticky: false,
               },
 
@@ -503,19 +585,27 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     featuredTitle: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_featured_table .et_pb_pricing_heading',
       settings: {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designTitleText',
-              subName:     'color',
-              label:       'Featured Header Background Color',
-              description: 'Pick a unique color to use for the background behind pricing table titles in featured pricing tables. Unique colors can help featured items stand out from the rest.',
-              priority:    3,
-              render:      true,
+            item: {
+              groupSlug: 'designTitleText',
+              subName: 'color',
+              label: __('Featured Header Background Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for the background behind pricing table titles in featured pricing tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 3,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -526,14 +616,22 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
           font: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designTitleText',
-              attrName:    'featuredTitle.decoration.font.font',
-              subName:     'color',
-              label:       'Featured Title Text Color',
-              description: 'Pick a unique color to use for title text in featured pricing tables. Unique colors can help featured items stand out from the rest.',
-              priority:    5,
-              render:      true,
+            item: {
+              groupSlug: 'designTitleText',
+              attrName: 'featuredTitle.decoration.font.font',
+              subName: 'color',
+              label: __('Featured Title Text Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for title text in featured pricing tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 5,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -555,12 +653,13 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
         },
         font: {
-          selector:          '{{selector}} .et_pb_featured_table .et_pb_pricing_title',
+          selector: '{{selector}} .et_pb_featured_table .et_pb_pricing_title',
           propertySelectors: {
             font: {
               desktop: {
                 value: {
-                  color: '{{selector}} .et_pb_featured_table .et_pb_pricing_heading h2, {{selector}} .et_pb_featured_table .et_pb_pricing_heading .et_pb_pricing_title',
+                  color:
+                    '{{selector}} .et_pb_featured_table .et_pb_pricing_heading h2, {{selector}} .et_pb_featured_table .et_pb_pricing_heading .et_pb_pricing_title',
                 },
               },
             },
@@ -578,20 +677,28 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     featuredContent: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_featured_table .et_pb_pricing li',
       settings: {
         decoration: {
           font: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designBodyText',
-              attrName:    'featuredContent.decoration.font.font',
-              subName:     'color',
-              label:       'Featured Body Text Color',
-              description: 'Pick a unique color to use for body text in featured pricing tables. Unique colors can help featured items stand out from the rest.',
-              priority:    10,
-              render:      true,
+            item: {
+              groupSlug: 'designBodyText',
+              attrName: 'featuredContent.decoration.font.font',
+              subName: 'color',
+              label: __('Featured Body Text Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for body text in featured pricing tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 10,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -604,12 +711,20 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
         advanced: {
           bulletColor: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designBullet',
-              label:       'Featured Bullet Color',
-              description: 'Pick a unique color to use for the bullets that appear next to each list items within featured tabes. Unique colors can help featured items stand out from the rest.',
-              priority:    10,
-              render:      true,
+            item: {
+              groupSlug: 'designBullet',
+              label: __('Featured Bullet Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for the bullets that appear next to each list items within featured tabes. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 10,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -622,7 +737,7 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
       styleProps: {
         font: {
-          selector:  '{{selector}} .et_pb_featured_table .et_pb_pricing li',
+          selector: '{{selector}} .et_pb_featured_table .et_pb_pricing li',
           important: {
             font: {
               desktop: {
@@ -636,20 +751,28 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     featuredSubtitle: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_featured_table .et_pb_best_value',
       settings: {
         decoration: {
           font: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designSubtitleText',
-              attrName:    'featuredSubtitle.decoration.font.font',
-              subName:     'color',
-              label:       'Featured Subtitle Text Color',
-              description: 'Pick a unique color to use for subtitles in featured pricing tables. Unique colors can help featured items stand out from the rest.',
-              priority:    10,
-              render:      true,
+            item: {
+              groupSlug: 'designSubtitleText',
+              attrName: 'featuredSubtitle.decoration.font.font',
+              subName: 'color',
+              label: __('Featured Subtitle Text Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for subtitles in featured pricing tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 10,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -662,7 +785,7 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
       styleProps: {
         font: {
-          selector:          '{{selector}} .et_pb_featured_table .et_pb_best_value',
+          selector: '{{selector}} .et_pb_featured_table .et_pb_best_value',
           propertySelectors: {
             font: {
               desktop: {
@@ -685,19 +808,27 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     featuredPrice: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_featured_table .et_pb_pricing_content_top',
       settings: {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designPriceText',
-              subName:     'color',
-              label:       'Featured Pricing Area Background Color',
-              description: 'Pick a unique color to use for the background area that appears behind the pricing text in featured tables. Unique colors can help featured items stand out from the rest.',
-              priority:    10,
-              render:      true,
+            item: {
+              groupSlug: 'designPriceText',
+              subName: 'color',
+              label: __('Featured Pricing Area Background Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for the background area that appears behind the pricing text in featured tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 10,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -708,14 +839,22 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
           font: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designPriceText',
-              attrName:    'featuredPrice.decoration.font.font',
-              subName:     'color',
-              label:       'Featured Price Text Color',
-              description: 'Pick a unique color to use for price text within featured pricing tables. Unique colors can help featured items stand out from the rest.',
-              priority:    20,
-              render:      true,
+            item: {
+              groupSlug: 'designPriceText',
+              attrName: 'featuredPrice.decoration.font.font',
+              subName: 'color',
+              label: __('Featured Price Text Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for price text within featured pricing tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 20,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -728,7 +867,7 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
       styleProps: {
         font: {
-          selector:          '{{selector}} .et_pb_featured_table .et_pb_et_price .et_pb_sum',
+          selector: '{{selector}} .et_pb_featured_table .et_pb_et_price .et_pb_sum',
           propertySelectors: {
             font: {
               desktop: {
@@ -751,19 +890,27 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     featuredCurrencyFrequency: {
-      type:     'object',
+      type: 'object',
       settings: {
         decoration: {
           font: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designCurrencyFrequencyText',
-              attrName:    'featuredCurrencyFrequency.decoration.font.font',
-              subName:     'color',
-              label:       'Featured Currency & Frequency Text Color',
-              description: 'Pick a unique color to use for currency and frequency text within featured pricing tables. Unique colors can help featured items stand out from the rest.',
-              priority:    10,
-              render:      true,
+            item: {
+              groupSlug: 'designCurrencyFrequencyText',
+              attrName: 'featuredCurrencyFrequency.decoration.font.font',
+              subName: 'color',
+              label: __('Featured Currency & Frequency Text Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for currency and frequency text within featured pricing tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 10,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -774,10 +921,12 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
         },
       },
-      selector:   '{{selector}} .et_pb_featured_table .et_pb_frequency,{{selector}} .et_pb_featured_table .et_pb_dollar_sign',
+      selector:
+        '{{selector}} .et_pb_featured_table .et_pb_frequency,{{selector}} .et_pb_featured_table .et_pb_dollar_sign',
       styleProps: {
         font: {
-          selector:  '{{selector}} .et_pb_featured_table .et_pb_frequency,{{selector}} .et_pb_featured_table .et_pb_dollar_sign',
+          selector:
+            '{{selector}} .et_pb_featured_table .et_pb_frequency,{{selector}} .et_pb_featured_table .et_pb_dollar_sign',
           important: {
             font: {
               desktop: {
@@ -791,19 +940,27 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     featuredExcluded: {
-      type:     'object',
+      type: 'object',
       settings: {
         decoration: {
           font: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designExcludedItemText',
-              attrName:    'featuredExcluded.decoration.font.font',
-              subName:     'color',
-              label:       'Featured Excluded Item Color',
-              description: 'Pick a unique color to use for excluded list items within featured pricing tables. Unique colors can help featured items stand out from the rest.',
-              priority:    10,
-              render:      true,
+            item: {
+              groupSlug: 'designExcludedItemText',
+              attrName: 'featuredExcluded.decoration.font.font',
+              subName: 'color',
+              label: __('Featured Excluded Item Color', 'et_builder_5'),
+              description: __(
+                'Pick a unique color to use for excluded list items within featured pricing tables. Unique colors can help featured items stand out from the rest.',
+                'et_builder_5',
+              ),
+              priority: 10,
+              render: true,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -814,51 +971,52 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
         },
       },
-      selector: '{{selector}} .et_pb_featured_table ul.et_pb_pricing li.et_pb_not_available,{{selector}} .et_pb_featured_table ul.et_pb_pricing li.et_pb_not_available span,{{selector}} .et_pb_featured_table ul.et_pb_pricing li.et_pb_not_available a',
+      selector:
+        '{{selector}} .et_pb_featured_table ul.et_pb_pricing li.et_pb_not_available,{{selector}} .et_pb_featured_table ul.et_pb_pricing li.et_pb_not_available span,{{selector}} .et_pb_featured_table ul.et_pb_pricing li.et_pb_not_available a',
     },
     button: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_button',
       settings: {
         innerContent: {
           groups: {
             text: {
               groupType: 'group-item',
-              item:      {
-                render:    false,
+              item: {
+                render: false,
                 groupSlug: 'contentText',
               },
             },
             link: {
               groupType: 'group-item',
-              item:      {
+              item: {
                 groupSlug: 'contentLink',
-                render:    false,
+                render: false,
               },
             },
             attributes: {
               groupType: 'group-item',
-              item:      {
+              item: {
                 groupSlug: 'advancedAttributes',
-                render:    false,
+                render: false,
               },
             },
           },
         },
         decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          button:     {
+          border: {},
+          boxShadow: {},
+          button: {
             component: {
-              name:  'divi/button',
+              name: 'divi/button',
               props: {
                 fields: {
                   alignment: {
-                    description:     'Align you button to the left, right or center of the module.',
-                    visible:         true,
+                    description: __('Align you button to the left, right or center of the module.', 'et_builder_5'),
+                    visible: true,
                     multipleChoices: false,
-                    component:       {
+                    component: {
                       props: {
                         options: {
                           left: {
@@ -879,7 +1037,7 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
               },
             },
           },
-          font:    {},
+          font: {},
           spacing: {},
         },
       },
@@ -887,9 +1045,9 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
         class: 'et_pb_pricing_table_button',
       },
       elementType: 'button',
-      styleProps:  {
+      styleProps: {
         selector: '{{selector}} .et_pb_pricing_table_button.et_pb_button',
-        border:   {
+        border: {
           important: {
             desktop: {
               value: {
@@ -908,13 +1066,13 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
           },
         },
         font: {
-          selector:  '{{selector}} .et_pb_pricing_table_button.et_pb_button',
+          selector: '{{selector}} .et_pb_pricing_table_button.et_pb_button',
           important: {
             font: true,
           },
         },
         spacing: {
-          selector:  '{{selector}} .et_pb_pricing_table_button.et_pb_button',
+          selector: '{{selector}} .et_pb_pricing_table_button.et_pb_button',
           important: {
             desktop: {
               value: {
@@ -926,232 +1084,231 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
       },
     },
     children: {
-      type:     'object',
-      settings: {
-        innerContent: {
-          groupType: 'group-item',
-          item:      {
-            groupSlug: 'advancedButtonAttributes',
-            priority:  25,
-            render:    true,
-
-            // Built-in component.
-            component: {
-              name:  'divi/attributes-rel',
-              type:  'group',
-              props: {
-                grouped:    false,
-                fieldLabel: 'Button',
-                attrName:   'children.button.innerContent',
-              },
-            },
-          },
-        },
-      },
+      type: 'object',
+      settings: {},
     },
   },
   customCssFields: {
     pricingHeading: {
-      label:          'Pricing Heading',
-      subName:        'pricingHeading',
+      label: __('Pricing Heading', 'et_builder_5'),
+      subName: 'pricingHeading',
       selectorSuffix: ' .et_pb_pricing_heading',
     },
     pricingTitle: {
-      label:          'Pricing Title',
-      subName:        'pricingTitle',
+      label: __('Pricing Title', 'et_builder_5'),
+      subName: 'pricingTitle',
       selectorSuffix: ' .et_pb_pricing_heading h2',
     },
     pricingSubtitle: {
-      label:          'Pricing Subtitle',
-      subName:        'pricingSubtitle',
+      label: __('Pricing Subtitle', 'et_builder_5'),
+      subName: 'pricingSubtitle',
       selectorSuffix: ' .et_pb_pricing_heading .et_pb_best_value',
     },
     pricingTop: {
-      label:          'Pricing Top',
-      subName:        'pricingTop',
+      label: __('Pricing Top', 'et_builder_5'),
+      subName: 'pricingTop',
       selectorSuffix: ' .et_pb_pricing_content_top',
     },
     price: {
-      label:          'Price',
-      subName:        'price',
+      label: __('Price', 'et_builder_5'),
+      subName: 'price',
       selectorSuffix: ' .et_pb_et_price',
     },
     currency: {
-      label:          'Currency',
-      subName:        'currency',
+      label: __('Currency', 'et_builder_5'),
+      subName: 'currency',
       selectorSuffix: ' .et_pb_dollar_sign',
     },
     frequency: {
-      label:          'Frequency',
-      subName:        'frequency',
+      label: __('Frequency', 'et_builder_5'),
+      subName: 'frequency',
       selectorSuffix: ' .et_pb_frequency',
     },
     pricingContent: {
-      label:          'Pricing Content',
-      subName:        'pricingContent',
+      label: __('Pricing Content', 'et_builder_5'),
+      subName: 'pricingContent',
       selectorSuffix: ' .et_pb_pricing_content',
     },
     pricingItem: {
-      label:          'Pricing Item',
-      subName:        'pricingItem',
+      label: __('Pricing Item', 'et_builder_5'),
+      subName: 'pricingItem',
       selectorSuffix: ' ul.et_pb_pricing li',
     },
     pricingItemExcluded: {
-      label:          'Excluded Item',
-      subName:        'pricingItemExcluded',
+      label: __('Excluded Item', 'et_builder_5'),
+      subName: 'pricingItemExcluded',
       selectorSuffix: ' ul.et_pb_pricing li.et_pb_not_available',
     },
     pricingButton: {
-      label:          'Pricing Button',
-      subName:        'pricingButton',
+      label: __('Pricing Button', 'et_builder_5'),
+      subName: 'pricingButton',
       selectorSuffix: ' .et_pb_pricing_table_button',
     },
     featuredTable: {
-      label:          'Featured Table',
-      subName:        'featuredTable',
+      label: __('Featured Table', 'et_builder_5'),
+      subName: 'featuredTable',
       selectorSuffix: ' .et_pb_featured_table',
     },
   },
   settings: {
-    content:  'auto',
-    design:   'auto',
+    content: 'auto',
+    design: 'auto',
     advanced: 'auto',
-    groups:   {
+    groups: {
+      // Content > Elements
+      contentElements: {
+        panel: 'content',
+        priority: 5,
+        groupName: 'contentElements',
+        multiElements: true,
+
+        component: {
+          name: 'divi/composite',
+          props: {
+            groupLabel: __('Elements', 'et_builder_5'),
+            preset: 'content',
+          },
+        },
+      },
+
       // Design > Layout
       designLayout: {
-        panel:     'design',
-        priority:  5,
-        groupName: 'layout',
+        panel: 'design',
+        priority: 5,
+        groupName: 'designLayout',
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
+            groupLabel: __('Layout', 'et_builder_5'),
             clipboardCategory: 'style',
-            groupLabel:        'Layout',
+            presetGroup: 'divi/layout',
           },
         },
       },
 
       // Design > Bullet
       designBullet: {
-        panel:         'design',
-        priority:      8,
-        groupName:     'bullet',
+        panel: 'design',
+        priority: 8,
+        groupName: 'bullet',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Bullet',
+            groupLabel: __('Bullet', 'et_builder_5'),
           },
         },
       },
 
       // Design > Title Text
       designTitleText: {
-        panel:         'design',
-        priority:      20,
-        groupName:     'titleText',
+        panel: 'design',
+        priority: 20,
+        groupName: 'titleText',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Title Text',
-            presetGroup:       'divi/font',
+            groupLabel: __('Title Text', 'et_builder_5'),
+            presetGroup: 'divi/font',
           },
         },
       },
 
       // Design Body Text
       designBodyText: {
-        panel:         'design',
-        priority:      22,
-        groupName:     'bodyText',
+        panel: 'design',
+        priority: 22,
+        groupName: 'bodyText',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Body Text',
-            presetGroup:       'divi/font-body',
+            groupLabel: __('Body Text', 'et_builder_5'),
+            presetGroup: 'divi/font-body',
           },
         },
       },
 
       // Design > Subtitle Text
       designSubtitleText: {
-        panel:         'design',
-        priority:      24,
-        groupName:     'subtitleText',
+        panel: 'design',
+        priority: 24,
+        groupName: 'subtitleText',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Subtitle Text',
-            presetGroup:       'divi/font',
+            groupLabel: __('Subtitle Text', 'et_builder_5'),
+            presetGroup: 'divi/font',
           },
         },
       },
 
       // Design > Price Text
       designPriceText: {
-        panel:         'design',
-        priority:      26,
-        groupName:     'priceText',
+        panel: 'design',
+        priority: 26,
+        groupName: 'priceText',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Price Text',
-            presetGroup:       'divi/font',
+            groupLabel: __('Price Text', 'et_builder_5'),
+            presetGroup: 'divi/font',
           },
         },
       },
 
       // Design > Currency & Frequency Text
       designCurrencyFrequencyText: {
-        panel:         'design',
-        priority:      28,
-        groupName:     'currencyFrequencyText',
+        panel: 'design',
+        priority: 28,
+        groupName: 'currencyFrequencyText',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Currency & Frequency Text',
-            presetGroup:       'divi/font',
+            groupLabel: __('Currency & Frequency Text', 'et_builder_5'),
+            presetGroup: 'divi/font',
           },
         },
       },
 
       // Design > Excluded Item Text
       designExcludedItemText: {
-        panel:         'design',
-        priority:      29,
-        groupName:     'excludedItemText',
+        panel: 'design',
+        priority: 29,
+        groupName: 'excludedItemText',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Excluded Item Text',
-            presetGroup:       'divi/font',
+            groupLabel: __('Excluded Item Text', 'et_builder_5'),
+            presetGroup: 'divi/font',
           },
         },
       },
 
-      // Advanced > Button Attributes.
-      advancedButtonAttributes: {
-        panel:         'advanced',
-        priority:      25,
-        groupName:     'attributes',
+      // Advanced > Attributes.
+      advancedAttributes: {
+        panel: 'advanced',
+        priority: 10,
+        groupName: 'attributes',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Attributes',
+            groupLabel: __('Attributes', 'et_builder_5'),
+            clipboardCategory: 'style',
+            presetGroup: 'divi/attributes',
           },
         },
       },
@@ -1159,13 +1316,10 @@ const pricingTablesModuleMetaData: Metadata.Values<PricingTablesAttrs> = {
   },
   mousetrap: {
     inner: {
-
       // Child module covers parent module's surface area. Thus inner mousetrap is added on child module
       edited: true,
     },
   },
 };
 
-export {
-  pricingTablesModuleMetaData,
-};
+export { pricingTablesModuleMetaData };

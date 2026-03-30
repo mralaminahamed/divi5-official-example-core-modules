@@ -12,7 +12,7 @@
     "advanced": {
       "color": {
         "desktop": {
-          "value": "var(--gcid-primary-color)"
+          "value": "$variable({\"type\":\"color\",\"value\":{\"name\":\"gcid-primary-color\",\"settings\":{}}})$"
         }
       },
       "placement": {
@@ -35,7 +35,6 @@
         "text": {
           "desktop": {
             "value": {
-              "orientation": "left",
               "color": "light"
             }
           }

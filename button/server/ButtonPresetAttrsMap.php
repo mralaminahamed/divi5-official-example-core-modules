@@ -215,6 +215,13 @@ class ButtonPresetAttrsMap {
 					],
 					'subName'  => 'icon.placement',
 				],
+				'button.innerContent__rel'                 => [
+					'attrName' => 'button.innerContent',
+					'preset'   => [
+						'html',
+					],
+					'subName'  => 'rel',
+				],
 				'button.decoration.button__icon.onHover'   => [
 					'attrName' => 'button.decoration.button',
 					'preset'   => [
@@ -222,12 +229,26 @@ class ButtonPresetAttrsMap {
 					],
 					'subName'  => 'icon.onHover',
 				],
-				'button.innerContent__rel'                 => [
-					'attrName' => 'button.innerContent',
+				'module.advanced.html__elementType'        => [
+					'attrName' => 'module.advanced.html',
 					'preset'   => [
 						'html',
 					],
-					'subName'  => 'rel',
+					'subName'  => 'elementType',
+				],
+				'module.advanced.html__htmlAfter'          => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [
+						'html',
+					],
+					'subName'  => 'htmlAfter',
+				],
+				'module.advanced.html__htmlBefore'         => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [
+						'html',
+					],
+					'subName'  => 'htmlBefore',
 				],
 			]
 		);

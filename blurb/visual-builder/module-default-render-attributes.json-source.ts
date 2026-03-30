@@ -1,8 +1,4 @@
-import {
-  type BlurbAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type BlurbAttrs, type Metadata } from '@divi/types';
 
 /**
  * Blurb Module Default Render Attributes.
@@ -15,7 +11,7 @@ const blurbModuleDefaultRenderAttributes: Metadata.DefaultAttributes<BlurbAttrs>
     innerContent: {
       desktop: {
         value: {
-          useIcon:   'off',
+          useIcon: 'off',
           animation: 'top',
         },
       },
@@ -23,7 +19,7 @@ const blurbModuleDefaultRenderAttributes: Metadata.DefaultAttributes<BlurbAttrs>
     advanced: {
       color: {
         desktop: {
-          value: 'var(--gcid-primary-color)',
+          value: '$variable({"type":"color","value":{"name":"gcid-primary-color","settings":{}}})$',
         },
       },
       placement: {
@@ -46,8 +42,7 @@ const blurbModuleDefaultRenderAttributes: Metadata.DefaultAttributes<BlurbAttrs>
         text: {
           desktop: {
             value: {
-              orientation: 'left',
-              color:       'light',
+              color: 'light',
             },
           },
         },
@@ -69,6 +64,4 @@ const blurbModuleDefaultRenderAttributes: Metadata.DefaultAttributes<BlurbAttrs>
   },
 };
 
-export {
-  blurbModuleDefaultRenderAttributes,
-};
+export { blurbModuleDefaultRenderAttributes };

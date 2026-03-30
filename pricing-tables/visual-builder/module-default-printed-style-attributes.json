@@ -7,21 +7,26 @@
           "value": {
             "styles": {
               "all": {
-                "width": "1px"
-              },
-              "top": {
-                "width": "1px"
-              },
-              "right": {
-                "width": "1px"
-              },
-              "bottom": {
-                "width": "1px"
-              },
-              "left": {
-                "width": "1px"
+                "width": "1px",
+                "color": "#bebebe",
+                "style": "solid"
               }
             }
+          }
+        }
+      },
+      "layout": {
+        "desktop": {
+          "value": {
+            "display": "flex",
+            "flexDirection": "row",
+            "columnGap": "30px",
+            "rowGap": "0px"
+          }
+        },
+        "phone": {
+          "value": {
+            "flexDirection": "column"
           }
         }
       },
@@ -73,6 +78,24 @@
             "value": {
               "size": "80px",
               "lineHeight": "82px"
+            }
+          }
+        }
+      },
+      "border": {
+        "desktop": {
+          "value": {
+            "styles": {
+              "all": {
+                "width": "0px",
+                "color": "#bebebe",
+                "style": "solid"
+              },
+              "bottom": {
+                "width": "1px",
+                "color": "#bebebe",
+                "style": "solid"
+              }
             }
           }
         }

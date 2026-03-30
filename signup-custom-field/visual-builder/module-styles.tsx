@@ -1,16 +1,7 @@
 import React, { type ReactElement } from 'react';
 
-import {
-  CssStyle,
-  ElementStyle,
-  FormFieldStyle,
-  StyleContainer,
-  type StylesProps,
-} from '@divi/module';
-import {
-  type SignupCustomFieldAttrs,
-} from '@divi/types';
-
+import { CssStyle, ElementStyle, FormFieldStyle, StyleContainer, type StylesProps } from '@divi/module';
+import { type SignupCustomFieldAttrs } from '@divi/types';
 
 /**
  * Set CSS styles to the module.
@@ -32,14 +23,14 @@ export const ModuleStyles = ({
   <StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>
     {/* module */}
     {elements.style({
-      attrName:   'module',
+      attrName: 'module',
       styleProps: {
         defaultPrintedStyleAttrs: defaultPrintedStyleAttrs?.module?.decoration,
-        disabledOn:               {
+        disabledOn: {
           disabledModuleVisibility: settings?.disabledModuleVisibility,
         },
         spacing: {
-          selector:          `.et_pb_newsletter_form p${orderClass}`,
+          selector: `.et_pb_newsletter_form p${orderClass}`,
           propertySelectors: {
             desktop: {
               value: {
@@ -57,8 +48,8 @@ export const ModuleStyles = ({
         advancedStyles: [
           {
             componentName: 'divi/text',
-            props:         {
-              attr:     attrs?.module?.advanced?.text,
+            props: {
+              attr: attrs?.module?.advanced?.text,
               selector: `${orderClass} input, ${orderClass} textarea, ${orderClass} label`,
             },
           },
@@ -117,7 +108,7 @@ export const ModuleStyles = ({
             font: {
               desktop: {
                 value: {
-                  color: `.et_pb_newsletter_form .et_pb_newsletter_fields ${orderClass} .input`,
+                  color: `.et_pb_newsletter_form .et_pb_newsletter_fields ${orderClass} .input, .et_pb_newsletter_form .et_pb_newsletter_fields ${orderClass} input.input`,
                 },
               },
             },
@@ -155,22 +146,59 @@ export const ModuleStyles = ({
       }}
       orderClass={orderClass}
     />
+    {/* Focus placeholder styles with !important */}
+    <ElementStyle
+      selector={`.et_pb_newsletter_form .et_pb_newsletter_fields p${orderClass} .input:focus::placeholder`}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
+    <ElementStyle
+      selector={`.et_pb_newsletter_form .et_pb_newsletter_fields p${orderClass} .input:focus::-webkit-input-placeholder`}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
+    <ElementStyle
+      selector={`.et_pb_newsletter_form .et_pb_newsletter_fields p${orderClass} .input:focus::-moz-placeholder`}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
+    <ElementStyle
+      selector={`.et_pb_newsletter_form .et_pb_newsletter_fields p${orderClass} .input:focus::-ms-input-placeholder`}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
 
     {/* Module
-      * This is only to output the CSS form Custom CSS from Advanced Tab
-      * at the very end of the DOM, so that it can override the css from
-      * design tab. This is to fix the issue for re-ordering css
-      * https://github.com/elegantthemes/Divi/issues/38331
-      *
-      * This may not be the ideal solution as per the conversation here
-      * https://elegantthemes.slack.com/archives/C01CW343ZJ9/p1724934785470029?
-      * thread_ts=1708688820.993489&cid=C01CW343ZJ9
-      * so might need to re-visit this sometime later.
-    */}
-    <CssStyle
-      selector={orderClass}
-      attr={attrs.css}
-      cssFields={elements?.moduleMetadata?.customCssFields}
-    />
+     * This is only to output the CSS form Custom CSS from Advanced Tab
+     * at the very end of the DOM, so that it can override the css from
+     * design tab. This is to fix the issue for re-ordering css
+     * https://github.com/elegantthemes/Divi/issues/38331
+     *
+     * This may not be the ideal solution as per the conversation here
+     * https://elegantthemes.slack.com/archives/C01CW343ZJ9/p1724934785470029?
+     * thread_ts=1708688820.993489&cid=C01CW343ZJ9
+     * so might need to re-visit this sometime later.
+     */}
+    <CssStyle selector={orderClass} attr={attrs.css} cssFields={elements?.moduleMetadata?.customCssFields} />
   </StyleContainer>
 );

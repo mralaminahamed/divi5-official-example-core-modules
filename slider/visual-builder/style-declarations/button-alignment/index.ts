@@ -1,7 +1,6 @@
 import { type DeclarationFunctionProps } from '@divi/module';
 import { type Module } from '@divi/types';
 
-
 /**
  * Style declaration for aligning button text.
  *

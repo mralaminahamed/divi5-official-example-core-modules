@@ -217,6 +217,21 @@ class SignupCustomFieldPresetAttrsMap {
 					'preset'   => [ 'style' ],
 					'subName'  => 'styles.left.style',
 				],
+				'module.advanced.html__elementType'        => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'elementType',
+				],
+				'module.advanced.html__htmlAfter'          => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'htmlAfter',
+				],
+				'module.advanced.html__htmlBefore'         => [
+					'attrName' => 'module.advanced.html',
+					'preset'   => [ 'html' ],
+					'subName'  => 'htmlBefore',
+				],
 			]
 		);
 	}

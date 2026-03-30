@@ -1,11 +1,11 @@
-import { select } from '@divi/data';
+import { getGlobalVariableValue } from '@divi/dynamic-data';
 import { numericParseValue } from '@divi/field-library';
 import { type DeclarationFunctionProps } from '@divi/module';
+import { isCssKeyword, isCssMathFunction, isCssVariable, isNonRelativeCssUnit } from '@divi/module-utils';
 import { StyleDeclarations } from '@divi/style-library';
 import { type Module } from '@divi/types';
 
 import { accordionItemModuleDefaultPrintedStyleAttributes } from '../../module-default-printed-style-attributes.json-source';
-
 
 /**
  * Style declaration for toggle close icon size.
@@ -23,30 +23,37 @@ export const toggleCloseIconSizeStyleDeclaration = ({
 
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  {
+    important: {
       right: false,
     },
   });
 
-  let size = maybeGlobalVariableSize;
-
-  if (maybeGlobalVariableSize?.startsWith('$variable')) {
-    size = select('divi/global-data').getResolvedGlobalVariableValue(maybeGlobalVariableSize);
-  }
+  const size = getGlobalVariableValue(maybeGlobalVariableSize);
 
   if ('on' === useSize && size) {
-    // Determine if the size is a math function.
-    // https://regex101.com/r/eHZbiF/1 - Regex.
-    const isMathFn = (value: string | undefined | null): boolean =>  /^(clamp|min|max|calc)\s*\(/.test((value ?? '').trim());
-    if (isMathFn(size)) {
+    // Hence we can not directly calculate the css math functions in JS,
+    // It can only be calculated on the Browser in runtime.
+    // So, the numericParseValue( $size ) will return null for the CSS math functions.
+    // And now, we have added isCssMathFunction() to check, if it is a CSS math function or not.
+    // If it is a CSS math function, we are sending the right: property value with its original format.
+    // Same applies to CSS variables and CSS keywords (inherit, unset, etc.).
+    if (isCssMathFunction(size) || isCssVariable(size) || isCssKeyword(size)) {
       declarations.add('right', size);
     } else {
-      const iconSize        = numericParseValue(size);
-      const defaultIconSize = numericParseValue(
-        accordionItemModuleDefaultPrintedStyleAttributes?.closedToggleIcon?.decoration?.icon?.desktop?.value?.size,
-      );
-      const sizeDiff        = defaultIconSize.valueNumber - iconSize.valueNumber;
-      declarations.add('right', `${0 !== sizeDiff ? Math.round(sizeDiff / 2) : 0}${iconSize.valueUnit}`);
+      const iconSize = numericParseValue(size);
+
+      if (iconSize && isNonRelativeCssUnit(iconSize.valueUnit)) {
+        const defaultIconSize = numericParseValue(
+          accordionItemModuleDefaultPrintedStyleAttributes?.closedToggleIcon?.decoration?.icon?.desktop?.value?.size,
+        );
+        if (defaultIconSize) {
+          const sizeDiff = defaultIconSize.valueNumber - iconSize.valueNumber;
+          declarations.add('right', `${0 !== sizeDiff ? Math.round(sizeDiff / 2) : 0}${iconSize.valueUnit}`);
+        }
+      } else if (iconSize) {
+        // Set line-height to normal for relative units to override the general Icon style declaration.
+        declarations.add('line-height', 'normal');
+      }
     }
   }
 

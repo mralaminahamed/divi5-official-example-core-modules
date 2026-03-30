@@ -9,10 +9,29 @@
               "orientation": "center"
             }
           }
+        },
+        "textShadow": {
+          "desktop": {
+            "value": {
+              "style": "preset1",
+              "horizontal": "0px",
+              "vertical": "1px",
+              "blur": "3px",
+              "color": "rgba(0,0,0,0.3)"
+            }
+          }
         }
       }
     },
     "decoration": {
+      "layout": {
+        "desktop": {
+          "value": {
+            "rowGap": "0px",
+            "columnGap": "0px"
+          }
+        }
+      },
       "position": {
         "desktop": {
           "value": {

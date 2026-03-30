@@ -9,6 +9,13 @@
       }
     },
     "advanced": {
+      "html": {
+        "desktop": {
+          "value": {
+            "elementType": "a"
+          }
+        }
+      },
       "text": {
         "text": {
           "desktop": {

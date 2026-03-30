@@ -1,9 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 
-import {
-  type BlogAttrs,
-  type ModuleLibrary,
-} from '@divi/types';
+import { elementsCallbacks } from '@divi/module-utils';
+import { type BlogAttrs, type ModuleLibrary } from '@divi/types';
 
 import { conversionOutline } from './conversion-outline';
 import { BlogEdit } from './edit';
@@ -20,7 +18,11 @@ import { SettingsContent } from './settings-content';
 import { SettingsDesign } from './settings-design';
 
 // Register the filter to resolve the option group presets data.
-addFilter('divi.optionGroupPresetPrimaryAttrNameResolver.diviBlog', 'divi', optionGroupPresetPrimaryAttrNameResolverBlog);
+addFilter(
+  'divi.optionGroupPresetPrimaryAttrNameResolver.diviBlog',
+  'divi',
+  optionGroupPresetPrimaryAttrNameResolverBlog,
+);
 addFilter('divi.optionGroupPresetResolverAttrName', 'divi', optionGroupPresetResolverAttrNameBlog);
 
 /**
@@ -29,16 +31,21 @@ addFilter('divi.optionGroupPresetResolverAttrName', 'divi', optionGroupPresetRes
  * @since ??
  */
 export const blog: ModuleLibrary.Module.RegisterDefinition<BlogAttrs> = {
-  metadata:                 blogModuleMetaData,
-  defaultAttrs:             blogModuleDefaultRenderAttributes,
+  metadata: blogModuleMetaData,
+  defaultAttrs: blogModuleDefaultRenderAttributes,
   defaultPrintedStyleAttrs: blogModuleDefaultPrintedStyleAttributes,
-  settings:                 {
+  settings: {
     content: SettingsContent,
-    design:  SettingsDesign,
+    design: SettingsDesign,
   },
   renderers: {
-    edit:   BlogEdit,
+    edit: BlogEdit,
     styles: ModuleStyles,
+  },
+  callbacks: {
+    content: {
+      elements: elementsCallbacks,
+    },
   },
   placeholderContent,
   conversionOutline,

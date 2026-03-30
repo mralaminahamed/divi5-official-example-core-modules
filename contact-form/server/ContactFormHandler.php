@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Error;
+use ET\Builder\Framework\Utility\StringUtility;
 use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
 use ET\Builder\Packages\ModuleLibrary\ContactField\ContactFieldModule;
 use ET\Builder\Services\SpamProtectionService\SpamProtectionService;
@@ -100,6 +101,24 @@ class ContactFormHandler {
 	private $_mail_sent = false;
 
 	/**
+	 * Pre-filtered Contact Form module attributes.
+	 *
+	 * @since ??
+	 *
+	 * @var array
+	 */
+	private $_filtered_attrs = [];
+
+	/**
+	 * Pre-filtered Contact Form Field module attributes keyed by field ID.
+	 *
+	 * @since ??
+	 *
+	 * @var array
+	 */
+	private $_filtered_field_attrs = [];
+
+	/**
 	 * This PHP function is a constructor that initializes variables and processes data if the form is
 	 * submitted.
 	 *
@@ -107,11 +126,15 @@ class ContactFormHandler {
 	 *
 	 * @param string $module_id Module ID.
 	 * @param int    $store_instance Store instance.
+	 * @param array  $filtered_attrs Optional. Pre-filtered module attributes to use instead of fetching from store.
+	 * @param array  $filtered_child_fields Optional. Pre-filtered Contact Form Field module attributes keyed by field ID.
 	 */
-	public function __construct( string $module_id, int $store_instance ) {
-		$this->_module_id      = $module_id;
-		$this->_store_instance = $store_instance;
-		$this->_error          = new WP_Error();
+	public function __construct( string $module_id, int $store_instance, array $filtered_attrs = [], array $filtered_child_fields = [] ) {
+		$this->_module_id            = $module_id;
+		$this->_store_instance       = $store_instance;
+		$this->_error                = new WP_Error();
+		$this->_filtered_attrs       = $filtered_attrs;
+		$this->_filtered_field_attrs = $filtered_child_fields;
 
 		$this->process();
 	}
@@ -124,7 +147,7 @@ class ContactFormHandler {
 	 *
 	 * @return void
 	 */
-	public function process():void {
+	public function process(): void {
 		// If the request method is not `POST`, return.
 		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 			return;
@@ -137,10 +160,15 @@ class ContactFormHandler {
 			return;
 		}
 
-		$order_index = $module->orderIndex ?? 0; // phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+		// Use pre-filtered attributes if provided, otherwise use module attributes.
+		$module_attrs = ! empty( $this->_filtered_attrs ) ? $this->_filtered_attrs : $module->attrs;
+
+		// Use uniqueId (module UUID) instead of orderIndex for form field names to ensure
+		// globally unique field names across all Theme Builder areas (Header, Body, Footer).
+		$unique_id = ContactFormUtils::get_unique_id( $module_attrs, (array) $module );
 
 		// Set the submitted flag by checking is the nonce field is set.
-		$this->_submitted = isset( $_POST[ '_wpnonce-et-pb-contact-form-submitted-' . $order_index ] );
+		$this->_submitted = isset( $_POST[ '_wpnonce-et-pb-contact-form-submitted-' . $unique_id ] );
 
 		// Bail if the form is not submitted.
 		if ( ! $this->_submitted ) {
@@ -149,27 +177,27 @@ class ContactFormHandler {
 
 		// Verify the nonce.
 		// Bail if the nonce is invalid.
-		if ( ! wp_verify_nonce( sanitize_text_field( $_POST[ '_wpnonce-et-pb-contact-form-submitted-' . $order_index ] ), 'et-pb-contact-form-submit-' . $order_index ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ '_wpnonce-et-pb-contact-form-submitted-' . $unique_id ] ) ), 'et-pb-contact-form-submit-' . $unique_id ) ) {
 			$this->_add_error( 'invalid_nonce', esc_html__( 'Nonce verification failed. Please refresh the page and try again.', 'et_builder_5' ) );
 			return;
 		}
 
 		// check whether captcha field is not empty.
-		$use_basic_captcha = $module->attrs['module']['advanced']['spamProtection']['desktop']['value']['useBasicCaptcha'] ?? 'on';
-		$use_spam_service  = $module->attrs['module']['advanced']['spamProtection']['desktop']['value']['enabled'] ?? 'off';
+		$use_basic_captcha = $module_attrs['module']['advanced']['spamProtection']['desktop']['value']['useBasicCaptcha'] ?? 'on';
+		$use_spam_service  = $module_attrs['module']['advanced']['spamProtection']['desktop']['value']['enabled'] ?? 'off';
 
 		if ( 'on' === $use_basic_captcha && 'off' === $use_spam_service ) {
-			$captcha_answer = sanitize_text_field( $_POST[ 'et_pb_contact_captcha_' . $order_index ] ?? '' );
-			$first_digit    = sanitize_text_field( $_POST[ 'et_pb_contact_captcha_first_digit_' . $order_index ] ?? '' );
-			$second_digit   = sanitize_text_field( $_POST[ 'et_pb_contact_captcha_second_digit_' . $order_index ] ?? '' );
+			$captcha_answer = sanitize_text_field( wp_unslash( $_POST[ 'et_pb_contact_captcha_' . $unique_id ] ?? '' ) );
+			$first_digit    = sanitize_text_field( wp_unslash( $_POST[ 'et_pb_contact_captcha_first_digit_' . $unique_id ] ?? '' ) );
+			$second_digit   = sanitize_text_field( wp_unslash( $_POST[ 'et_pb_contact_captcha_second_digit_' . $unique_id ] ?? '' ) );
 
 			if ( ! $captcha_answer || ( (int) $first_digit + (int) $second_digit ) !== (int) $captcha_answer ) {
 				$this->_add_error( 'invalid_captcha', esc_html__( 'Make sure you entered the correct captcha.', 'et_builder_5' ) );
 			}
 		} elseif ( 'on' === $use_spam_service ) {
-			$provider  = $module->attrs['module']['advanced']['spamProtection']['desktop']['value']['provider'] ?? 'recaptcha';
-			$account   = $module->attrs['module']['advanced']['spamProtection']['desktop']['value']['account'] ?? '';
-			$min_score = (float) ( $module->attrs['module']['advanced']['spamProtection']['desktop']['value']['minScore'] ?? 0.0 );
+			$provider  = $module_attrs['module']['advanced']['spamProtection']['desktop']['value']['provider'] ?? 'recaptcha';
+			$account   = $module_attrs['module']['advanced']['spamProtection']['desktop']['value']['account'] ?? '';
+			$min_score = (float) ( $module_attrs['module']['advanced']['spamProtection']['desktop']['value']['minScore'] ?? 0.0 );
 
 			if ( empty( $_POST['token'] ) || ! SpamProtectionService::validate_token( $provider, $account, $min_score ) ) {
 				$this->_add_error( 'spam_submission', esc_html__( 'You must be a human to submit this form.', 'et_builder_5' ) );
@@ -180,11 +208,18 @@ class ContactFormHandler {
 
 		// Populate the form fields.
 		foreach ( $fields as $field ) {
+			// Skip nested modules (Text, Button, Divider, etc.), only process Contact Field modules.
+			if ( 'divi/contact-field' !== $field->blockName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+				continue;
+			}
+
+			// Use pre-filtered field attributes if provided, otherwise use field attributes from storage.
+			$field_attrs     = ! empty( $this->_filtered_field_attrs[ $field->id ] ) ? $this->_filtered_field_attrs[ $field->id ] : $field->attrs;
 			$field_unique_id = ContactFieldModule::get_field_unique_id( $field->id, $this->_store_instance );
-			$field_type      = $field->attrs['fieldItem']['advanced']['type']['desktop']['value'] ?? 'input';
-			$field_id        = $field->attrs['fieldItem']['advanced']['id']['desktop']['value'] ?? '';
+			$field_type      = $field_attrs['fieldItem']['advanced']['type']['desktop']['value'] ?? 'input';
+			$field_id        = $field_attrs['fieldItem']['advanced']['id']['desktop']['value'] ?? '';
 			$field_key       = strtolower( $field_id );
-			$field_label     = $field->attrs['fieldItem']['innerContent']['desktop']['value'] ?? '';
+			$field_label     = $field_attrs['fieldItem']['innerContent']['desktop']['value'] ?? '';
 
 			if ( ! $field_label ) {
 				$field_label = __( 'New Field', 'et_builder_5' );
@@ -193,23 +228,22 @@ class ContactFormHandler {
 			$this->_fields_raw[ $field_key ]['id']             = $field_id;
 			$this->_fields_raw[ $field_key ]['label']          = $field_label;
 			$this->_fields_raw[ $field_key ]['type']           = $field_type;
-			$this->_fields_raw[ $field_key ]['allowedSymbols'] = $field->attrs['fieldItem']['advanced']['allowedSymbols']['desktop']['value'] ?? '';
-			$this->_fields_raw[ $field_key ]['maxLength']      = $field->attrs['fieldItem']['advanced']['maxLength']['desktop']['value'] ?? '';
-			$this->_fields_raw[ $field_key ]['minLength']      = $field->attrs['fieldItem']['advanced']['minLength']['desktop']['value'] ?? '';
-			$this->_fields_raw[ $field_key ]['isRequired']     = 'on' === ( $field->attrs['fieldItem']['advanced']['required']['desktop']['value'] ?? 'on' );
+			$this->_fields_raw[ $field_key ]['allowedSymbols'] = $field_attrs['fieldItem']['advanced']['allowedSymbols']['desktop']['value'] ?? '';
+			$this->_fields_raw[ $field_key ]['maxLength']      = $field_attrs['fieldItem']['advanced']['maxLength']['desktop']['value'] ?? '';
+			$this->_fields_raw[ $field_key ]['minLength']      = $field_attrs['fieldItem']['advanced']['minLength']['desktop']['value'] ?? '';
+			$this->_fields_raw[ $field_key ]['isRequired']     = 'on' === ( $field_attrs['fieldItem']['advanced']['required']['desktop']['value'] ?? 'on' );
 
 			$this->_fields_raw[ $field_key ]['conditionalLogic'] = [
-				'enabled'  => 'on' === ( $field->attrs['conditionalLogic']['advanced']['enable']['desktop']['value'] ?? 'off' ),
-				'matchAll' => 'on' === ( $field->attrs['conditionalLogic']['advanced']['relation']['desktop']['value'] ?? 'off' ),
-				'rules'    => $field->attrs['conditionalLogic']['innerContent']['desktop']['value'] ?? [],
+				'enabled'  => 'on' === ( $field_attrs['conditionalLogic']['advanced']['enable']['desktop']['value'] ?? 'off' ),
+				'matchAll' => 'on' === ( $field_attrs['conditionalLogic']['advanced']['relation']['desktop']['value'] ?? 'off' ),
+				'rules'    => $field_attrs['conditionalLogic']['innerContent']['desktop']['value'] ?? [],
 			];
 
 			if ( 'text' === $field_type ) {
-				$this->_fields_raw[ $field_key ]['value'] = isset( $_POST[ $field_unique_id ] ) ? sanitize_textarea_field( $_POST[ $field_unique_id ] ) : '';
+				$this->_fields_raw[ $field_key ]['value'] = isset( $_POST[ $field_unique_id ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ $field_unique_id ] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated and sanitized.
 			} elseif ( 'checkbox' === $field_type ) {
 				// For checkbox fields, decode and sanitize immediately, store as array.
-        // phpcs:ignore ET.Sniffs.ValidatedSanitizedInput.InputNotSanitized -- Remove slashes (possibly) added by WordPress for magic quotes compatibility.
-				$raw_value = isset( $_POST[ $field_unique_id ] ) ? wp_unslash( $_POST[ $field_unique_id ] ) : '';
+				$raw_value = isset( $_POST[ $field_unique_id ] ) ? wp_unslash( $_POST[ $field_unique_id ] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated and sanitized.
 
 				if ( '' !== $raw_value ) {
 					// Split the URL-encoded comma-separated values.
@@ -222,38 +256,38 @@ class ContactFormHandler {
 					$this->_fields_raw[ $field_key ]['value'] = [];
 				}
 			} else {
-				$this->_fields_raw[ $field_key ]['value'] = isset( $_POST[ $field_unique_id ] ) ? sanitize_text_field( $_POST[ $field_unique_id ] ) : '';
+				$this->_fields_raw[ $field_key ]['value'] = isset( $_POST[ $field_unique_id ] ) ? sanitize_text_field( wp_unslash( $_POST[ $field_unique_id ] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated and sanitized.
 			}
 
 			switch ( $field_type ) {
 				case 'checkbox':
-					$options = $field->attrs['fieldItem']['advanced']['checkboxOptions']['desktop']['value'] ?? [];
+					$options = $field_attrs['fieldItem']['advanced']['checkboxOptions']['desktop']['value'] ?? [];
 
 					$this->_fields_raw[ $field_key ]['options'] = is_array( $options ) ? array_map(
-						function( $option ) {
-							return $option['value'];
+						function ( $option ) {
+							return wp_strip_all_tags( $option['value'] ?? '' );
 						},
 						$options
 					) : [];
 					break;
 
 				case 'radio':
-					$options = $field->attrs['fieldItem']['advanced']['radioOptions']['desktop']['value'] ?? [];
+					$options = $field_attrs['fieldItem']['advanced']['radioOptions']['desktop']['value'] ?? [];
 
 					$this->_fields_raw[ $field_key ]['options'] = is_array( $options ) ? array_map(
-						function( $option ) {
-							return $option['value'];
+						function ( $option ) {
+							return sanitize_text_field( $option['value'] ?? '' );
 						},
 						$options
 					) : [];
 					break;
 
 				case 'select':
-					$options = $field->attrs['fieldItem']['advanced']['selectOptions']['desktop']['value'] ?? [];
+					$options = $field_attrs['fieldItem']['advanced']['selectOptions']['desktop']['value'] ?? [];
 
 					$this->_fields_raw[ $field_key ]['options'] = is_array( $options ) ? array_map(
-						function( $option ) {
-							return $option['value'];
+						function ( $option ) {
+							return sanitize_text_field( $option['value'] ?? '' );
 						},
 						$options
 					) : [];
@@ -269,13 +303,16 @@ class ContactFormHandler {
 		$this->validate_fields();
 
 		// Additional info to be passed on the `et_pb_contact_form_submit` hook.
-		$contact_form_info = array(
-			'contact_form_id'        => $module->attrs['module']['advanced']['htmlAttributes']['desktop']['value']['id'] ?? 'et_pb_contact_form_' . $order_index,
-			'contact_form_number'    => $module->orderIndex, // phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
-			'contact_form_unique_id' => $module->id,
-			'module_slug'            => $module->blockName, // phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+		// Use uniqueId (module UUID) instead of orderIndex for contact_form_id to ensure
+		// globally unique IDs across all Theme Builder areas (Header, Body, Footer).
+		$unique_id         = ContactFormUtils::get_unique_id( $module_attrs, (array) $module );
+		$contact_form_info = [
+			'contact_form_id'        => $module_attrs['module']['advanced']['htmlAttributes']['desktop']['value']['id'] ?? 'et_pb_contact_form_' . $unique_id,
+			'contact_form_number'    => $module->orderIndex, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+			'contact_form_unique_id' => $unique_id,
+			'module_slug'            => $module->blockName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
 			'post_id'                => $this->get_current_post_id_reverse(),
-		);
+		];
 
 		/**
 		 * Fires after contact form is submitted.
@@ -292,10 +329,11 @@ class ContactFormHandler {
 		 *
 		 * @see https://github.com/elegantthemes/Divi/issues/24865
 		 */
-		do_action( 'et_pb_contact_form_submit', $this->_fields, $this->_error->has_errors(), $contact_form_info ); // TODO: feat(D5, Contact Form) Need to introduce a D5 action and deprecate this action.
+		// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
+		do_action( 'et_pb_contact_form_submit', $this->_fields, $this->_error->has_errors(), $contact_form_info ); // TODO feat(D5, Contact Form): Need to introduce a D5 action and deprecate this action.
 
 		if ( ! $this->_error->has_errors() ) {
-			$message_pattern = $module->attrs['email']['innerContent']['desktop']['value'] ?? '';
+			$message_pattern = $module_attrs['email']['innerContent']['desktop']['value'] ?? '';
 
 			if ( $message_pattern ) {
 				$message = ContactFormUtils::build_message_by_template( $this->_fields, $message_pattern, $this->_skipped_fields );
@@ -306,7 +344,7 @@ class ContactFormHandler {
 			$contact_name  = $this->_fields['name']['value'] ?? '';
 			$contact_email = $this->_fields['email']['value'] ?? '';
 
-			$http_host = str_replace( 'www.', '', sanitize_text_field( $_SERVER['HTTP_HOST'] ?? '' ) );
+			$http_host = str_replace( 'www.', '', sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ?? '' ) ) );
 
 			$headers[] = "From: \"{$contact_name}\" <mail@{$http_host}>";
 
@@ -316,14 +354,15 @@ class ContactFormHandler {
 				$headers[]    = "Reply-To: \"{$contact_name}\" <{$contact_email}>";
 			}
 
+			// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 			add_filter( 'et_get_safe_localization', 'et_allow_ampersand' ); // TODO: feat(D5, Contact Form) Need to introduce a D5 filter and deprecate this filter.
 
 			// don't strip tags at this point to properly send the HTML from pattern. All the unwanted HTML stripped at this point.
 			$email_message = trim( stripslashes( $message ) );
 
 			$site_name = strval( get_option( 'blogname' ) );
-			$email_to  = $module->attrs['email']['advanced']['receiver']['desktop']['value'] ?? '';
-			$title     = $module->attrs['title']['innerContent']['desktop']['value'] ?? '';
+			$email_to  = $module_attrs['email']['advanced']['receiver']['desktop']['value'] ?? '';
+			$title     = $module_attrs['title']['innerContent']['desktop']['value'] ?? '';
 
 			// If $email_to is empty or not a string, use the site's admin email as a fallback.
 			if ( empty( $email_to ) || ! is_string( $email_to ) ) {
@@ -348,8 +387,11 @@ class ContactFormHandler {
 				$email_to = ! empty( $valid_emails ) ? join( ',', $valid_emails ) : get_site_option( 'admin_email' );
 			}
 
+			// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 			$this->_mail_sent = wp_mail(
-				apply_filters( 'et_contact_page_email_to', $email_to ), // TODO: feat(D5, Contact Form) Need to introduce a D5 filter and deprecate this filter.
+				// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
+				apply_filters( 'et_contact_page_email_to', $email_to ), // TODO feat(D5, Contact Form): Need to introduce a D5 filter and deprecate this filter.
+				// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 				et_get_safe_localization( // TODO: feat(D5, Contact Form) Need to write `et_get_safe_localization` in D5.
 					sprintf(
 						__( 'New Message From %1$s%2$s', 'et_builder_5' ),
@@ -358,6 +400,7 @@ class ContactFormHandler {
 					)
 				),
 				! empty( $email_message ) ? $email_message : ' ',
+				// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 				apply_filters( 'et_contact_page_headers', $headers, $contact_name, $contact_email ) // TODO: feat(D5, Contact Form) Need to introduce a D5 filter and deprecate this filter.
 			);
 
@@ -372,7 +415,7 @@ class ContactFormHandler {
 	 *
 	 * @return void
 	 */
-	public function validate_fields():void {
+	public function validate_fields(): void {
 		foreach ( $this->_fields_raw as $field_id => $field ) {
 			if ( $this->_is_skip_field( $field ) ) {
 				$this->_skipped_fields[] = $field_id;
@@ -412,7 +455,7 @@ class ContactFormHandler {
 						// Value is already an array of decoded, sanitized values.
 						// Remove any extra spaces from the options.
 						$field_options = array_map(
-							function( $option ) {
+							function ( $option ) {
 								return preg_replace( '/\s+/', ' ', trim( $option ) );
 							},
 							$field['options']
@@ -426,14 +469,17 @@ class ContactFormHandler {
 						}
 
 						// Convert array to comma-separated string for email.
-						$field['value']                          = implode( ', ', $field_value );
-						$this->_fields_raw[ $field_id ]['value'] = $field['value'];
+						// NOTE: We explicitly do NOT update $this->_fields_raw[ $field_id ]['value'] here.
+						// We must keep the raw array in _fields_raw so that conditional logic for subsequent fields
+						// can properly check "is one of" against the array, rather than failing against a string.
+						$field['value'] = implode( ', ', $field_value );
 						break;
 
 					case 'input':
 						$allowed_symbols = $field['allowedSymbols'];
 
-						if ( 'letters' === $allowed_symbols && ! preg_match( '/^[a-zA-Z\s\-]+$/', $field_value ) ) {
+						// regex101 link: https:// regex101.com/r/HSbiBN/1.
+						if ( 'letters' === $allowed_symbols && ! preg_match( '/^[\p{L}\s\-]+$/u', $field_value ) ) {
 							$this->_add_error( 'value_not_letters_' . $field_id, sprintf( esc_html__( '%s: The value may only contain letters.', 'et_builder_5' ), $field_label ) );
 							continue 2;
 						}
@@ -450,14 +496,14 @@ class ContactFormHandler {
 
 						$max_length = (int) $field['maxLength'];
 
-						if ( $max_length > 0 && strlen( $field_value ) > $max_length ) {
+						if ( $max_length > 0 && StringUtility::strlen_utf8( $field_value ) > $max_length ) {
 							$this->_add_error( 'value_max_length_' . $field_id, sprintf( esc_html__( '%1$s: The value may not be greater than %2$d characters.', 'et_builder_5' ), $field_label, $max_length ) );
 							continue 2;
 						}
 
 						$min_length = (int) $field['minLength'];
 
-						if ( $min_length > 0 && strlen( $field_value ) < $min_length ) {
+						if ( $min_length > 0 && StringUtility::strlen_utf8( $field_value ) < $min_length ) {
 							$this->_add_error( 'value_min_length_' . $field_id, sprintf( esc_html__( '%1$s: The value must be at least %2$d characters.', 'et_builder_5' ), $field_label, $min_length ) );
 							continue 2;
 						}
@@ -486,7 +532,8 @@ class ContactFormHandler {
 	 */
 	public function get_current_post_id_reverse() {
 		// phpcs:disable WordPress.Security.NonceVerification -- This function does not change any state, and is therefore not susceptible to CSRF.
-		$post_id = get_the_ID(); // TODO: feat(D5, Contact Form) Need to bring `ET_Builder_Element::_get_main_post_id()` and replace the `get_the_ID()` function with ET_Builder_Element::_get_main_post_id()` in D5.
+		// Use et_core_get_main_post_id() to handle VB context properly, similar to ET_Builder_Element::_get_main_post_id().
+		$post_id = function_exists( 'et_core_get_main_post_id' ) ? et_core_get_main_post_id() : get_the_ID();
 
 		// try to get post id from get_post_ID().
 		if ( false !== $post_id ) {
@@ -510,9 +557,9 @@ class ContactFormHandler {
 	 *
 	 * @param array $field An array containing information about a field, including its conditional logic settings.
 	 *
-	 * @return {boolean} Returns true if the field should be skipped, false otherwise.
+	 * @return boolean Returns true if the field should be skipped, false otherwise.
 	 */
-	private function _is_skip_field( array $field ):bool {
+	private function _is_skip_field( array $field ): bool {
 		if ( $field['conditionalLogic']['enabled'] ) {
 			$match_all = $field['conditionalLogic']['matchAll'];
 			$rules     = $field['conditionalLogic']['rules'];
@@ -525,18 +572,31 @@ class ContactFormHandler {
 
 				$value_to_check = $this->_fields_raw[ $rule_field ]['value'] ?? '';
 
-				// Convert checkbox arrays to comma-separated strings for conditional logic.
+				// Store original checkbox array before string conversion for 'is'/'is not' conditions.
+				$checkbox_array = null;
 				if ( is_array( $value_to_check ) && 'checkbox' === ( $this->_fields_raw[ $rule_field ]['type'] ?? '' ) ) {
+					$checkbox_array = $value_to_check;
+					// Convert checkbox arrays to comma-separated strings for other conditional logic types (e.g. contains).
 					$value_to_check = implode( ', ', $value_to_check );
 				}
 
 				switch ( $rule_condition ) {
 					case 'is':
-						$matches[] = $rule_value === $value_to_check ? 1 : 0;
+						// For checkbox fields, check if rule value exists in the array of selected options.
+						if ( null !== $checkbox_array ) {
+							$matches[] = in_array( $rule_value, $checkbox_array, true ) ? 1 : 0;
+						} else {
+							$matches[] = $rule_value === $value_to_check ? 1 : 0;
+						}
 						break;
 
 					case 'is not':
-						$matches[] = $rule_value !== $value_to_check ? 1 : 0;
+						// For checkbox fields, check if rule value does NOT exist in the array of selected options.
+						if ( null !== $checkbox_array ) {
+							$matches[] = ! in_array( $rule_value, $checkbox_array, true ) ? 1 : 0;
+						} else {
+							$matches[] = $rule_value !== $value_to_check ? 1 : 0;
+						}
 						break;
 
 					case 'is greater':
@@ -613,7 +673,7 @@ class ContactFormHandler {
 	 *
 	 * @return bool Returns true if the contact form has been submitted, false otherwise.
 	 */
-	public function is_submitted():bool {
+	public function is_submitted(): bool {
 		return $this->_submitted;
 	}
 
@@ -624,7 +684,7 @@ class ContactFormHandler {
 	 *
 	 * @return bool Returns true if the email has been sent, false otherwise.
 	 */
-	public function is_mail_sent():bool {
+	public function is_mail_sent(): bool {
 		return $this->_mail_sent;
 	}
 

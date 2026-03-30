@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type PricingTablesAttrs,
-} from '@divi/types';
-
+import { type Metadata, type PricingTablesAttrs } from '@divi/types';
 
 /**
  * Pricing Tables Module Default Render Attributes.
@@ -66,6 +62,4 @@ const pricingTablesModuleDefaultRenderAttributes: Metadata.DefaultAttributes<Pri
   },
 };
 
-export {
-  pricingTablesModuleDefaultRenderAttributes,
-};
+export { pricingTablesModuleDefaultRenderAttributes };

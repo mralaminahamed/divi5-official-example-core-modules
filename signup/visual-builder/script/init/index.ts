@@ -3,7 +3,6 @@ import jQuery from 'jquery';
 import { signupSubmitForm } from '../submit-form';
 import { type SignupData } from '../types';
 
-
 /**
  * Initializes the signup form by attaching event listeners to the input field and submit button.
  *
@@ -15,12 +14,12 @@ export const signupInit = (customData?: SignupData[]) => {
   const data = customData || window.diviModuleSignupData;
 
   // `data` could be not an array. Exit early to prevent browser errors.
-  if (! Array.isArray(data)) {
+  if (!Array.isArray(data)) {
     return;
   }
 
   data.forEach(({ selector }) => {
-    const $input  = jQuery(selector).find<HTMLInputElement>('.et_pb_newsletter_field .input');
+    const $input = jQuery(selector).find<HTMLInputElement>('.et_pb_newsletter_field .input');
     const $button = jQuery(selector).find<HTMLAnchorElement>('.et_pb_newsletter_button');
 
     $input.on('keypress', event => {

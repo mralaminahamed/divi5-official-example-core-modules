@@ -1,10 +1,6 @@
 import { isUndefined } from 'lodash';
 
-import {
-  type AttrState,
-  type Breakpoint,
-  type Module,
-} from '@divi/types';
+import { type AttrState, type Breakpoint, type Module } from '@divi/types';
 
 /**
  * Filters the button.decoration attributes.
@@ -17,26 +13,26 @@ import {
  * @returns {object} The filtered decoration attributes.
  */
 export const filterButtonDecorationAttrs = (
-  decorationAttrs:Module.Element.Decoration.Attributes,
+  decorationAttrs: Module.Element.Decoration.Attributes,
   parentButtonAttr: Module.Element.Decoration.Button.AttributeValue,
-):Module.Element.Decoration.Attributes => {
+): Module.Element.Decoration.Attributes => {
   const buttonAttrs = {
     ...decorationAttrs?.button,
   };
 
   const buttonAttr = decorationAttrs?.button ?? {};
   Object.keys(buttonAttr).forEach((attrBreakpoint: Breakpoint.Name) => {
-    Object.keys(buttonAttr[attrBreakpoint]).forEach((attrState:AttrState) => {
-      if (! Object.prototype.hasOwnProperty.call(buttonAttrs, attrBreakpoint)) {
+    Object.keys(buttonAttr[attrBreakpoint]).forEach((attrState: AttrState) => {
+      if (!Object.prototype.hasOwnProperty.call(buttonAttrs, attrBreakpoint)) {
         buttonAttrs[attrBreakpoint] = {};
       }
 
-      if (! Object.prototype.hasOwnProperty.call(buttonAttrs[attrBreakpoint], attrState)) {
+      if (!Object.prototype.hasOwnProperty.call(buttonAttrs[attrBreakpoint], attrState)) {
         buttonAttrs[attrBreakpoint][attrState] = {};
       }
 
       // Attribute icon.enable is desktop only.
-      const enabled      = decorationAttrs?.button?.desktop?.value?.icon?.enable;
+      const enabled = decorationAttrs?.button?.desktop?.value?.icon?.enable;
       const iconSettings = decorationAttrs?.button?.[attrBreakpoint][attrState]?.icon?.settings;
 
       // If icon.enable is on for child pricing table and

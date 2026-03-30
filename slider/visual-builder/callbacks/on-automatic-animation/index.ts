@@ -1,7 +1,4 @@
-import {
-  type Module,
-  type SliderAttrs,
-} from '@divi/types';
+import { type Module, type SliderAttrs } from '@divi/types';
 
 /**
  * Determine whether background overlay color field should be visible or not.

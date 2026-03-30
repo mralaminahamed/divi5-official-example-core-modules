@@ -7,6 +7,20 @@
           "value": "off"
         }
       }
+    },
+    "decoration": {
+      "sizing": {
+        "desktop": {
+          "value": {
+            "flexType": "12_24"
+          }
+        },
+        "phone": {
+          "value": {
+            "flexType": "24_24"
+          }
+        }
+      }
     }
   }
 }

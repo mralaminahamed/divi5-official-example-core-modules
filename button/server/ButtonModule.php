@@ -12,10 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\SanitizerUtility;
+use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
 use ET\Builder\FrontEnd\Module\Style;
 use ET\Builder\Packages\IconLibrary\IconFont\Utils;
 use ET\Builder\Packages\Module\Layout\Components\ModuleElements\ModuleElements;
@@ -25,6 +26,7 @@ use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use Exception;
 use WP_Block;
@@ -86,6 +88,7 @@ class ButtonModule implements DependencyInterface {
 		$classnames_instance->add(
 			ElementClassnames::classnames(
 				[
+					// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 					// TODO feat(D5, Module Attribute Refactor) Once link is merged as part of options property, remove this.
 					'attrs' => array_merge(
 						$attrs['module']['decoration'] ?? [],
@@ -249,7 +252,7 @@ class ButtonModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array          $attrs                       Block attributes that were saved by Divi Builder.
-	 * @param string         $content                     The block's content.
+	 * @param string         $child_modules_content       The block's content.
 	 * @param WP_Block       $block                       Parsed block object that is being rendered.
 	 * @param ModuleElements $elements                    An instance of the ModuleElements class.
 	 * @param array          $default_printed_style_attrs Default printed style attributes.
@@ -264,14 +267,14 @@ class ButtonModule implements DependencyInterface {
 	 *   'attrName' => 'value',
 	 *   //...
 	 * ];
-	 * $content = 'The block content.';
+	 * $child_modules_content = 'The block content.';
 	 * $block = new WP_Block();
 	 * $elements = new ModuleElements();
 	 *
-	 * ButtonModule::render_callback( $attrs, $content, $block, $elements, $default_printed_style_attrs );
+	 * ButtonModule::render_callback( $attrs, $child_modules_content, $block, $elements, $default_printed_style_attrs );
 	 * ```
 	 */
-	public static function render_callback( array $attrs, string $content, WP_Block $block, ModuleElements $elements, array $default_printed_style_attrs ): string {
+	public static function render_callback( array $attrs, string $child_modules_content, WP_Block $block, ModuleElements $elements, array $default_printed_style_attrs ): string {
 		$link_value = $attrs['button']['innerContent']['desktop']['value']['linkUrl'] ?? '';
 		$text_value = $attrs['button']['innerContent']['desktop']['value']['text'] ?? '';
 
@@ -282,18 +285,29 @@ class ButtonModule implements DependencyInterface {
 		$text_value = '' === $text_value && ! empty( $link_value ) ? esc_url( $link_value ) : esc_attr( $text_value );
 
 		$has_custom_button = 'on' === ( $attrs['button']['decoration']['button']['desktop']['value']['enable'] ?? 'off' );
-		$button_icon_value = $attrs['button']['decoration']['button']['desktop']['value']['icon']['settings'] ?? null;
-		$has_button_icon   = $has_custom_button && isset( $button_icon_value );
+		$is_icon_enabled   = 'on' === ( $attrs['button']['decoration']['button']['desktop']['value']['icon']['enable'] ?? 'off' );
 
-		$button_icon        = $has_button_icon
-			? Utils::process_font_icon( $attrs['button']['decoration']['button']['desktop']['value']['icon']['settings'] ?? [] )
-			: '';
-		$button_icon_tablet = $has_button_icon
-			? Utils::process_font_icon( $attrs['button']['decoration']['button']['tablet']['value']['icon']['settings'] ?? [] )
-			: '';
-		$button_icon_phone  = $has_button_icon
-			? Utils::process_font_icon( $attrs['button']['decoration']['button']['phone']['value']['icon']['settings'] ?? [] )
-			: '';
+		$button_decoration = $attrs['button']['decoration']['button'] ?? [];
+		$icon_data_attrs   = [];
+
+		// Convert camelCase breakpoint name to kebab-case for data attribute (e.g., phoneWide -> phone-wide).
+		$breakpoint_to_data_attr = function ( $breakpoint ) {
+			if ( 'desktop' === $breakpoint ) {
+				return 'data-icon';
+			}
+			return 'data-icon-' . strtolower( preg_replace( '/([A-Z])/', '-$1', $breakpoint ) );
+		};
+
+		foreach ( $button_decoration as $breakpoint => $breakpoint_value ) {
+			$icon_settings = $breakpoint_value['value']['icon']['settings'] ?? null;
+
+			if ( $has_custom_button && $is_icon_enabled && isset( $icon_settings ) ) {
+				$processed_icon = Utils::process_font_icon( $icon_settings );
+				$data_attr_name = $breakpoint_to_data_attr( $breakpoint );
+
+				$icon_data_attrs[ $data_attr_name ] = $processed_icon;
+			}
+		}
 
 		$rendered_rel      = $attrs['button']['innerContent']['desktop']['value']['rel'] ?? '';
 		$link_target_value = $attrs['button']['innerContent']['desktop']['value']['linkTarget'] ?? '';
@@ -302,6 +316,85 @@ class ButtonModule implements DependencyInterface {
 		// Nothing to output if neither Button Text nor Button URL is defined.
 		if ( empty( $text_value ) && empty( $link_value ) ) {
 			return '';
+		}
+
+		$parent = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
+
+		// Extract child modules IDs using helper utility.
+		$children_ids             = ChildrenUtils::extract_children_ids( $block );
+		$has_children             = ! empty( $children_ids ) && is_array( $children_ids ) && count( $children_ids ) > 0;
+		$should_separate_children = $has_children;
+
+		// Check if Element Type is set to "button" via Advanced > HTML > Element Type.
+		$html_attr          = $attrs['module']['advanced']['html'] ?? [];
+		$element_type_value = ModuleUtils::get_attr_subname_value(
+			[
+				'attr'         => $html_attr,
+				'breakpoint'   => 'desktop',
+				'state'        => 'value',
+				'mode'         => 'get',
+				'subname'      => 'elementType',
+				'defaultValue' => null,
+			]
+		);
+		$element_type       = null;
+		if ( is_string( $element_type_value ) && ! empty( $element_type_value ) ) {
+			$element_type = strtolower( trim( $element_type_value ) );
+		}
+		$is_button_element = 'button' === $element_type;
+
+		$html_attrs = [
+			'href'   => esc_url( $link_value ),
+			'target' => ! empty( $link_target ) ? esc_attr( $link_target ) : null,
+			'rel'    => empty( $rendered_rel ) ? null : esc_attr( implode( ' ', $rendered_rel ) ),
+		];
+
+		// If Element Type is "button", use button tag and add onclick handler instead of href.
+		if ( $is_button_element ) {
+			// Use button tag instead of anchor.
+			$tag = 'button';
+			// Add onclick handler for navigation.
+			// Note: HTMLUtility::render_attributes() will call esc_js() on the entire onclick value.
+			// We should NOT pre-escape the URL - let esc_js() handle the entire string.
+			// Use json_encode to properly escape the URL, then construct the JS code.
+			if ( ! empty( $link_value ) ) {
+				// Security: First validate URL with esc_url() to prevent javascript: protocol attacks.
+				// esc_url() validates URL format and blocks dangerous protocols (javascript:, data:, etc.).
+				// Then escape with esc_js() for safe use in JavaScript string context.
+				$validated_url = esc_url( $link_value );
+				// Only proceed if esc_url() returned a valid URL (empty string means invalid/dangerous).
+				if ( ! empty( $validated_url ) ) {
+					$escaped_url = esc_js( $validated_url );
+					if ( 'on' === $link_target_value ) {
+						// Construct JavaScript code using double quotes (esc_js() will escape them to \").
+						$html_attrs['onclick'] = "window.open(\"{$escaped_url}\",\"_blank\",\"noopener,noreferrer\");return false;";
+					} else {
+						$html_attrs['onclick'] = "window.location.href=\"{$escaped_url}\";return false;";
+					}
+				}
+			}
+			// Add type="button" to prevent form submission.
+			$html_attrs['type'] = 'button';
+		} else {
+			// Use anchor tag with href.
+			$tag                = 'a';
+			$html_attrs['href'] = esc_url( $link_value );
+		}
+
+		foreach ( $icon_data_attrs as $data_attr_name => $icon_value ) {
+			if ( null !== $icon_value && '' !== $icon_value ) {
+				$html_attrs[ $data_attr_name ] = esc_attr( $icon_value );
+			}
+		}
+
+		$module_children = $elements->style_components(
+			[
+				'attrName' => 'button',
+			]
+		) . $text_value;
+
+		if ( ! $should_separate_children ) {
+			$module_children .= $child_modules_content;
 		}
 
 		return Module::render(
@@ -313,44 +406,67 @@ class ButtonModule implements DependencyInterface {
 				// VB equivalent.
 				'attrs'                     => $attrs,
 				'elements'                  => $elements,
-				'htmlAttrs'                 => [
-					'href'             => esc_url( $link_value ),
-					'target'           => esc_attr( $link_target ),
-					'data-icon'        => esc_attr( $button_icon ),
-					'data-icon-tablet' => esc_attr( $button_icon_tablet ),
-					'data-icon-phone'  => esc_attr( $button_icon_phone ),
-					'rel'              => empty( $rendered_rel ) ? '' : esc_attr( implode( ' ', $rendered_rel ) ),
-				],
+				'htmlAttrs'                 => $html_attrs,
 				'classnamesFunction'        => [ self::class, 'module_classnames' ],
 				'id'                        => $block->parsed_block['id'],
-				'hasModuleClassName'        => false,
+				'hasModuleClassName'        => true,
+				'hasModuleWrapper'          => true,
 				'name'                      => $block->block_type->name,
 				'moduleCategory'            => $block->block_type->category,
 				'scriptDataComponent'       => [ self::class, 'module_script_data' ],
 				'stylesComponent'           => [ self::class, 'module_styles' ],
-				'tag'                       => 'a',
+				'tag'                       => $tag,
 				'wrapperClassnamesFunction' => [ self::class, 'wrapper_classnames' ],
-				'children'                  => $elements->style_components(
-					[
-						'attrName' => 'button',
-					]
-				) . $text_value,
+				'parentAttrs'               => $parent->attrs ?? [],
+				'parentId'                  => $parent->id ?? '',
+				'parentName'                => $parent->blockName ?? '',
+				'childrenIds'               => $children_ids,
+				'children'                  => $module_children,
+				'wrapperChildren'           => $should_separate_children ? $child_modules_content : '',
 			]
 		);
 	}
 
 	/**
-	 * Button alignment
+	 * Button alignment for wrapper (text-align only).
 	 *
-	 * This function will declare alignment style for button module.
+	 * This function will declare text-align style for button module wrapper.
 	 *
 	 * @since ??
 	 *
 	 * @param array $params An array of arguments.
 	 *
-	 * @return string The CSS for icon alignment.
+	 * @return string The CSS for wrapper alignment.
 	 */
-	public static function button_alignment_declaration( array $params ): string {
+	public static function button_alignment_wrapper_declaration( array $params ): string {
+		$alignment_attr = $params['attrValue'];
+
+		$style_declarations = new StyleDeclarations(
+			[
+				'returnType' => 'string',
+				'important'  => false,
+			]
+		);
+
+		if ( $alignment_attr ) {
+			$style_declarations->add( 'text-align', $alignment_attr );
+		}
+
+		return $style_declarations->value();
+	}
+
+	/**
+	 * Button alignment for anchor tag (margin-left and margin-right only).
+	 *
+	 * This function will declare margin style for button anchor tag.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params An array of arguments.
+	 *
+	 * @return string The CSS for anchor alignment.
+	 */
+	public static function button_alignment_anchor_declaration( array $params ): string {
 		$alignment_attr = $params['attrValue'];
 
 		$style_declarations = new StyleDeclarations(
@@ -363,16 +479,80 @@ class ButtonModule implements DependencyInterface {
 		if ( $alignment_attr ) {
 			switch ( $alignment_attr ) {
 				case 'left':
-					$style_declarations->add( 'text-align', 'left' );
+					$style_declarations->add( 'margin-left', '0' );
+					$style_declarations->add( 'margin-right', 'auto' );
 					break;
 				case 'center':
-					$style_declarations->add( 'text-align', 'center' );
+					$style_declarations->add( 'margin-left', 'auto' );
+					$style_declarations->add( 'margin-right', 'auto' );
 					break;
 				case 'right':
-					$style_declarations->add( 'text-align', 'right' );
+					$style_declarations->add( 'margin-left', 'auto' );
+					$style_declarations->add( 'margin-right', '0' );
 					break;
 				default:
 					break;
+			}
+		}
+
+		return $style_declarations->value();
+	}
+
+	/**
+	 * Generates a style declaration to ensure the Button module has `width: 100%`
+	 * when its position is set to `absolute` with center-aligned horizontal origin
+	 * (top center, center center, or bottom center).
+	 *
+	 * This resolves an issue where the Button module wrapper would shrink-wrap to its content
+	 * width when absolutely positioned with center origin, causing button text to wrap into two lines
+	 * in narrow columns.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params {
+	 *     An array of parameters.
+	 *
+	 *     @type array $params['attrValue'] Position attribute value.
+	 * }
+	 *
+	 * @return string The generated CSS declarations.
+	 *
+	 * @example
+	 * ```php
+	 * $params = [
+	 *   'attrValue' => [
+	 *     'mode' => 'absolute',
+	 *     'origin' => [ 'absolute' => 'top center' ],
+	 *   ],
+	 * ];
+	 *
+	 * ButtonModule::position_width_style_declaration($params);
+	 * ```
+	 */
+	public static function position_width_style_declaration( array $params ): string {
+		$attr_value = $params['attrValue'] ?? [];
+		$mode       = $attr_value['mode'] ?? null;
+		$origin     = $attr_value['origin'] ?? [];
+
+		if ( ! $mode ) {
+			return '';
+		}
+
+		$style_declarations = new StyleDeclarations(
+			[
+				'returnType' => 'string',
+				'important'  => false,
+			]
+		);
+
+		// Only apply width when position is absolute and origin is center-aligned horizontally.
+		if ( 'absolute' === $mode ) {
+			$absolute_origin    = $origin['absolute'] ?? null;
+			$is_center_position =
+				'top center' === $absolute_origin || 'center center' === $absolute_origin || 'bottom center' === $absolute_origin;
+
+			if ( $is_center_position ) {
+				$style_declarations->add( 'width', '100%' );
 			}
 		}
 
@@ -406,6 +586,67 @@ class ButtonModule implements DependencyInterface {
 		}
 
 		return $style_declarations->value();
+	}
+
+	/**
+	 * Removes the 'icon' property from button attributes across all breakpoints and attribute states.
+	 *
+	 * This function iterates through all breakpoints and attribute states in the provided button
+	 * attributes and creates a new attributes array with the 'icon' property omitted from each
+	 * attribute state array.
+	 *
+	 * This function is equivalent to the JavaScript function
+	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/removeIconAttrValue removeIconAttrValue}
+	 * located in `@divi/module-library`.
+	 *
+	 * @since ??
+	 *
+	 * @param array $button_attrs The button attributes array containing breakpoint and attribute state data.
+	 *                           Structure: [breakpoint][state][icon|other_properties].
+	 *
+	 * @return array A new button attributes array with the 'icon' property removed from all attribute
+	 *               states across all breakpoints.
+	 *
+	 * @example
+	 * ```php
+	 * $button_attrs = [
+	 *   'desktop' => [
+	 *     'value' => [
+	 *       'icon' => ['settings' => [...]],
+	 *       'enable' => 'on',
+	 *     ],
+	 *   ],
+	 * ];
+	 *
+	 * $removed_icon_attrs = ButtonModule::remove_icon_attr_value( $button_attrs );
+	 * // Result: ['desktop' => ['value' => ['enable' => 'on']]]
+	 * ```
+	 */
+	public static function remove_icon_attr_value( array $button_attrs ): array {
+		$removed_icon_attrs = [];
+
+		foreach ( $button_attrs as $breakpoint_name => $breakpoint_data ) {
+			if ( ! is_array( $breakpoint_data ) ) {
+				continue;
+			}
+
+			$removed_icon_attrs[ $breakpoint_name ] = [];
+
+			foreach ( $breakpoint_data as $attr_state_name => $attr_state_data ) {
+				if ( ! is_array( $attr_state_data ) ) {
+					$removed_icon_attrs[ $breakpoint_name ][ $attr_state_name ] = $attr_state_data;
+					continue;
+				}
+
+				// Remove 'icon' key from attribute state data.
+				$removed_state_data = $attr_state_data;
+				unset( $removed_state_data['icon'] );
+
+				$removed_icon_attrs[ $breakpoint_name ][ $attr_state_name ] = $removed_state_data;
+			}
+		}
+
+		return $removed_icon_attrs;
 	}
 
 	/**
@@ -474,6 +715,15 @@ class ButtonModule implements DependencyInterface {
 			unset( $button_element_attrs['boxShadow'] );
 		}
 
+		$button_affecting_attrs = 'module' === $style_group ? [
+			'spacing' => array_replace_recursive(
+				isset( $elements->preset_printed_style_attrs ) && is_array( $elements->preset_printed_style_attrs ) ? ( $elements->preset_printed_style_attrs['module']['decoration']['spacing'] ?? [] ) : [],
+				$attrs['module']['decoration']['spacing'] ?? []
+			),
+		] : [
+			'spacing' => $attrs['module']['decoration']['spacing'] ?? [],
+		];
+
 		Style::add(
 			[
 				'id'            => $args['id'],
@@ -511,7 +761,8 @@ class ButtonModule implements DependencyInterface {
 									[
 										'componentName' => 'divi/text',
 										'props'         => [
-											'attr' => $attrs['module']['advanced']['text'] ?? [],
+											'attr'        => $attrs['module']['advanced']['text'] ?? [],
+											'orientation' => false,
 										],
 									],
 									[
@@ -519,7 +770,23 @@ class ButtonModule implements DependencyInterface {
 										'props'         => [
 											'selector' => $wrapper_order_class,
 											'attr'     => $attrs['module']['advanced']['alignment'] ?? [],
-											'declarationFunction' => [ self::class, 'button_alignment_declaration' ],
+											'declarationFunction' => [ self::class, 'button_alignment_wrapper_declaration' ],
+										],
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => "{$wrapper_order_class} {$base_order_class}",
+											'attr'     => $attrs['module']['advanced']['alignment'] ?? [],
+											'declarationFunction' => [ self::class, 'button_alignment_anchor_declaration' ],
+										],
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => $wrapper_order_class,
+											'attr'     => $attrs['module']['decoration']['position'] ?? [],
+											'declarationFunction' => [ self::class, 'position_width_style_declaration' ],
 										],
 									],
 								],
@@ -617,10 +884,22 @@ class ButtonModule implements DependencyInterface {
 									],
 								],
 								'button'         => [
-									'affectingAttrs' => [
-										'spacing' => $attrs['module']['decoration']['spacing'] ?? [],
-									],
+									'affectingAttrs' => $button_affecting_attrs,
 								],
+								'attrsFilter'    => function ( $decoration_attrs ) use ( $style_group ): ?array {
+									// Disable the button icon style for group presets as the button icon styles rendering
+									// requires attributes from the spacing group, which is not available at the preset group level.
+									if ( 'presetGroup' === $style_group && isset( $decoration_attrs['button'] ) ) {
+										return array_merge(
+											$decoration_attrs,
+											[
+												'button' => self::remove_icon_attr_value( $decoration_attrs['button'] ),
+											]
+										);
+									}
+
+									return $decoration_attrs;
+								},
 							],
 						]
 					),
@@ -630,6 +909,20 @@ class ButtonModule implements DependencyInterface {
 						[
 							'selector' => $args['orderClass'],
 							'attr'     => $attrs['css'] ?? [],
+						]
+					),
+
+					// Add cursor pointer for button elements.
+					CssStyle::style(
+						[
+							'selector' => "{$wrapper_order_class} {$base_order_class}",
+							'attr'     => [
+								'desktop' => [
+									'value' => [
+										'mainElement' => 'cursor: pointer;',
+									],
+								],
+							],
 						]
 					),
 				],
@@ -658,10 +951,7 @@ class ButtonModule implements DependencyInterface {
 	 * @return string|array The icon style declaration or key/value pairs.
 	 */
 	public static function icon_style_declaration( array $params ): string {
-		$icon_attr           = $params['attrValue'];
-		$icon_placement      = $icon_attr['icon']['placement'] ?? 'right';
-		$icon_show_on_hover  = 'off' !== ( $icon_attr['icon']['onHover'] ?? '' );
-		$should_animate_icon = 'right' === $icon_placement && $icon_show_on_hover;
+		$icon_attr = $params['attrValue'];
 
 		$style_declarations = new StyleDeclarations(
 			[
@@ -674,7 +964,12 @@ class ButtonModule implements DependencyInterface {
 			]
 		);
 
-		$margin_left = 'left' === $icon_placement || $should_animate_icon ? '-1.3em' : '0';
+		// Skip icon styles when "Use Custom Styles For Button" is disabled.
+		// This matches D4 behavior where disabling custom styles removes icon styles.
+		$enable = $icon_attr['enable'] ?? 'off';
+		if ( 'off' === $enable ) {
+			return $style_declarations->value();
+		}
 
 		if ( ! empty( $icon_attr['icon']['settings'] ) ) {
 			$icon_unicode = Utils::escape_font_icon( Utils::process_font_icon( $icon_attr['icon']['settings'] ) );
@@ -687,14 +982,16 @@ class ButtonModule implements DependencyInterface {
 			$style_declarations->add( 'font-family', $font_family );
 		}
 
-		// Checking if the icon is enabled.
-		// It is important to check this because sometimes we are getting different values for the icon settings.
-		// As a result, placement right value always is applied.
-		$button_enable = $icon_attr['enable'] ?? 'off';
-		if ( 'on' === $button_enable ) {
-			$style_declarations->add( 'margin-left', $margin_left );
+		// Add margin-left or margin-right based on icon placement to position the icon correctly.
+		$icon_placement  = $icon_attr['icon']['placement'] ?? 'right';
+		$has_custom_icon = ! empty( $icon_attr['icon']['settings']['unicode'] );
+
+		if ( 'left' === $icon_placement ) {
+			$style_declarations->add( 'margin-left', '-1.3em' );
+		} elseif ( $has_custom_icon ) {
+			$style_declarations->add( 'margin-left', '0.3em' );
 		}
-		$style_declarations->add( 'font-size', '1.6em' );
+
 		$style_declarations->add( 'line-height', '1em' );
 
 		return $style_declarations->value();
@@ -718,8 +1015,6 @@ class ButtonModule implements DependencyInterface {
 	public static function icon_style_fe_declaration( array $params ): string {
 		$icon_attr = $params['attrValue'];
 
-		$icon_placement = $icon_attr['icon']['placement'] ?? 'right';
-
 		$style_declarations = new StyleDeclarations(
 			[
 				'returnType' => 'string',
@@ -727,9 +1022,17 @@ class ButtonModule implements DependencyInterface {
 			]
 		);
 
+		// Skip icon frontend styles when "Use Custom Styles For Button" is disabled.
+		// This matches D4 behavior where disabling custom styles removes icon styles.
+		$enable = $icon_attr['enable'] ?? 'off';
+		if ( 'off' === $enable ) {
+			return $style_declarations->value();
+		}
+
+		$icon_placement = $icon_attr['icon']['placement'] ?? 'right';
+
 		if ( 'left' === $icon_placement ) {
 			$style_declarations->add( 'display', 'none' );
-			$style_declarations->add( 'margin-right', 'auto' );
 		}
 
 		return $style_declarations->value();
@@ -753,15 +1056,22 @@ class ButtonModule implements DependencyInterface {
 	public static function hover_icon_style_declaration( array $params ): string {
 		$icon_attr = $params['attrValue'];
 
-		$icon_placement = $icon_attr['icon']['placement'] ?? 'right';
-		$hover          = $icon_attr['icon']['onHover'] ?? 'on';
-
 		$style_declarations = new StyleDeclarations(
 			[
 				'returnType' => 'string',
 				'important'  => false,
 			]
 		);
+
+		// Skip icon hover styles when "Use Custom Styles For Button" is disabled.
+		// This matches D4 behavior where disabling custom styles removes icon styles.
+		$enable = $icon_attr['enable'] ?? 'off';
+		if ( 'off' === $enable ) {
+			return $style_declarations->value();
+		}
+
+		$icon_placement = $icon_attr['icon']['placement'] ?? 'right';
+		$hover          = $icon_attr['icon']['onHover'] ?? 'on';
 
 		if ( 'on' === $hover && 'left' === $icon_placement ) {
 			$style_declarations->add( 'padding-right', '.7em' );
@@ -781,7 +1091,7 @@ class ButtonModule implements DependencyInterface {
 	public function load(): void {
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/button/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( ButtonPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ ButtonPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

@@ -1,13 +1,7 @@
-import React, {
-  Fragment,
-  type ReactElement,
-} from 'react';
+import React, { Fragment, type ReactElement } from 'react';
 
-import {
-  type ScriptDataProps,
-} from '@divi/module';
+import { type ScriptDataProps } from '@divi/module';
 import { type BlurbAttrs } from '@divi/types';
-
 
 /**
  * Blurb module's script data component.
@@ -16,12 +10,10 @@ import { type BlurbAttrs } from '@divi/types';
  *
  * @returns {ReactElement}
  */
-export const ModuleScriptData = <TProps extends ScriptDataProps<BlurbAttrs>>({
-  elements,
-}: TProps): ReactElement => (
+export const ModuleScriptData = <TProps extends ScriptDataProps<BlurbAttrs>>({ elements }: TProps): ReactElement => (
   <Fragment>
     {elements.scriptData({
       attrName: 'module',
     })}
   </Fragment>
-  );
+);

@@ -149,5 +149,17 @@
         }
       }
     }
+  },
+  "blogGrid": {
+    "decoration": {
+      "layout": {
+        "desktop": {
+          "value": {
+            "display": "grid",
+            "gridColumnCount": "3"
+          }
+        }
+      }
+    }
   }
 }

@@ -1,6 +1,5 @@
 import { type BlogMetadata } from '@divi/types';
 
-
 export interface PaginationProps {
   metadata: BlogMetadata;
   paged: number;
