@@ -1,7 +1,6 @@
-import {
-  type Metadata,
-  type SignupAttrs,
-} from '@divi/types';
+import { __ } from '@wordpress/i18n';
+
+import { type Metadata, type SignupAttrs } from '@divi/types';
 
 /**
  * Email Optin Module Meta Data.
@@ -10,82 +9,83 @@ import {
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
-  name:                      'divi/signup',
-  d4Shortcode:               'et_pb_signup',
-  moduleClassName:           'et_pb_signup',
-  moduleOrderClassName:      'et_pb_signup',
-  title:                     'Email Optin',
-  titles:                    'Email Optins',
-  moduleIcon:                'divi/module-signup',
-  category:                  'module',
-  childModuleName:           'divi/signup-custom-field',
-  childModuleTitle:          'Field',
+  name: 'divi/signup',
+  d4Shortcode: 'et_pb_signup',
+  moduleClassName: 'et_pb_signup',
+  moduleOrderClassName: 'et_pb_signup',
+  title: __('Email Optin', 'et_builder_5'),
+  titles: __('Email Optins', 'et_builder_5'),
+  moduleIcon: 'divi/module-signup',
+  category: 'module',
+  childModuleName: 'divi/signup-custom-field',
+  childModuleTitle: __('Field', 'et_builder_5'),
   childModuleTitleAttribute: 'fieldItem',
-  childrenName:              [], // Supports any module type as child elements
-  videos:                    [
+  childrenName: [], // Supports any module type as child elements
+  videos: [
     {
-      id:   'mXL1_M-Z4p8',
+      id: 'mXL1_M-Z4p8',
       name: 'An introduction to the Email Optin module',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:        'object',
-      selector:    '{{selector}}',
+      type: 'object',
+      selector: '{{selector}}',
       elementType: 'element',
-      settings:    {
+      settings: {
         meta: {
-          adminLabel: {},
+          meta: {},
         },
         advanced: {
           elements: {},
-          link:     {},
-          loop:     {},
-          text:     {},
+          html: {},
+          link: {},
+          loop: {},
+          text: {},
         },
         decoration: {
-          animation:    {},
-          attributes:   {},
-          background:   {},
-          border:       {},
-          boxShadow:    {},
-          conditions:   {},
-          disabledOn:   {},
-          filters:      {},
+          animation: {},
+          attributes: {},
+          background: {},
+          border: {},
+          boxShadow: {},
+          conditions: {},
+          disabledOn: {},
+          filters: {},
           interactions: {},
-          layout:       {
+          layout: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designLayout',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
               component: {
-                type:  'group',
-                name:  'divi/layout',
+                type: 'group',
+                name: 'divi/layout',
                 props: {
                   grouped: false,
                 },
               },
             },
           },
-          overflow:   {},
-          order:      {},
-          position:   {},
-          scroll:     {},
-          sizing:     {},
-          spacing:    {},
-          sticky:     {},
-          transform:  {},
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {},
+          sizing: {},
+          spacing: {},
+          sticky: {},
+          transform: {},
           transition: {},
-          zIndex:     {},
+          zIndex: {},
         },
       },
       styleProps: {
@@ -95,44 +95,47 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
       },
     },
     title: {
-      type:                     'object',
-      label:                    'Title',
-      selector:                 '{{selector}} h2, {{selector}} h1.et_pb_module_header, {{selector}} h3.et_pb_module_header, {{selector}} h4.et_pb_module_header, {{selector}} h5.et_pb_module_header, {{selector}} h6.et_pb_module_header',
+      type: 'object',
+      label: __('Title', 'et_builder_5'),
+      selector:
+        '{{selector}} .et_pb_newsletter_description h2, {{selector}} .et_pb_newsletter_description h1.et_pb_module_header, {{selector}} .et_pb_newsletter_description h3.et_pb_module_header, {{selector}} .et_pb_newsletter_description h4.et_pb_module_header, {{selector}} .et_pb_newsletter_description h5.et_pb_module_header, {{selector}} .et_pb_newsletter_description h6.et_pb_module_header',
       supportsCustomAttributes: true,
-      elementType:              'heading',
-      attributes:               {
+      elementType: 'heading',
+      attributes: {
         class: 'et_pb_module_header',
       },
-      tagName:           'h2',
-      inlineEditor:      'plainText',
+      tagName: 'h2',
+      inlineEditor: 'plainText',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
-        selector: '{{selector}}.et_pb_subscribe .et_pb_newsletter_description h2, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h1.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h3.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h4.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h5.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h6.et_pb_module_header',
-        font:     {
+      styleProps: {
+        selector:
+          '{{selector}}.et_pb_subscribe .et_pb_newsletter_description h2, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h1.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h3.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h4.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h5.et_pb_module_header, {{selector}}.et_pb_subscribe .et_pb_newsletter_description h6.et_pb_module_header',
+        font: {
           important: true,
         },
       },
       settings: {
         innerContent: {},
-        decoration:   {
+        decoration: {
           font: {},
         },
       },
     },
     content: {
-      type:                     'object',
-      label:                    'Description',
-      selector:                 '{{selector}} .et_pb_newsletter_description div',
+      type: 'object',
+      label: __('Description', 'et_builder_5'),
+      selector: '{{selector}} .et_pb_newsletter_description div',
       supportsCustomAttributes: true,
-      elementType:              'content',
-      attributes:               {
+      elementType: 'content',
+      attributes: {
         class: 'et_pb_newsletter_description_content',
       },
-      tagName:           'div',
-      inlineEditor:      'richText',
+      tagName: 'div',
+      inlineEditor: 'richText',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
-        selector: '{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer',
+      styleProps: {
+        selector:
+          '{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer',
         bodyFont: {
           important: {
             body: {
@@ -151,7 +154,7 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
                 desktop: {
                   value: {
                     'line-height': '{{selector}}.et_pb_subscribe p',
-                    'text-align':  '{{selector}}.et_pb_subscribe p',
+                    'text-align': '{{selector}}.et_pb_subscribe p',
                   },
                 },
               },
@@ -160,9 +163,12 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
               font: {
                 desktop: {
                   value: {
-                    'font-family': '{{selector}}.et_pb_subscribe .et_pb_newsletter_description a',
-                    'font-size':   '{{selector}}.et_pb_subscribe .et_pb_newsletter_description a',
-                    color:         '{{selector}}.et_pb_subscribe .et_pb_newsletter_description a',
+                    'font-family':
+                      '{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer',
+                    'font-size':
+                      '{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer',
+                    color:
+                      '{{selector}}.et_pb_subscribe .et_pb_newsletter_description_content, {{selector}}.et_pb_subscribe .et_pb_newsletter_footer',
                   },
                 },
               },
@@ -191,14 +197,15 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            priority:    30,
-            groupSlug:   'contentText',
-            render:      true,
-            attrName:    'content.innerContent',
-            label:       'Body',
-            description: 'This content will appear below the title.',
-            features:    {
+          item: {
+            priority: 30,
+            groupSlug: 'contentText',
+            render: true,
+            attrName: 'content.innerContent',
+            label: __('Body', 'et_builder_5'),
+            description: __('This content will appear below the title.', 'et_builder_5'),
+            category: 'basic_option',
+            features: {
               dynamicContent: {
                 type: 'text',
               },
@@ -217,21 +224,21 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
       },
     },
     resultMessage: {
-      type:        'object',
-      selector:    '',
+      type: 'object',
+      selector: '',
       elementType: 'element',
-      styleProps:  {
+      styleProps: {
         selector: '{{selector}}.et_pb_subscribe .et_pb_newsletter_form .et_pb_newsletter_result h2',
       },
       settings: {
         decoration: {
           font: {
             groupType: 'group',
-            priority:  40,
+            priority: 40,
             component: {
               props: {
-                groupLabel: 'Result Message Text',
-                fieldLabel: 'Result Message',
+                groupLabel: __('Result Message Text', 'et_builder_5'),
+                fieldLabel: __('Result Message', 'et_builder_5'),
               },
             },
           },
@@ -239,36 +246,40 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
       },
     },
     formField: {
-      type:        'object',
-      selector:    '',
+      type: 'object',
+      selector: '',
       elementType: 'element',
-      styleProps:  {
+      styleProps: {
         selectors: {
           desktop: {
-            value: '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label',
-            hover: '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label:hover',
+            value:
+              '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label',
+            hover:
+              '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label:hover',
           },
         },
         selector: '{{selector}} .et_pb_newsletter_form p .input',
       },
     },
     button: {
-      type:                     'object',
-      selector:                 '{{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button',
+      type: 'object',
+      selector: 'body #page-container {{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button',
       supportsCustomAttributes: true,
-      elementType:              'button',
-      tagName:                  'a',
-      attributes:               {
+      elementType: 'button',
+      tagName: 'a',
+      attributes: {
         class: 'et_pb_newsletter_button',
       },
       elementProps: {
         allowEmptyUrl: true,
-        type:          'link',
-        hasWrapper:    false,
+        type: 'link',
+        hasWrapper: false,
       },
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
-        selector:  '{{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button',
+      styleProps: {
+        selector: 'body #page-container {{selector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button',
+        customPostTypeSelector:
+          'body.et-db #page-container #et-boc .et-l {{baseSelector}}.et_pb_subscribe .et_pb_newsletter_button.et_pb_button',
         boxShadow: {
           propertySelectors: {
             desktop: {
@@ -286,18 +297,20 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
       settings: {
         innerContent: {
           groupType: 'into-multiple-groups',
-          groups:    {
+          groups: {
             text: {
               groupType: 'group-item',
-              item:      {
-                priority:    20,
-                groupSlug:   'contentText',
-                render:      true,
-                attrName:    'button.innerContent',
-                subName:     'text',
-                label:       'Button',
-                description: 'Define the text which will be displayed on "Read More" button. leave blank for default ( Read More )',
-                features:    {
+              item: {
+                priority: 20,
+                groupSlug: 'contentText',
+                render: true,
+                attrName: 'button.innerContent',
+                subName: 'text',
+                label: __('Button', 'et_builder_5'),
+                description:
+                  'Define the text which will be displayed on "Read More" button. leave blank for default ( Read More )',
+                category: 'basic_option',
+                features: {
                   dynamicContent: {
                     type: 'text',
                   },
@@ -312,18 +325,18 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
             },
             link: {
               groupType: 'group-item',
-              item:      {
+              item: {
                 groupSlug: 'contentText',
-                render:    false,
+                render: false,
               },
             },
           },
         },
         decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          button:     {
+          border: {},
+          boxShadow: {},
+          button: {
             component: {
               props: {
                 fields: {
@@ -334,17 +347,17 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
               },
             },
           },
-          font:    {},
+          font: {},
           spacing: {},
         },
       },
     },
     field: {
-      type:                     'object',
-      selector:                 '{{selector}} .input',
+      type: 'object',
+      selector: '{{selector}} .input',
       supportsCustomAttributes: true,
-      elementType:              'field',
-      attributes:               {
+      elementType: 'field',
+      attributes: {
         class: 'input',
       },
       styleProps: {
@@ -352,8 +365,10 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           propertySelectors: {
             desktop: {
               value: {
-                'border-radius': '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type="radio"] + label i, {{selector}} .et_pb_newsletter_form p .input[type="checkbox"] + label i',
-                'border-style':  '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type="radio"] + label i, {{selector}} .et_pb_newsletter_form p .input[type="checkbox"] + label i',
+                'border-radius':
+                  '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type="radio"] + label i, {{selector}} .et_pb_newsletter_form p .input[type="checkbox"] + label i',
+                'border-style':
+                  '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type="radio"] + label i, {{selector}} .et_pb_newsletter_form p .input[type="checkbox"] + label i',
               },
             },
           },
@@ -366,13 +381,13 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
         advanced: {
           focusUseBorder: {
             groupType: 'group-item',
-            item:      {
-              priority:    100,
-              render:      true,
-              groupSlug:   'designFieldField',
-              attrName:    'field.advanced.focusUseBorder',
-              label:       'Use Focus Borders',
-              description: 'Enabling this option will add borders to input fields when focused.',
+            item: {
+              priority: 100,
+              render: true,
+              groupSlug: 'designFieldField',
+              attrName: 'field.advanced.focusUseBorder',
+              label: __('Use Focus Borders', 'et_builder_5'),
+              description: __('Enabling this option will add borders to input fields when focused.', 'et_builder_5'),
 
               // Built-in component.
               component: {
@@ -383,14 +398,14 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           focus: {
             groupType: 'group-items',
-            items:     {
+            items: {
               focusBorderGroup: {
-                render:    true,
+                render: true,
                 groupSlug: 'designFieldField',
               },
               focusFont: {
-                priority:  40,
-                render:    true,
+                priority: 40,
+                render: true,
                 groupSlug: 'designFieldField',
 
                 // Built-in component.
@@ -414,18 +429,19 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           nameFieldOnly: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentFields',
-              render:      true,
-              attrName:    'field.advanced.nameFieldOnly',
-              label:       'Name',
-              description: 'Whether or not the Name field should be included in the opt-in form.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'contentFields',
+              render: true,
+              attrName: 'field.advanced.nameFieldOnly',
+              label: __('Name', 'et_builder_5'),
+              description: __('Whether or not the Name field should be included in the opt-in form.', 'et_builder_5'),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/toggle',
@@ -435,18 +451,19 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           nameField: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentFields',
-              render:      true,
-              attrName:    'field.advanced.nameField',
-              label:       'Use Single Name Field',
-              description: 'Whether or not to use a single Name field in the opt-in form.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'contentFields',
+              render: true,
+              attrName: 'field.advanced.nameField',
+              label: __('Use Single Name Field', 'et_builder_5'),
+              description: __('Whether or not to use a single Name field in the opt-in form.', 'et_builder_5'),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/toggle',
@@ -456,18 +473,22 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           firstNameField: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentFields',
-              render:      true,
-              attrName:    'field.advanced.firstNameField',
-              label:       'Show First Name Field',
-              description: 'Whether or not the First Name field should be included in the opt-in form.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'contentFields',
+              render: true,
+              attrName: 'field.advanced.firstNameField',
+              label: __('Show First Name Field', 'et_builder_5'),
+              description: __(
+                'Whether or not the First Name field should be included in the opt-in form.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/toggle',
@@ -477,18 +498,22 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           lastNameField: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentFields',
-              render:      true,
-              attrName:    'field.advanced.lastNameField',
-              label:       'Show Last Name Field',
-              description: 'Whether or not the Last Name field should be included in the opt-in form.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'contentFields',
+              render: true,
+              attrName: 'field.advanced.lastNameField',
+              label: __('Show Last Name Field', 'et_builder_5'),
+              description: __(
+                'Whether or not the Last Name field should be included in the opt-in form.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/toggle',
@@ -498,16 +523,20 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           nameFullwidth: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'designLayout',
-              render:      true,
-              attrName:    'field.advanced.nameFullwidth',
-              label:       'Name Fullwidth',
-              description: 'Enabling this will extend the input field to 100% of the width of the module.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'designLayout',
+              render: true,
+              attrName: 'field.advanced.nameFullwidth',
+              label: __('Name Fullwidth', 'et_builder_5'),
+              description: __(
+                'Enabling this will extend the input field to 100% of the width of the module.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 sticky: false,
-                hover:  false,
+                hover: false,
                 preset: ['html'],
               },
               component: {
@@ -518,16 +547,20 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           firstNameFullwidth: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'designLayout',
-              render:      true,
-              attrName:    'field.advanced.firstNameFullwidth',
-              label:       'First Name Fullwidth',
-              description: 'Enabling this will extend the input field to 100% of the width of the module.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'designLayout',
+              render: true,
+              attrName: 'field.advanced.firstNameFullwidth',
+              label: __('First Name Fullwidth', 'et_builder_5'),
+              description: __(
+                'Enabling this will extend the input field to 100% of the width of the module.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 sticky: false,
-                hover:  false,
+                hover: false,
                 preset: ['html'],
               },
               component: {
@@ -538,16 +571,20 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           lastNameFullwidth: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'designLayout',
-              render:      true,
-              attrName:    'field.advanced.lastNameFullwidth',
-              label:       'Last Name Fullwidth',
-              description: 'Enabling this will extend the input field to 100% of the width of the module.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'designLayout',
+              render: true,
+              attrName: 'field.advanced.lastNameFullwidth',
+              label: __('Last Name Fullwidth', 'et_builder_5'),
+              description: __(
+                'Enabling this will extend the input field to 100% of the width of the module.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 sticky: false,
-                hover:  false,
+                hover: false,
                 preset: ['html'],
               },
               component: {
@@ -558,16 +595,20 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           emailFullwidth: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'designLayout',
-              render:      true,
-              attrName:    'field.advanced.emailFullwidth',
-              label:       'Email Fullwidth',
-              description: 'Enabling this will extend the input field to 100% of the width of the module.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'designLayout',
+              render: true,
+              attrName: 'field.advanced.emailFullwidth',
+              label: __('Email Fullwidth', 'et_builder_5'),
+              description: __(
+                'Enabling this will extend the input field to 100% of the width of the module.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 sticky: false,
-                hover:  false,
+                hover: false,
                 preset: ['html'],
               },
               component: {
@@ -578,18 +619,22 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           ipAddress: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'advancedPrivacy',
-              render:      true,
-              attrName:    'field.advanced.ipAddress',
-              label:       'Include IP Address',
-              description: 'Include the subscriber\'s ip address in the data sent to your email provider.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'advancedPrivacy',
+              render: true,
+              attrName: 'field.advanced.ipAddress',
+              label: __('Include IP Address', 'et_builder_5'),
+              description: __(
+                "Include the subscriber's ip address in the data sent to your email provider.",
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     ['html'],
+                sticky: false,
+                hover: false,
+                preset: ['html'],
               },
               component: {
                 name: 'divi/toggle',
@@ -597,40 +642,40 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
               },
             },
           },
-
         },
         decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          spacing:    {},
-          font:       {},
+          border: {},
+          boxShadow: {},
+          spacing: {},
+          font: {},
         },
       },
     },
     footerContent: {
-      type:                     'object',
-      label:                    'Footer',
-      selector:                 '{{selector}} .et_pb_newsletter_footer',
+      type: 'object',
+      label: __('Footer', 'et_builder_5'),
+      selector: '{{selector}} .et_pb_newsletter_footer',
       supportsCustomAttributes: true,
-      attributes:               {
+      attributes: {
         class: 'et_pb_newsletter_footer',
       },
-      elementType:       'content',
-      tagName:           'div',
-      inlineEditor:      'richText',
+      elementType: 'content',
+      tagName: 'div',
+      inlineEditor: 'richText',
       childrenSanitizer: 'et_core_esc_previously',
-      settings:          {
+      settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            priority:    30,
-            groupSlug:   'contentText',
-            render:      true,
-            attrName:    'footerContent.innerContent',
-            label:       'Footer',
-            description: 'This content will appear below the subscribe button.',
-            features:    {
+          item: {
+            priority: 30,
+            groupSlug: 'contentText',
+            render: true,
+            attrName: 'footerContent.innerContent',
+            label: __('Footer', 'et_builder_5'),
+            description: __('This content will appear below the subscribe button.', 'et_builder_5'),
+            category: 'basic_option',
+            features: {
               dynamicContent: {
                 type: 'text',
               },
@@ -646,23 +691,25 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
       },
     },
     customFields: {
-      type:     'object',
+      type: 'object',
       settings: {
         advanced: {
           enable: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentFields',
-              render:      true,
-              attrName:    'customFields.advanced.enable',
-              label:       'Use Custom Fields',
-              description: 'Enable this option to use custom fields in your opt-in form. Learn more <a href="https://www.elegantthemes.com/documentation/divi/modules/adding-custom-fields-to-the-divi-email-optin-module">here</a>',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'contentFields',
+              render: true,
+              attrName: 'customFields.advanced.enable',
+              label: __('Use Custom Fields', 'et_builder_5'),
+              description:
+                'Enable this option to use custom fields in your opt-in form. Learn more <a href="https://www.elegantthemes.com/documentation/divi/modules/adding-custom-fields-to-the-divi-email-optin-module">here</a>',
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/toggle',
@@ -672,16 +719,16 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           fields: {
             groupType: 'group-item',
-            item:      {
-              priority:  20,
+            item: {
+              priority: 20,
               groupSlug: 'contentFields',
-              render:    true,
-              attrName:  '', // This one is not an attribute. So, we don't need to set it.
-              features:  {
+              render: true,
+              attrName: '', // This one is not an attribute. So, we don't need to set it.
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/draggable-list',
@@ -691,23 +738,25 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           notice: {
             groupType: 'group-item',
-            item:      {
-              priority:  20,
+            item: {
+              priority: 20,
               groupSlug: 'contentFields',
-              attrName:  '',
-              label:     '',
-              render:    true,
-              features:  {
+              attrName: '',
+              label: '',
+              render: true,
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
-                name:  'divi/warning',
-                type:  'field',
+                name: 'divi/warning',
+                type: 'field',
                 props: {
-                  message: 'You have not defined any custom fields in your email provider account. Once you have defined some fields, click the "Fetch Lists" button in the Email Account toggle above. Learn more <a href="https://www.elegantthemes.com/documentation/divi/modules/adding-custom-fields-to-the-divi-email-optin-module">here</a>',
+                  message:
+                    'You have not defined any custom fields in your email provider account. Once you have defined some fields, click the "Fetch Lists" button in the Email Account toggle above. Learn more <a href="https://www.elegantthemes.com/documentation/divi/modules/adding-custom-fields-to-the-divi-email-optin-module">here</a>',
                 },
               },
             },
@@ -716,34 +765,38 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
       },
     },
     success: {
-      type:     'object',
+      type: 'object',
       settings: {
         advanced: {
           action: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentSuccessAction',
-              render:      true,
-              attrName:    'success.advanced.action',
-              label:       'Action',
-              description: 'Choose what happens when a site visitor has been successfully subscribed to your list.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'contentSuccessAction',
+              render: true,
+              attrName: 'success.advanced.action',
+              label: __('Action', 'et_builder_5'),
+              description: __(
+                'Choose what happens when a site visitor has been successfully subscribed to your list.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
-                name:  'divi/select',
-                type:  'field',
+                name: 'divi/select',
+                type: 'field',
                 props: {
                   options: {
                     message: {
-                      label: 'Display a message.',
+                      label: __('Display a message.', 'et_builder_5'),
                     },
                     redirect: {
-                      label: 'Redirect to a custom URL.',
+                      label: __('Redirect to a custom URL.', 'et_builder_5'),
                     },
                   },
                 },
@@ -752,18 +805,22 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           message: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentSuccessAction',
-              render:      true,
-              attrName:    'success.advanced.message',
-              label:       'Message',
-              description: 'The message that will be shown to site visitors who subscribe to your list.',
-              features:    {
-                responsive:     false,
-                sticky:         false,
-                hover:          false,
-                preset:         'content',
+            item: {
+              priority: 20,
+              groupSlug: 'contentSuccessAction',
+              render: true,
+              attrName: 'success.advanced.message',
+              label: __('Message', 'et_builder_5'),
+              description: __(
+                'The message that will be shown to site visitors who subscribe to your list.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
+                responsive: false,
+                sticky: false,
+                hover: false,
+                preset: 'content',
                 dynamicContent: {
                   type: 'text',
                 },
@@ -776,18 +833,22 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           redirectUrl: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentSuccessAction',
-              render:      true,
-              attrName:    'success.advanced.redirectUrl',
-              label:       'Redirect URL',
-              description: 'Site visitors who subscribe to your list will be redirected to this URL.',
-              features:    {
-                responsive:     false,
-                sticky:         false,
-                hover:          false,
-                preset:         'content',
+            item: {
+              priority: 20,
+              groupSlug: 'contentSuccessAction',
+              render: true,
+              attrName: 'success.advanced.redirectUrl',
+              label: __('Redirect URL', 'et_builder_5'),
+              description: __(
+                'Site visitors who subscribe to your list will be redirected to this URL.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
+                responsive: false,
+                sticky: false,
+                hover: false,
+                preset: 'content',
                 dynamicContent: {
                   type: 'url',
                 },
@@ -800,43 +861,47 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
           },
           redirectQuery: {
             groupType: 'group-item',
-            item:      {
-              priority:    20,
-              groupSlug:   'contentSuccessAction',
-              render:      true,
-              attrName:    'success.advanced.redirectQuery',
-              label:       'Redirect URL Query',
-              description: 'Choose what data (if any) to include in the redirect URL as query arguments.',
-              features:    {
+            item: {
+              priority: 20,
+              groupSlug: 'contentSuccessAction',
+              render: true,
+              attrName: 'success.advanced.redirectQuery',
+              label: __('Redirect URL Query', 'et_builder_5'),
+              description: __(
+                'Choose what data (if any) to include in the redirect URL as query arguments.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                sticky:     false,
-                hover:      false,
-                preset:     'content',
+                sticky: false,
+                hover: false,
+                preset: 'content',
               },
               component: {
-                name:  'divi/checkboxes',
-                type:  'field',
+                name: 'divi/checkboxes',
+                type: 'field',
                 props: {
                   options: [
                     {
                       value: 'name',
-                      label: 'Name',
+                      label: __('Name', 'et_builder_5'),
                     },
                     {
                       value: 'last_name',
-                      label: 'Last Name',
+                      label: __('Last Name', 'et_builder_5'),
                     },
                     {
                       value: 'email',
-                      label: 'Email',
+                      label: __('Email', 'et_builder_5'),
                     },
                     {
                       value: 'ip_address',
-                      label: 'IP Address',
+                      label: __('IP Address', 'et_builder_5'),
                     },
                     {
                       value: 'css_id',
-                      label: 'CSS ID',
+                      label: __('CSS ID', 'et_builder_5'),
                     },
                   ],
                 },
@@ -849,108 +914,108 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
   },
   customCssFields: {
     newsletterTitle: {
-      label:          'Opt-in Title',
-      subName:        'newsletterTitle',
-      selectorSuffix: ' .et_pb_newsletter_description h2, .et_pb_subscribe .et_pb_newsletter_description h1.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h3.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h4.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h5.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h6.et_pb_module_header',
+      label: __('Opt-in Title', 'et_builder_5'),
+      subName: 'newsletterTitle',
+      selectorSuffix:
+        ' .et_pb_newsletter_description h2, .et_pb_subscribe .et_pb_newsletter_description h1.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h3.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h4.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h5.et_pb_module_header, .et_pb_subscribe .et_pb_newsletter_description h6.et_pb_module_header',
     },
     newsletterDescription: {
-      label:          'Opt-in Description',
-      subName:        'newsletterDescription',
+      label: __('Opt-in Description', 'et_builder_5'),
+      subName: 'newsletterDescription',
       selectorSuffix: ' .et_pb_newsletter_description',
     },
     newsletterForm: {
-      label:          'Opt-in Form',
-      subName:        'newsletterForm',
+      label: __('Opt-in Form', 'et_builder_5'),
+      subName: 'newsletterForm',
       selectorSuffix: ' .et_pb_newsletter_form',
     },
     newsletterFields: {
-      label:          'Opt-in Form Fields',
-      subName:        'newsletterFields',
-      selectorSuffix: ' .et_pb_newsletter_form p input[type="text"], .et_pb_newsletter_form p textarea, .et_pb_newsletter_form p select, .et_pb_newsletter_form p .input[type="radio"] + label i, .et_pb_newsletter_form p .input[type="checkbox"] + label i',
+      label: __('Opt-in Form Fields', 'et_builder_5'),
+      subName: 'newsletterFields',
+      selectorSuffix:
+        ' .et_pb_newsletter_form p input[type="text"], .et_pb_newsletter_form p textarea, .et_pb_newsletter_form p select, .et_pb_newsletter_form p .input[type="radio"] + label i, .et_pb_newsletter_form p .input[type="checkbox"] + label i',
     },
     newsletterButton: {
-      label:          'Subscribe Button',
-      subName:        'newsletterButton',
+      label: __('Subscribe Button', 'et_builder_5'),
+      subName: 'newsletterButton',
       selectorSuffix: '.et_pb_subscribe .et_pb_newsletter_button.et_pb_button',
     },
   },
-  script: [
-    'divi-module-library-script-signup',
-  ],
+  script: ['divi-module-library-script-signup'],
   settings: {
     advanced: 'auto',
-    groups:   {
+    groups: {
       // Content => Text
       contentText: {
-        panel:         'content',
-        priority:      5,
-        groupName:     'text',
+        panel: 'content',
+        priority: 5,
+        groupName: 'text',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Text',
-            preset:     'content',
+            groupLabel: __('Text', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Content > Email Account.
       contentEmailService: {
-        panel:         'content',
-        priority:      10,
-        groupName:     'contentEmailService',
+        panel: 'content',
+        priority: 10,
+        groupName: 'contentEmailService',
         multiElements: true,
-        component:     {
-          name:  'divi/email-service',
+        component: {
+          name: 'divi/email-service',
           props: {
-            groupLabel: 'Email Account',
-            preset:     'content',
+            groupLabel: __('Email Account', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Content => Fields
       contentFields: {
-        panel:         'content',
-        priority:      15,
-        groupName:     'fields',
+        panel: 'content',
+        priority: 15,
+        groupName: 'fields',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Fields',
-            preset:     'content',
+            groupLabel: __('Fields', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Content => Success Action
       contentSuccessAction: {
-        panel:         'content',
-        priority:      16,
-        groupName:     'successAction',
+        panel: 'content',
+        priority: 16,
+        groupName: 'successAction',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Success Action',
-            preset:     'content',
+            groupLabel: __('Success Action', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Content > Spam Protection.
       contentSpamProtection: {
-        panel:         'content',
-        priority:      17,
-        groupName:     'contentSpamProtection',
+        panel: 'content',
+        priority: 17,
+        groupName: 'contentSpamProtection',
         multiElements: true,
-        component:     {
-          name:  'divi/spam-protection',
+        component: {
+          name: 'divi/spam-protection',
           props: {
-            groupLabel: 'Spam Protection',
-            fields:     {
+            groupLabel: __('Spam Protection', 'et_builder_5'),
+            fields: {
               useBasicCaptcha: {
                 render: false,
               },
@@ -962,44 +1027,44 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
 
       // Design => Layout
       designLayout: {
-        panel:         'design',
-        priority:      5,
-        groupName:     'layout',
+        panel: 'design',
+        priority: 5,
+        groupName: 'layout',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Layout',
+            groupLabel: __('Layout', 'et_builder_5'),
           },
         },
       },
 
       // Design > Fields.
       designFieldField: {
-        panel:         'design',
-        priority:      5,
-        groupName:     'field',
+        panel: 'design',
+        priority: 5,
+        groupName: 'field',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Fields',
+            groupLabel: __('Fields', 'et_builder_5'),
           },
         },
       },
 
       // Advanced > Privacy.
       advancedPrivacy: {
-        panel:         'advanced',
-        priority:      100,
-        groupName:     'privacy',
+        panel: 'advanced',
+        priority: 100,
+        groupName: 'privacy',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Privacy',
+            groupLabel: __('Privacy', 'et_builder_5'),
           },
         },
       },
@@ -1007,6 +1072,4 @@ const signupModuleMetaData: Metadata.Values<SignupAttrs> = {
   },
 };
 
-export {
-  signupModuleMetaData,
-};
+export { signupModuleMetaData };

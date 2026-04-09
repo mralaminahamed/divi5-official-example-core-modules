@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type SliderAttrs,
-} from '@divi/types';
-
+import { type Metadata, type SliderAttrs } from '@divi/types';
 
 /**
  * Slider Module Default Printed Style Attributes.
@@ -21,9 +17,28 @@ const sliderModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Slid
             },
           },
         },
+        textShadow: {
+          desktop: {
+            value: {
+              style: 'preset1',
+              horizontal: '0px',
+              vertical: '1px',
+              blur: '3px',
+              color: 'rgba(0,0,0,0.3)',
+            },
+          },
+        },
       },
     },
     decoration: {
+      layout: {
+        desktop: {
+          value: {
+            rowGap: '0px',
+            columnGap: '0px',
+          },
+        },
+      },
       position: {
         desktop: {
           value: {
@@ -39,8 +54,8 @@ const sliderModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Slid
         font: {
           desktop: {
             value: {
-              size:         '46px',
-              lineHeight:   '1em',
+              size: '46px',
+              lineHeight: '1em',
               headingLevel: 'h2',
             },
           },
@@ -54,7 +69,7 @@ const sliderModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Slid
         desktop: {
           value: {
             maxWidth: 'auto',
-            width:    '100%',
+            width: '100%',
           },
         },
       },
@@ -85,11 +100,11 @@ const sliderModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Slid
           desktop: {
             value: {
               radius: {
-                sync:        'on',
-                bottomLeft:  '3px',
+                sync: 'on',
+                bottomLeft: '3px',
                 bottomRight: '3px',
-                topLeft:     '3px',
-                topRight:    '3px',
+                topLeft: '3px',
+                topRight: '3px',
               },
             },
           },
@@ -99,6 +114,4 @@ const sliderModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Slid
   },
 };
 
-export {
-  sliderModuleDefaultPrintedStyleAttributes,
-};
+export { sliderModuleDefaultPrintedStyleAttributes };

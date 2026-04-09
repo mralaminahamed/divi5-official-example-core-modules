@@ -1,6 +1,5 @@
 import { type BlogPost } from '@divi/types';
 
-
 export interface PostMetaProps {
   post: BlogPost;
   showAuthor: boolean;

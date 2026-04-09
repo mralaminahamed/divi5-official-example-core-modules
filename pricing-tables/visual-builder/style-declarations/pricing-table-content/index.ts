@@ -2,7 +2,6 @@ import { type DeclarationFunctionProps } from '@divi/module';
 import { StyleDeclarations } from '@divi/style-library';
 import { type Module } from '@divi/types';
 
-
 /**
  * Style declaration for Pricing Tables Module If it has body font text alignment set.
  *
@@ -17,7 +16,7 @@ export const pricingTableBodyContentStyleDeclaration = ({
 
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  false,
+    important: false,
   });
 
   if ('center' === textAlign) {

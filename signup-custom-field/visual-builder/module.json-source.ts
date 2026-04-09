@@ -1,9 +1,6 @@
 import { __ } from '@wordpress/i18n';
 
-import {
-  type Metadata,
-  type SignupCustomFieldAttrs,
-} from '@divi/types';
+import { type Metadata, type SignupCustomFieldAttrs } from '@divi/types';
 
 /**
  * Custom Field Module Meta Data.
@@ -12,35 +9,35 @@ import {
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> = {
-  name:                 'divi/signup-custom-field',
-  d4Shortcode:          'et_pb_signup_custom_field',
-  moduleClassName:      'et_pb_signup_custom_field',
+  name: 'divi/signup-custom-field',
+  d4Shortcode: 'et_pb_signup_custom_field',
+  moduleClassName: 'et_pb_signup_custom_field',
   moduleOrderClassName: 'et_pb_signup_custom_field',
-  title:                'Custom Field',
-  titles:               'Custom Fields',
-  category:             'child-module',
-  videos:               [
-  ],
+  title: __('Custom Field', 'et_builder_5'),
+  titles: __('Custom Fields', 'et_builder_5'),
+  category: 'child-module',
+  videos: [],
   attributes: {
     module: {
-      type:        'object',
-      selector:    '{{selector}}',
+      type: 'object',
+      selector: '{{selector}}',
       elementType: 'element',
-      settings:    {
+      settings: {
         advanced: {
+          html: {},
           loop: {},
           link: {
-            priority:  70,
+            priority: 70,
             component: {
               type: 'group',
               name: 'divi/link',
             },
           },
           text: {
-            priority:  49,
+            priority: 49,
             component: {
-              type:  'group',
-              name:  'divi/text',
+              type: 'group',
+              name: 'divi/text',
               props: {
                 fields: {
                   textShadowGroup: {
@@ -52,81 +49,81 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
         },
         decoration: {
-          animation:  {},
+          animation: {},
           attributes: {},
           background: {
-            priority:  10,
+            priority: 10,
             component: {
               type: 'group',
               name: 'divi/background',
             },
           },
           conditions: {
-            priority:  98,
+            priority: 98,
             component: {
               type: 'group',
               name: 'divi/conditions',
             },
           },
           disabledOn: {
-            priority:  99,
+            priority: 99,
             component: {
               type: 'group',
               name: 'divi/disabled-on',
             },
           },
           overflow: {
-            priority:  99,
+            priority: 99,
             component: {
               type: 'group',
               name: 'divi/overflow',
             },
           },
           position: {
-            priority:  190,
+            priority: 190,
             component: {
               type: 'group',
               name: 'divi/position',
             },
           },
           scroll: {
-            priority:  200,
+            priority: 200,
             component: {
               type: 'group',
               name: 'divi/scroll',
             },
           },
-          order:  {},
+          order: {},
           sizing: {
-            priority:  80,
+            priority: 80,
             component: {
               type: 'group',
               name: 'divi/sizing',
             },
           },
           spacing: {
-            priority:  90,
+            priority: 90,
             component: {
               type: 'group',
               name: 'divi/spacing',
             },
           },
           transform: {
-            priority:  109,
+            priority: 109,
             component: {
               type: 'group',
               name: 'divi/transform',
             },
           },
           transition: {
-            priority:  120,
+            priority: 120,
             component: {
               type: 'group',
               name: 'divi/transition',
             },
           },
           zIndex: {
-            priority:  190,
+            priority: 190,
             component: {
               type: 'group',
               name: 'divi/z-index',
@@ -134,33 +131,33 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           border: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designBorder',
-              render:    true,
-              priority:  5,
+              render: true,
+              priority: 5,
               component: {
-                type:  'group',
-                name:  'divi/border',
+                type: 'group',
+                name: 'divi/border',
                 props: {
-                  grouped:    false,
-                  groupLabel: 'Border',
-                  fieldLabel: 'Input',
+                  grouped: false,
+                  groupLabel: __('Border', 'et_builder_5'),
+                  fieldLabel: __('Input', 'et_builder_5'),
                 },
               },
             },
           },
           boxShadow: {
-            priority:  100,
+            priority: 100,
             component: {
-              type:  'group',
-              name:  'divi/box-shadow',
+              type: 'group',
+              name: 'divi/box-shadow',
               props: {
-                groupLabel: 'Box Shadow',
+                groupLabel: __('Box Shadow', 'et_builder_5'),
               },
             },
           },
           filters: {
-            priority:  105,
+            priority: 105,
             component: {
               type: 'group',
               name: 'divi/filters',
@@ -168,7 +165,7 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
         },
         meta: {
-          adminLabel: {},
+          meta: {},
         },
       },
       styleProps: {
@@ -176,11 +173,12 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           selector: '{{selector}}',
         },
         spacing: {
-          selector:          '{{selectorPrefix}}.et_pb_newsletter_form p{{baseSelector}}',
+          selector: '{{selectorPrefix}}.et_pb_newsletter_form p{{baseSelector}}',
           propertySelectors: {
             desktop: {
               value: {
-                padding: '{{selectorPrefix}}.et_pb_newsletter_form p{{baseSelector}}.et_pb_newsletter_field.et_pb_signup_custom_field',
+                padding:
+                  '{{selectorPrefix}}.et_pb_newsletter_form p{{baseSelector}}.et_pb_newsletter_field.et_pb_signup_custom_field',
               },
             },
           },
@@ -196,14 +194,17 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           propertySelectors: {
             desktop: {
               value: {
-                'border-radius': '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="checkbox"] + label i, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="radio"] + label i',
-                'border-style':  '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="checkbox"] + label i, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="radio"] + label i',
+                'border-radius':
+                  '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="checkbox"] + label i, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="radio"] + label i',
+                'border-style':
+                  '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="checkbox"] + label i, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="radio"] + label i',
               },
             },
           },
         },
         boxShadow: {
-          selector:  '{{selector}} input, {{selector}} select, {{selector}} textarea, {{selector}} .et_pb_contact_field_options_list label > i',
+          selector:
+            '{{selector}} input, {{selector}} select, {{selector}} textarea, {{selector}} .et_pb_contact_field_options_list label > i',
           important: {
             desktop: {
               value: true,
@@ -216,27 +217,27 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
       },
     },
     field: {
-      type:        'object',
+      type: 'object',
       elementType: 'field',
-      selector:    '{{selector}}.et_pb_contact_field .input',
-      settings:    {
+      selector: '{{selector}}.et_pb_contact_field .input',
+      settings: {
         decoration: {
           background: {},
-          font:       {},
+          font: {},
         },
         advanced: {
           focus: {
             groupType: 'group-items',
-            items:     {
+            items: {
               focusBorderGroup: {
-                render:    true,
+                render: true,
                 groupSlug: 'designBorder',
-                priority:  15,
+                priority: 15,
                 component: {
                   props: {
-                    grouped:    false,
-                    attrName:   'field.advanced.focus.focusBorderGroup',
-                    fieldLabel: 'Input Focus',
+                    grouped: false,
+                    attrName: 'field.advanced.focus.focusBorderGroup',
+                    fieldLabel: __('Input Focus', 'et_builder_5'),
                   },
                 },
               },
@@ -244,17 +245,17 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           focusUseBorder: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designBorder',
-              label:       'Use Focus Borders',
-              description: 'Enabling this option will add borders to input fields when focused.',
-              features:    {
+            item: {
+              groupSlug: 'designBorder',
+              label: __('Use Focus Borders', 'et_builder_5'),
+              description: __('Enabling this option will add borders to input fields when focused.', 'et_builder_5'),
+              features: {
                 responsive: false,
-                hover:      false,
-                sticky:     false,
+                hover: false,
+                sticky: false,
               },
-              render:    true,
-              priority:  10,
+              render: true,
+              priority: 10,
               component: {
                 type: 'field',
                 name: 'divi/toggle',
@@ -265,33 +266,36 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
       },
     },
     fieldItem: {
-      type:                     'object',
-      label:                    'Field Label',
-      elementType:              'element',
-      selector:                 '{{selector}} .et_pb_contact_form_label',
+      type: 'object',
+      label: __('Field Label', 'et_builder_5'),
+      elementType: 'element',
+      selector: '{{selector}} .et_pb_contact_form_label',
       supportsCustomAttributes: true,
-      attributes:               {
+      attributes: {
         class: 'et_pb_contact_form_label',
       },
-      tagName:           'label',
-      inlineEditor:      'plainText',
+      tagName: 'label',
+      inlineEditor: 'plainText',
       childrenSanitizer: 'et_core_esc_previously',
-      settings:          {
+      settings: {
         advanced: {
           fullwidth: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designLayout',
-              priority:    5,
-              render:      true,
-              attrName:    'fieldItem.advanced.fullwidth',
-              label:       __('Make Fullwidth', 'et_builder'),
-              description: __('If enabled, the field will take 100% of the width of the content area, otherwise it will take 50%', 'et_builder'),
-              features:    {
+            item: {
+              groupSlug: 'designLayout',
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.fullwidth',
+              label: __('Make Fullwidth', 'et_builder_5'),
+              description: __(
+                'If enabled, the field will take 100% of the width of the content area, otherwise it will take 50%',
+                'et_builder_5',
+              ),
+              features: {
                 responsive: false,
-                hover:      false,
-                sticky:     false,
-                preset:     ['html'],
+                hover: false,
+                sticky: false,
+                preset: ['html'],
               },
               component: {
                 name: 'divi/toggle',
@@ -301,18 +305,21 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           predefinedField: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentMainContent',
-              priority:    10,
-              render:      true,
-              attrName:    'fieldItem.advanced.predefinedField',
-              label:       __('Field', 'et_builder'),
-              description: __('Choose a custom field. Custom fields must be defined in your email provider account.', 'et_builder'),
-              features:    {
-                sticky:     false,
+            item: {
+              groupSlug: 'contentMainContent',
+              priority: 10,
+              render: true,
+              attrName: 'fieldItem.advanced.predefinedField',
+              label: __('Field', 'et_builder_5'),
+              description: __(
+                'Choose a custom field. Custom fields must be defined in your email provider account.',
+                'et_builder_5',
+              ),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     'content',
+                hover: false,
+                preset: 'content',
               },
               container: false,
               component: {
@@ -323,18 +330,21 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           id: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentMainContent',
-              priority:    5,
-              render:      true,
-              attrName:    'fieldItem.advanced.id',
-              label:       __('Field ID', 'et_builder'),
-              description: __('Define the unique ID of this field. You should use only English characters without special characters and spaces.', 'et_builder'),
-              features:    {
-                sticky:         false,
-                responsive:     false,
-                hover:          false,
-                preset:         'content',
+            item: {
+              groupSlug: 'contentMainContent',
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.id',
+              label: __('Field ID', 'et_builder_5'),
+              description: __(
+                'Define the unique ID of this field. You should use only English characters without special characters and spaces.',
+                'et_builder_5',
+              ),
+              features: {
+                sticky: false,
+                responsive: false,
+                hover: false,
+                preset: 'content',
                 dynamicContent: { type: 'text' },
               },
               component: {
@@ -345,40 +355,40 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           type: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentFieldOptions',
-              priority:    5,
-              render:      true,
-              attrName:    'fieldItem.advanced.type',
-              label:       __('Type', 'et_builder'),
-              description: __('Choose the type of field', 'et_builder'),
-              features:    {
-                sticky:     false,
+            item: {
+              groupSlug: 'contentFieldOptions',
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.type',
+              label: __('Type', 'et_builder_5'),
+              description: __('Choose the type of field', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
+                hover: false,
               },
               component: {
-                name:  'divi/select',
-                type:  'field',
+                name: 'divi/select',
+                type: 'field',
                 props: {
                   options: {
                     input: {
-                      label: 'Input Field',
+                      label: __('Input Field', 'et_builder_5'),
                     },
                     email: {
-                      label: 'Email Field',
+                      label: __('Email Field', 'et_builder_5'),
                     },
                     text: {
-                      label: 'Textarea',
+                      label: __('Textarea', 'et_builder_5'),
                     },
                     checkbox: {
-                      label: 'Checkboxes',
+                      label: __('Checkboxes', 'et_builder_5'),
                     },
                     radio: {
-                      label: 'Radio Buttons',
+                      label: __('Radio Buttons', 'et_builder_5'),
                     },
                     select: {
-                      label: 'Select Dropdown',
+                      label: __('Select Dropdown', 'et_builder_5'),
                     },
                   },
                 },
@@ -387,84 +397,84 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           minLength: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentFieldOptions',
-              priority:    5,
-              render:      true,
-              attrName:    'fieldItem.advanced.minLength',
-              label:       __('Minimum Length', 'et_builder'),
-              description: __('Leave at 0 to remove restriction', 'et_builder'),
-              features:    {
-                sticky:     false,
+            item: {
+              groupSlug: 'contentFieldOptions',
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.minLength',
+              label: __('Minimum Length', 'et_builder_5'),
+              description: __('Leave at 0 to remove restriction', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     ['html'],
+                hover: false,
+                preset: ['html'],
               },
               component: {
-                name:  'divi/range', // TODO ping design team. Not outputting CSS.
-                type:  'field',
+                name: 'divi/range', // TODO ping design team. Not outputting CSS.
+                type: 'field',
                 props: {
                   allowedUnits: [],
-                  defaultUnit:  '',
+                  defaultUnit: '',
                 },
               },
             },
           },
           maxLength: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentFieldOptions',
-              priority:    5,
-              render:      true,
-              attrName:    'fieldItem.advanced.maxLength',
-              label:       __('Maximum Length', 'et_builder'),
-              description: __('Leave at 0 to remove restriction', 'et_builder'),
-              features:    {
-                sticky:     false,
+            item: {
+              groupSlug: 'contentFieldOptions',
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.maxLength',
+              label: __('Maximum Length', 'et_builder_5'),
+              description: __('Leave at 0 to remove restriction', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     ['html'],
+                hover: false,
+                preset: ['html'],
               },
               component: {
-                name:  'divi/range', // TODO ping design team. Not outputting CSS.
-                type:  'field',
+                name: 'divi/range', // TODO ping design team. Not outputting CSS.
+                type: 'field',
                 props: {
                   allowedUnits: [],
-                  defaultUnit:  '',
+                  defaultUnit: '',
                 },
               },
             },
           },
           allowedSymbols: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'contentFieldOptions',
-              priority:  5,
-              render:    true,
-              attrName:  'fieldItem.advanced.allowedSymbols',
-              label:     __('Allowed Symbols', 'et_builder'),
-              features:  {
-                sticky:     false,
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.allowedSymbols',
+              label: __('Allowed Symbols', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     ['html'],
+                hover: false,
+                preset: ['html'],
               },
               component: {
-                name:  'divi/select',
-                type:  'field',
+                name: 'divi/select',
+                type: 'field',
                 props: {
                   options: {
                     all: {
-                      label: 'All',
+                      label: __('All', 'et_builder_5'),
                     },
                     letters: {
-                      label: 'Letters Only (A-Z)',
+                      label: __('Letters Only (A-Z)', 'et_builder_5'),
                     },
                     numbers: {
-                      label: 'Numbers Only (0-9)',
+                      label: __('Numbers Only (0-9)', 'et_builder_5'),
                     },
                     alphanumeric: {
-                      label: 'Alphanumeric Only (A-Z, 0-9)',
+                      label: __('Alphanumeric Only (A-Z, 0-9)', 'et_builder_5'),
                     },
                   },
                 },
@@ -473,31 +483,26 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           checkboxOptions: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'contentFieldOptions',
-              priority:  5,
-              render:    true,
-              attrName:  'fieldItem.advanced.checkboxOptions',
-              label:     __('Options', 'et_builder'),
-              features:  {
-                sticky:     false,
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.checkboxOptions',
+              label: __('Options', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     ['html'],
+                hover: false,
+                preset: ['html'],
               },
               component: {
-                name:  'divi/sortable-list',
-                type:  'field',
+                name: 'divi/sortable-list',
+                type: 'field',
                 props: {
-                  isCheckbox:      true,
+                  isCheckbox: true,
                   addFirstOnMount: true,
-                  actions:         {
-                    right: [
-                      'move',
-                      'link',
-                      'copy',
-                      'delete',
-                    ],
+                  actions: {
+                    right: ['move', 'link', 'copy', 'delete'],
                   },
                 },
               },
@@ -505,31 +510,26 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           radioOptions: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'contentFieldOptions',
-              priority:  5,
-              render:    true,
-              attrName:  'fieldItem.advanced.radioOptions',
-              label:     __('Options', 'et_builder'),
-              features:  {
-                sticky:     false,
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.radioOptions',
+              label: __('Options', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     ['html'],
+                hover: false,
+                preset: ['html'],
               },
               component: {
-                name:  'divi/sortable-list',
-                type:  'field',
+                name: 'divi/sortable-list',
+                type: 'field',
                 props: {
-                  isRadio:         true,
+                  isRadio: true,
                   addFirstOnMount: true,
-                  actions:         {
-                    right: [
-                      'move',
-                      'link',
-                      'copy',
-                      'delete',
-                    ],
+                  actions: {
+                    right: ['move', 'link', 'copy', 'delete'],
                   },
                 },
               },
@@ -537,29 +537,25 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           selectOptions: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'contentFieldOptions',
-              priority:  5,
-              render:    true,
-              attrName:  'fieldItem.advanced.selectOptions',
-              label:     __('Options', 'et_builder'),
-              features:  {
-                sticky:     false,
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.selectOptions',
+              label: __('Options', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     ['html'],
+                hover: false,
+                preset: ['html'],
               },
               component: {
-                name:  'divi/sortable-list',
-                type:  'field',
+                name: 'divi/sortable-list',
+                type: 'field',
                 props: {
                   addFirstOnMount: true,
-                  actions:         {
-                    right: [
-                      'move',
-                      'copy',
-                      'delete',
-                    ],
+                  actions: {
+                    right: ['move', 'copy', 'delete'],
                   },
                 },
               },
@@ -567,18 +563,18 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           required: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentFieldOptions',
-              priority:    5,
-              render:      true,
-              attrName:    'fieldItem.advanced.required',
-              label:       __('Required Field', 'et_builder'),
-              description: __('Define whether the field should be required or optional', 'et_builder'),
-              features:    {
-                sticky:     false,
+            item: {
+              groupSlug: 'contentFieldOptions',
+              priority: 5,
+              render: true,
+              attrName: 'fieldItem.advanced.required',
+              label: __('Required Field', 'et_builder_5'),
+              description: __('Define whether the field should be required or optional', 'et_builder_5'),
+              features: {
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     ['html'],
+                hover: false,
+                preset: ['html'],
               },
               component: {
                 name: 'divi/toggle',
@@ -588,19 +584,19 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           hidden: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentFieldOptions',
-              attrName:    'fieldItem.advanced.hidden',
-              label:       'Hidden Field',
-              description: 'Define whether or not the field should be visible.',
-              features:    {
+            item: {
+              groupSlug: 'contentFieldOptions',
+              attrName: 'fieldItem.advanced.hidden',
+              label: __('Hidden Field', 'et_builder_5'),
+              description: __('Define whether or not the field should be visible.', 'et_builder_5'),
+              features: {
                 responsive: false,
-                hover:      false,
-                sticky:     false,
-                preset:     ['html'],
+                hover: false,
+                sticky: false,
+                preset: ['html'],
               },
-              render:    true,
-              priority:  10,
+              render: true,
+              priority: 10,
               component: {
                 type: 'field',
                 name: 'divi/toggle',
@@ -610,16 +606,19 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
         },
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            groupSlug:   'contentMainContent',
-            priority:    10,
-            render:      true,
-            attrName:    'fieldItem.innerContent',
-            label:       __('Title', 'et_builder'),
-            description: __('Here you can define the content that will be placed within the current tab.', 'et_builder'),
-            features:    {
-              sticky:         false,
-              preset:         'content',
+          item: {
+            groupSlug: 'contentMainContent',
+            priority: 10,
+            render: true,
+            attrName: 'fieldItem.innerContent',
+            label: __('Title', 'et_builder_5'),
+            description: __(
+              'Here you can define the content that will be placed within the current tab.',
+              'et_builder_5',
+            ),
+            features: {
+              sticky: false,
+              preset: 'content',
               dynamicContent: { type: 'text' },
             },
             component: {
@@ -631,21 +630,21 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
       },
     },
     conditionalLogic: {
-      type:     'object',
+      type: 'object',
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
+          item: {
             groupSlug: 'contentConditionalLogic',
-            priority:  10,
-            render:    true,
-            attrName:  'conditionalLogic.innerContent',
-            label:     __('Rules', 'et_builder'),
-            features:  {
+            priority: 10,
+            render: true,
+            attrName: 'conditionalLogic.innerContent',
+            label: __('Rules', 'et_builder_5'),
+            features: {
               responsive: false,
-              hover:      false,
-              sticky:     false,
-              preset:     ['html'],
+              hover: false,
+              sticky: false,
+              preset: ['html'],
             },
             component: {
               name: 'divi/conditions',
@@ -656,18 +655,21 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
         advanced: {
           enable: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentConditionalLogic',
-              priority:    5,
-              render:      true,
-              attrName:    'conditionalLogic.advanced.enable',
-              label:       __('Enable', 'et_builder'),
-              description: __('Enabling conditional logic makes this field only visible when any or all of the rules below are fulfilled<br><strong>Note:</strong> Only fields with an unique and non-empty field ID can be used', 'et_builder'),
-              features:    {
+            item: {
+              groupSlug: 'contentConditionalLogic',
+              priority: 5,
+              render: true,
+              attrName: 'conditionalLogic.advanced.enable',
+              label: __('Enable', 'et_builder_5'),
+              description: __(
+                'Enabling conditional logic makes this field only visible when any or all of the rules below are fulfilled<br><strong>Note:</strong> Only fields with an unique and non-empty field ID can be used',
+                'et_builder_5',
+              ),
+              features: {
                 responsive: false,
-                hover:      false,
-                sticky:     false,
-                preset:     ['html'],
+                hover: false,
+                sticky: false,
+                preset: ['html'],
               },
               component: {
                 name: 'divi/toggle',
@@ -677,26 +679,26 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
           },
           relation: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentConditionalLogic',
-              priority:    5,
-              render:      true,
-              attrName:    'conditionalLogic.advanced.relation',
-              label:       __('Relation', 'et_builder'),
-              description: __('Choose whether any or all of the rules should be fulfilled', 'et_builder'),
-              features:    {
+            item: {
+              groupSlug: 'contentConditionalLogic',
+              priority: 5,
+              render: true,
+              attrName: 'conditionalLogic.advanced.relation',
+              label: __('Relation', 'et_builder_5'),
+              description: __('Choose whether any or all of the rules should be fulfilled', 'et_builder_5'),
+              features: {
                 responsive: false,
-                hover:      false,
-                sticky:     false,
-                preset:     ['html'],
+                hover: false,
+                sticky: false,
+                preset: ['html'],
               },
               component: {
-                name:  'divi/toggle',
-                type:  'field',
+                name: 'divi/toggle',
+                type: 'field',
                 props: {
                   options: {
-                    off: __('Any', 'et_builder'),
-                    on:  __('All', 'et_builder'),
+                    off: __('Any', 'et_builder_5'),
+                    on: __('All', 'et_builder_5'),
                   },
                 },
               },
@@ -706,81 +708,80 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
       },
     },
   },
-  customCssFields: {
-  },
+  customCssFields: {},
   settings: {
     advanced: 'auto',
-    groups:   {
+    groups: {
       // Content > Field.
       contentMainContent: {
-        panel:         'content',
-        groupName:     'contentMainContent',
-        priority:      10,
+        panel: 'content',
+        groupName: 'contentMainContent',
+        priority: 10,
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Field',
-            preset:     'content',
+            groupLabel: __('Field', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Content > Field Options.
       contentFieldOptions: {
-        panel:         'content',
-        groupName:     'contentFieldOptions',
-        priority:      10,
+        panel: 'content',
+        groupName: 'contentFieldOptions',
+        priority: 10,
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Field Options',
+            groupLabel: __('Field Options', 'et_builder_5'),
           },
         },
       },
 
       // Content > Conditional Logic.
       contentConditionalLogic: {
-        panel:         'content',
-        groupName:     'contentConditionalLogic',
-        priority:      10,
+        panel: 'content',
+        groupName: 'contentConditionalLogic',
+        priority: 10,
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Conditional Logic',
+            groupLabel: __('Conditional Logic', 'et_builder_5'),
           },
         },
       },
 
       // Design > Layout.
       designLayout: {
-        panel:         'design',
-        groupName:     'layout',
-        priority:      5,
+        panel: 'design',
+        groupName: 'layout',
+        priority: 5,
         multiElements: false,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Layout',
+            groupLabel: __('Layout', 'et_builder_5'),
           },
         },
       },
 
       // Design > Border Field Group
       designBorder: {
-        panel:         'design',
-        groupName:     'border',
-        priority:      95,
+        panel: 'design',
+        groupName: 'border',
+        priority: 95,
         multiElements: false,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
             clipboardCategory: 'style',
-            groupLabel:        'Border',
-            presetGroup:       'divi/border',
+            groupLabel: __('Border', 'et_builder_5'),
+            presetGroup: 'divi/border',
           },
         },
       },
@@ -788,6 +789,4 @@ const signupCustomFieldModuleMetaData: Metadata.Values<SignupCustomFieldAttrs> =
   },
 };
 
-export {
-  signupCustomFieldModuleMetaData,
-};
+export { signupCustomFieldModuleMetaData };

@@ -16,7 +16,7 @@ export const salvattoreInit = (el: HTMLElement): void => {
   }
 
   // If the column element is not found, register the grid.
-  if (! el.querySelectorAll(':scope >.column').length) {
+  if (!el.querySelectorAll(':scope >.column').length) {
     window?.divi?.scriptLibrary?.scriptLibrarySalvattore?.registerGrid(el);
   }
 };

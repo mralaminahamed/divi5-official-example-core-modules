@@ -1,11 +1,11 @@
 interface SignupData {
-    selector: string;
+  selector: string;
 }
 
 declare global {
-    interface Window {
-        diviModuleSignupData?: SignupData[];
-    }
+  interface Window {
+    diviModuleSignupData?: SignupData[];
+  }
 }
 
 export { SignupData };

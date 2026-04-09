@@ -1,8 +1,4 @@
-import {
-  type ButtonAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type ButtonAttrs, type Metadata } from '@divi/types';
 
 /**
  * Button Module Default Printed Style Attributes.
@@ -12,6 +8,4 @@ import {
  */
 const buttonModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<ButtonAttrs> = {};
 
-export {
-  buttonModuleDefaultPrintedStyleAttributes,
-};
+export { buttonModuleDefaultPrintedStyleAttributes };

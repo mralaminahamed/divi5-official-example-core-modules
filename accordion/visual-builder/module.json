@@ -11,6 +11,7 @@
   "childrenName": [
     "divi/accordion-item"
   ],
+  "allowAllElements": true,
   "videos": [
     {
       "id": "k8-bjvI850I",
@@ -55,11 +56,27 @@
       },
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
+          "elements": {
+            "groupType": "group-item",
+            "item": {
+              "groupSlug": "contentElements",
+              "priority": 5,
+              "render": true,
+              "component": {
+                "type": "group",
+                "name": "divi/elements",
+                "props": {
+                  "grouped": false
+                }
+              }
+            }
+          },
+          "html": {},
           "link": {},
-          "htmlAttributes": {},
+          "loop": {},
           "text": {
             "priority": 15,
             "component": {
@@ -81,13 +98,40 @@
         },
         "decoration": {
           "animation": {},
+          "attributes": {},
           "background": {},
           "conditions": {},
           "disabledOn": {},
           "filters": {},
+          "interactions": {},
+          "layout": {
+            "groupType": "group-item",
+            "item": {
+              "groupSlug": "designLayout",
+              "priority": 10,
+              "render": true,
+              "component": {
+                "type": "group",
+                "name": "divi/layout",
+                "props": {
+                  "grouped": false,
+                  "defaultGroupAttr": {
+                    "desktop": {
+                      "value": {
+                        "flexDirection": "column",
+                        "columnGap": "30px",
+                        "rowGap": "30px"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "border": {},
           "boxShadow": {},
           "overflow": {},
+          "order": {},
           "position": {},
           "scroll": {
             "groupType": "group-item",
@@ -179,6 +223,7 @@
                 "attrName": "closedToggleIcon.decoration.icon",
                 "priority": 10,
                 "render": true,
+                "category": "basic_option",
                 "component": {
                   "type": "group",
                   "name": "divi/icon",
@@ -224,7 +269,18 @@
                         "render": true
                       },
                       "size": {
-                        "render": true
+                        "render": true,
+                        "component": {
+                          "type": "field",
+                          "name": "divi/range",
+                          "props": {
+                            "cssProperty": "icon-font-size",
+                            "defaultUnit": "px",
+                            "min": 1,
+                            "minLimit": 1,
+                            "max": 120
+                          }
+                        }
                       }
                     }
                   }
@@ -276,6 +332,11 @@
               "description": "You can pick unique background colors for toggles when they are in their open and closed states. Choose the open state background color here.",
               "priority": 10,
               "render": true,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker"
@@ -292,6 +353,11 @@
               "description": "You can pick unique text colors for toggle titles when they are open and closed. Choose the open state title color here.",
               "priority": 5,
               "render": true,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker"
@@ -321,6 +387,11 @@
               "description": "You can pick unique background colors for toggles when they are in their open and closed states. Choose the closed state background color here.",
               "priority": 10,
               "render": true,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker"
@@ -387,6 +458,19 @@
     "design": "auto",
     "advanced": "auto",
     "groups": {
+      "contentElements": {
+        "panel": "content",
+        "priority": 5,
+        "groupName": "contentElements",
+        "multiElements": true,
+        "component": {
+          "name": "divi/composite",
+          "props": {
+            "groupLabel": "Elements",
+            "preset": "content"
+          }
+        }
+      },
       "contentToggleIcon": {
         "panel": "content",
         "priority": 10,
@@ -395,6 +479,19 @@
           "name": "divi/composite",
           "props": {
             "groupLabel": "Toggle Icon"
+          }
+        }
+      },
+      "designLayout": {
+        "panel": "design",
+        "priority": 5,
+        "groupName": "designLayout",
+        "component": {
+          "name": "divi/composite",
+          "props": {
+            "groupLabel": "Layout",
+            "clipboardCategory": "style",
+            "presetGroup": "divi/layout"
           }
         }
       },

@@ -1,8 +1,4 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
 import { getAttrValue } from '@divi/module-utils';
 import { type BlurbAttrs } from '@divi/types';
 
@@ -25,7 +21,7 @@ export const moduleClassnames = ({
   classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text));
 
   // Module specific classnames.
-  const imageIconPlacement          = getAttrValue({
+  const imageIconPlacement = getAttrValue({
     attr: attrs.imageIcon?.advanced?.placement,
     mode: 'getAndInheritAll',
     baseBreakpoint,

@@ -1,13 +1,8 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
 import { type BlogAttrs } from '@divi/types';
 
-
 /**
- * Module classnames function for Audio module.
+ * Module classnames function for Blog module.
  *
  * @since ??
  *
@@ -19,23 +14,28 @@ export const moduleClassnames = ({
   state,
   breakpoint,
 }: ModuleClassnamesParams<BlogAttrs>): void => {
-  // Fullwidth and grid class
-  const fullwidth = attrs?.fullwidth?.advanced?.enable?.desktop?.value;
-  if ('on' === fullwidth) {
-    classnamesInstance.add('et_pb_posts');
-  } else {
-    classnamesInstance.add('et_pb_blog_grid_wrapper');
-  }
-
   // Text Options.
   classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text));
+
+  // Add et_pb_posts class to match frontend behavior.
+  // It is needed to set individual post's row width to 100%.
+  classnamesInstance.add('et_pb_posts', true);
+
+  // Determine which border attribute to use based on layout display:
+  // - Grid layout: Use post.decoration.border (targets individual posts)
+  // - Fullwidth/flex/block layout: Use fullwidth.decoration.border (targets posts in fullwidth mode)
+  const layoutDisplay = attrs?.blogGrid?.decoration?.layout?.desktop?.value?.display ?? 'grid';
+  const isGridLayout = 'grid' === layoutDisplay;
+  const borderAttr = isGridLayout
+    ? (attrs?.post?.decoration?.border ?? {})
+    : (attrs?.fullwidth?.decoration?.border ?? {});
 
   // Add element classnames.
   classnamesInstance.add(
     elementClassnames({
       attrs: {
-        ...attrs?.module?.decoration ?? {},
-        border: attrs?.post?.decoration?.border ?? attrs?.fullwidth?.decoration?.border ?? {},
+        ...(attrs?.module?.decoration ?? {}),
+        border: borderAttr,
       },
       state,
       breakpoint,

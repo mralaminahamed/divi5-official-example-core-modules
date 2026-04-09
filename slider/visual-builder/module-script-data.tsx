@@ -1,11 +1,6 @@
-import React, {
-  Fragment,
-  type ReactElement,
-} from 'react';
+import React, { Fragment, type ReactElement } from 'react';
 
-import {
-  type ModuleScriptDataProps,
-} from '@divi/module';
+import { type ModuleScriptDataProps } from '@divi/module';
 import { type SliderAttrs } from '@divi/types';
 
 /**
@@ -15,9 +10,7 @@ import { type SliderAttrs } from '@divi/types';
  *
  * @returns {ReactElement}
  */
-export const ModuleScriptData = ({
-  elements,
-}: ModuleScriptDataProps<SliderAttrs>): ReactElement => (
+export const ModuleScriptData = ({ elements }: ModuleScriptDataProps<SliderAttrs>): ReactElement => (
   <Fragment>
     {elements.scriptData({
       attrName: 'module',

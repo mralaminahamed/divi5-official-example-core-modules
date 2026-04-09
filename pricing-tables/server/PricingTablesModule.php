@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
@@ -25,8 +25,11 @@ use ET\Builder\Packages\Module\Module;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroup;
+use ET\Builder\Packages\GlobalData\GlobalData;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 
 // phpcs:disable Squiz.Commenting.InlineComment -- Temporarily disabled to get the PR CI pass for now. TODO: Fix this later.
 
@@ -73,6 +76,7 @@ class PricingTablesModule implements DependencyInterface {
 		$classnames_instance->add(
 			ElementClassnames::classnames(
 				[
+					// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 					// TODO feat(D5, Module Attribute Refactor) Once link is merged as part of options property, remove this.
 					'attrs' => array_merge(
 						$attrs['module']['decoration'] ?? [],
@@ -163,60 +167,6 @@ class PricingTablesModule implements DependencyInterface {
 		return \WP_Block_Type_Registry::get_instance()->get_registered( 'divi/pricing-tables' )->customCssFields;
 	}
 
-	/**
-	 * Overflow style declaration if border radius is set.
-	 *
-	 * This function will declare overflow style for Pricing Tables module.
-	 *
-	 * @param array $params {
-	 *     An array of arguments.
-	 *
-	 *     @type array       $attrValue  The value (breakpoint > state > value) of module attribute.
-	 *     @type bool|array  $important  If set to true, the CSS will be added with !important.
-	 *     @type string      $returnType This is the type of value that the function will return. Can be either string or key_value_pair.
-	 * }
-	 *
-	 * @return string
-	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
-
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * Pricing Table Spacing Style Declaration.
@@ -410,7 +360,10 @@ class PricingTablesModule implements DependencyInterface {
 										'props'         => [
 											'selector' => "{$args['orderClass']} .et_pb_pricing_table",
 											'attr'     => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 								],
@@ -584,23 +537,7 @@ class PricingTablesModule implements DependencyInterface {
 
 		$children = '';
 
-		// Child Content Wrapper.
-		$pricing_tables_content_wrapper = HTMLUtility::render(
-			[
-				'tag'               => 'div',
-				'attributes'        => [
-					'class' => HTMLUtility::classnames(
-						[
-							'et_pb_pricing_table_wrap' => true,
-						]
-					),
-				],
-				'childrenSanitizer' => 'et_core_esc_previously',
-				'children'          => $content,
-			]
-		);
-
-		$children .= $pricing_tables_content_wrapper;
+		$children .= $content;
 
 		$parent = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
 
@@ -690,7 +627,7 @@ class PricingTablesModule implements DependencyInterface {
 	public function load() {
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/pricing-tables/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( PricingTablesPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ PricingTablesPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

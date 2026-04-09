@@ -1,7 +1,4 @@
-import {
-  find,
-  map,
-} from 'lodash';
+import { find, map } from 'lodash';
 
 import { select } from '@divi/data';
 
@@ -12,19 +9,24 @@ import { select } from '@divi/data';
  *
  * @returns {Array} - Included categories.
  */
-export const includedCategories = (categories: string) => {
+export const includedCategories = (categories: string): string[] => {
   const postCategories = select('divi/settings').getSetting(['taxonomy', 'postCategories']);
 
-  // eslint-disable-next-line consistent-return
-  const filterCategories = map(categories.split(',').filter(item => item !== ''), item => {
-    if ('all' === item || 'current' === item) {
-      return item;
-    }
-    const categoryExists = find(postCategories, ['term_id', Number(item)]);
-    if (categoryExists) {
-      return Number(item);
-    }
-  }).filter(Boolean).map(String);
+  const filterCategories = map(
+    categories.split(',').filter(item => item !== ''),
+    item => {
+      if ('all' === item || 'current' === item) {
+        return item;
+      }
+      const categoryExists = find(postCategories, ['term_id', Number(item)]);
+      if (categoryExists) {
+        return Number(item);
+      }
+      return null;
+    },
+  )
+    .filter(Boolean)
+    .map(String);
 
   return filterCategories;
 };

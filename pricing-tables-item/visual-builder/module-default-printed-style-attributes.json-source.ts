@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type PricingTableAttrs,
-} from '@divi/types';
-
+import { type Metadata, type PricingTableAttrs } from '@divi/types';
 
 /**
  * Pricing Table Module Default Printed Style Attributes.
@@ -13,24 +9,21 @@ import {
 const pricingTableModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<PricingTableAttrs> = {
   module: {
     decoration: {
+      layout: {
+        desktop: {
+          value: {
+            flexDirection: 'column',
+          },
+        },
+      },
       border: {
         desktop: {
           value: {
             styles: {
               all: {
                 width: '1px',
-              },
-              top: {
-                width: '1px',
-              },
-              right: {
-                width: '1px',
-              },
-              bottom: {
-                width: '1px',
-              },
-              left: {
-                width: '1px',
+                color: '#bebebe',
+                style: 'solid',
               },
             },
           },
@@ -57,7 +50,7 @@ const pricingTableModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribute
         font: {
           desktop: {
             value: {
-              size:       '16px',
+              size: '16px',
               lineHeight: '1em',
             },
           },
@@ -71,7 +64,7 @@ const pricingTableModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribute
         font: {
           desktop: {
             value: {
-              size:       '22px',
+              size: '22px',
               lineHeight: '1em',
             },
           },
@@ -85,8 +78,26 @@ const pricingTableModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribute
         font: {
           desktop: {
             value: {
-              size:       '80px',
+              size: '80px',
               lineHeight: '82px',
+            },
+          },
+        },
+      },
+      border: {
+        desktop: {
+          value: {
+            styles: {
+              all: {
+                width: '0px',
+                color: '#bebebe',
+                style: 'solid',
+              },
+              bottom: {
+                width: '1px',
+                color: '#bebebe',
+                style: 'solid',
+              },
             },
           },
         },
@@ -95,6 +106,4 @@ const pricingTableModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribute
   },
 };
 
-export {
-  pricingTableModuleDefaultPrintedStyleAttributes,
-};
+export { pricingTableModuleDefaultPrintedStyleAttributes };

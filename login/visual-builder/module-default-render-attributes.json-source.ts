@@ -1,8 +1,4 @@
-import {
-  type LoginAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type LoginAttrs, type Metadata } from '@divi/types';
 
 /**
  * Login Module Default Render Attributes.
@@ -24,8 +20,7 @@ const loginModuleDefaultRenderAttributes: Metadata.DefaultAttributes<LoginAttrs>
         text: {
           desktop: {
             value: {
-              orientation: 'left',
-              color:       'dark',
+              color: 'dark',
             },
           },
         },
@@ -40,7 +35,7 @@ const loginModuleDefaultRenderAttributes: Metadata.DefaultAttributes<LoginAttrs>
       background: {
         desktop: {
           value: {
-            color:       '$variable({"type":"color","value":{"name":"gcid-primary-color","settings":{}}})$',
+            color: '$variable({"type":"color","value":{"name":"gcid-primary-color","settings":{}}})$',
             enableColor: 'on',
           },
         },
@@ -64,7 +59,7 @@ const loginModuleDefaultRenderAttributes: Metadata.DefaultAttributes<LoginAttrs>
     innerContent: {
       desktop: {
         value: {
-          text:    'Login',
+          text: 'Login',
           linkUrl: '#',
         },
       },
@@ -83,6 +78,4 @@ const loginModuleDefaultRenderAttributes: Metadata.DefaultAttributes<LoginAttrs>
   },
 };
 
-export {
-  loginModuleDefaultRenderAttributes,
-};
+export { loginModuleDefaultRenderAttributes };

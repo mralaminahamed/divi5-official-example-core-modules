@@ -1,8 +1,4 @@
-import {
-  type CtaAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type CtaAttrs, type Metadata } from '@divi/types';
 
 /**
  * CTA Module Default Printed Style Attributes.
@@ -13,11 +9,19 @@ import {
 const ctaModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<CtaAttrs> = {
   module: {
     decoration: {
+      layout: {
+        desktop: {
+          value: {
+            flexDirection: 'column',
+            rowGap: '20px',
+          },
+        },
+      },
       spacing: {
         desktop: {
           value: {
             padding: {
-              top:    '40px',
+              top: '40px',
               bottom: '40px',
             },
           },
@@ -40,6 +44,4 @@ const ctaModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<CtaAttr
   },
 };
 
-export {
-  ctaModuleDefaultPrintedStyleAttributes,
-};
+export { ctaModuleDefaultPrintedStyleAttributes };

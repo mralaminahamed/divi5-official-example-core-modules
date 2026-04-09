@@ -1,14 +1,6 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
 import { getAttrValue } from '@divi/module-utils';
-import {
-  type ContactFieldAttrs,
-  type ContactFormAttrs,
-} from '@divi/types';
-
+import { type ContactFieldAttrs, type ContactFormAttrs } from '@divi/types';
 
 /**
  * Set CSS class names to the module.
@@ -40,9 +32,11 @@ export const moduleClassnames = ({
   }
 
   // Text Options.
-  classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text, {
-    orientation: true,
-  }));
+  classnamesInstance.add(
+    textOptionsClassnames(attrs?.module?.advanced?.text, {
+      orientation: true,
+    }),
+  );
 
   // Add element classnames.
   classnamesInstance.add(

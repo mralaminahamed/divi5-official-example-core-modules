@@ -23,12 +23,12 @@ export const useIsLastContactField = (
   // This allows isolated component tests to work correctly while preserving
   // the correct behavior for real contact forms with proper parent context.
   // See: test/integration/test/module-library/src/components/contact-field/edit.ts
-  if (! parentId || '' === parentId) {
+  if (!parentId || '' === parentId) {
     return false;
   }
 
   const globalPosition = useGlobalFieldPosition(fieldId, loopedPosition, parentId);
 
   // Apply the same logic as PHP: (globalPosition % 2 === 0) || (fullwidth === 'on')
-  return (0 === globalPosition % 2) || ('off' !== fullwidth);
+  return 0 === globalPosition % 2 || 'off' !== fullwidth;
 };

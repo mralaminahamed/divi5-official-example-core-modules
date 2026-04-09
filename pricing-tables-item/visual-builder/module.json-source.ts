@@ -1,3 +1,5 @@
+import { __ } from '@wordpress/i18n';
+
 import { type Metadata, type PricingTableAttrs } from '@divi/types';
 
 /**
@@ -7,93 +9,115 @@ import { type Metadata, type PricingTableAttrs } from '@divi/types';
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
-  name:        'divi/pricing-table',
+  name: 'divi/pricing-table',
   d4Shortcode: 'et_pb_pricing_table',
-  title:       'Pricing Table',
-  titles:      'Pricing Table Items',
-  moduleIcon:  'divi/module-pricing-table',
-  category:    'child-module',
-  videos:      [
+  title: __('Pricing Table', 'et_builder_5'),
+  titles: __('Pricing Table Items', 'et_builder_5'),
+  moduleIcon: 'divi/module-pricing-table',
+  category: 'child-module',
+  childrenName: [], // Supports any module type as child elements
+  videos: [
     {
-      id:   'd2MTMey712I',
+      id: 'd2MTMey712I',
       name: 'An introduction to the Pricing Table module',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}}',
       settings: {
         decoration: {
+          layout: {
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'designLayout',
+              priority: 5,
+              render: true,
+
+              // Built-in group component
+              component: {
+                type: 'group',
+                name: 'divi/layout',
+
+                props: {
+                  grouped: false,
+                },
+              },
+            },
+          },
+          animation: {},
+          attributes: {},
           background: {},
-          boxShadow:  {},
-          border:     {
+          boxShadow: {},
+          border: {
             priority: 85,
           },
           conditions: {},
           disabledOn: {},
-          filters:    {},
-          overflow:   {},
-          position:   {},
-          scroll:     {},
-          spacing:    {
-            component: {
-              props: {
-                fields: {
-                  margin: {
-                    render: false,
-                  },
+          filters: {},
+          interactions: {},
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {},
+          sizing: {
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'designSizing',
+              priority: 20,
+              render: true,
+              component: {
+                type: 'group',
+                name: 'divi/sizing',
+                props: {
+                  grouped: false,
                 },
               },
             },
           },
-          transform:  {},
+          spacing: {},
+          transform: {},
           transition: {},
-          zIndex:     {},
+          zIndex: {},
         },
         advanced: {
+          elements: {},
+          html: {},
+          link: {},
           featured: {
-            groupType:  'group',
-            panel:      'design',
-            priority:   10,
-            groupName:  'layout',
-            groupLabel: 'Layout',
-            component:  {
-              name:  'divi/composite',
-              props: {
-                groupLabel:        'Layout',
-                clipboardCategory: 'style',
-                fields:            {
-                  featured: {
-                    render:      true,
-                    label:       'Make This Table Featured',
-                    description: 'Featuring a table will make it stand out from the rest.',
-                    features:    {
-                      responsive: false,
-                      hover:      false,
-                      sticky:     false,
-                      preset:     ['html'],
-                    },
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'designLayout',
+              label: __('Make This Table Featured', 'et_builder_5'),
+              description: __('Featuring a table will make it stand out from the rest.', 'et_builder_5'),
+              category: 'basic_option',
+              priority: 15,
+              render: true,
+              features: {
+                responsive: false,
+                hover: false,
+                sticky: false,
+                preset: ['html'],
+              },
 
-                    // Built-in component.
-                    component: {
-                      name: 'divi/toggle',
-                    },
-                  },
-                },
+              // Built-in component.
+              component: {
+                type: 'field',
+                name: 'divi/toggle',
               },
             },
           },
           text: {
-            priority:  18,
+            priority: 18,
             component: {
               props: {
                 fields: {
@@ -104,7 +128,7 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
               },
             },
           },
-          link: {},
+          loop: {},
         },
       },
       styleProps: {
@@ -115,13 +139,17 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
           selector: '{{selectorPrefix}}.et_pb_pricing .et_pb_pricing_table{{baseSelector}}',
         },
         spacing: {
-          selector:          '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content',
+          selector:
+            '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content',
           propertySelectors: {
             desktop: {
               value: {
-                'padding-left':   '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
-                'padding-right':  '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
-                'padding-bottom': '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content,{{selectorPrefix}}.et_pb_pricing {{baseSelector}}',
+                'padding-left':
+                  '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
+                'padding-right':
+                  '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content,{{selector}} .et_pb_button_wrapper',
+                'padding-bottom':
+                  '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_heading,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content_top,{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_content,{{selectorPrefix}}.et_pb_pricing {{baseSelector}}',
               },
             },
           },
@@ -130,20 +158,22 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       },
     },
     currencyFrequency: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_frequency',
+      supportsCustomAttributes: true,
       settings: {
         innerContent: {
           groupType: 'group-items',
-          items:     {
+          items: {
             currencyFrequencyTitle: {
-              groupSlug:   'contentText',
-              priority:    30,
-              render:      true,
-              subName:     'currency',
-              label:       'Currency',
-              description: 'Input your value to action title here.',
-              features:    {
+              groupSlug: 'contentText',
+              priority: 30,
+              render: true,
+              subName: 'currency',
+              label: __('Currency', 'et_builder_5'),
+              description: __('Input your value to action title here.', 'et_builder_5'),
+              category: 'basic_option',
+              features: {
                 dynamicContent: {
                   type: 'text',
                 },
@@ -156,13 +186,17 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
               },
             },
             per: {
-              groupSlug:   'contentText',
-              priority:    40,
-              render:      true,
-              subName:     'per',
-              label:       'Frequency',
-              description: 'If your pricing is subscription based, input the subscription payment cycle here.',
-              features:    {
+              groupSlug: 'contentText',
+              priority: 40,
+              render: true,
+              subName: 'per',
+              label: __('Frequency', 'et_builder_5'),
+              description: __(
+                'If your pricing is subscription based, input the subscription payment cycle here.',
+                'et_builder_5',
+              ),
+              category: 'basic_option',
+              features: {
                 dynamicContent: {
                   type: 'text',
                 },
@@ -178,11 +212,11 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
         },
         decoration: {
           font: {
-            priority:  24,
+            priority: 24,
             component: {
               props: {
-                groupLabel: 'Currency & Frequency Text',
-                fieldLabel: 'Currency & Frequency',
+                groupLabel: __('Currency & Frequency Text', 'et_builder_5'),
+                fieldLabel: __('Currency & Frequency', 'et_builder_5'),
 
                 fields: {
                   // Need to be set false because elementType heading by default set headingLevel.render to `true`
@@ -195,16 +229,13 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
           },
         },
       },
-      attributes: {
-        class: 'et_pb_dollar_sign',
-      },
-      tagName:           'span',
-      inlineEditor:      'plainText',
+      tagName: 'span',
+      inlineEditor: 'plainText',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
+      styleProps: {
         selector: '{{selector}} .et_pb_frequency, {{selector}} .et_pb_dollar_sign',
-        font:     {
-          selector:  '{{selector}} .et_pb_et_price .et_pb_dollar_sign, {{selector}} .et_pb_et_price .et_pb_frequency',
+        font: {
+          selector: '{{selector}} .et_pb_et_price .et_pb_dollar_sign, {{selector}} .et_pb_et_price .et_pb_frequency',
           important: {
             font: {
               desktop: {
@@ -218,18 +249,19 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       },
     },
     subtitle: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_best_value',
+      supportsCustomAttributes: true,
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            description: 'Define a sub title for the table if desired.',
-            groupSlug:   'contentText',
-            label:       'Subtitle',
-            priority:    20,
-            render:      true,
-
+          item: {
+            description: __('Define a sub title for the table if desired.', 'et_builder_5'),
+            groupSlug: 'contentText',
+            label: __('Subtitle', 'et_builder_5'),
+            priority: 20,
+            render: true,
+            category: 'basic_option',
             features: {
               dynamicContent: {
                 type: 'text',
@@ -247,12 +279,12 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
         },
         decoration: {
           font: {
-            priority:  22,
+            priority: 22,
             component: {
               props: {
-                groupLabel: 'Subtitle Text',
-                fieldLabel: 'Subtitle',
-                fields:     {
+                groupLabel: __('Subtitle Text', 'et_builder_5'),
+                fieldLabel: __('Subtitle', 'et_builder_5'),
+                fields: {
                   // Need to be set false because elementType heading by default set headingLevel.render to `true`
                   headingLevel: {
                     render: false,
@@ -266,13 +298,13 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       attributes: {
         class: 'et_pb_best_value',
       },
-      tagName:           'span',
-      inlineEditor:      'plainText',
+      tagName: 'span',
+      inlineEditor: 'plainText',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
+      styleProps: {
         selector: '{{selector}} .et_pb_best_value',
-        font:     {
-          selector:  '{{selector}} .et_pb_pricing_heading .et_pb_best_value',
+        font: {
+          selector: '{{selector}} .et_pb_pricing_heading .et_pb_best_value',
           important: {
             font: {
               desktop: {
@@ -286,18 +318,20 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       },
     },
     title: {
-      type:     'object',
-      selector: '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title',
+      type: 'object',
+      selector:
+        '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title',
+      supportsCustomAttributes: true,
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            description: 'Define a title for the pricing table.',
-            groupSlug:   'contentText',
-            label:       'Title',
-            priority:    10,
-            render:      true,
-
+          item: {
+            description: __('Define a title for the pricing table.', 'et_builder_5'),
+            groupSlug: 'contentText',
+            label: __('Title', 'et_builder_5'),
+            priority: 10,
+            render: true,
+            category: 'basic_option',
             features: {
               dynamicContent: {
                 type: 'text',
@@ -316,13 +350,18 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designTitleText',
-              subName:     'color',
-              label:       'Table Header Background Color',
+            item: {
+              groupSlug: 'designTitleText',
+              subName: 'color',
+              label: __('Table Header Background Color', 'et_builder_5'),
               description: '',
-              render:      true,
-              priority:    10,
+              render: true,
+              priority: 10,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -333,19 +372,19 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
           },
           font: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designTitleText',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in component.
               component: {
-                name:  'divi/font',
-                type:  'group',
+                name: 'divi/font',
+                type: 'group',
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Title',
-                  fields:     {
+                  grouped: false,
+                  fieldLabel: __('Title', 'et_builder_5'),
+                  fields: {
                     headingLevel: {
                       render: true,
                     },
@@ -359,34 +398,37 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       attributes: {
         class: 'et_pb_pricing_title',
       },
-      tagName:           'h2',
-      elementType:       'heading',
-      inlineEditor:      'plainText',
+      tagName: 'h2',
+      elementType: 'heading',
+      inlineEditor: 'plainText',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
-        selector:   '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h2,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h6.et_pb_pricing_title',
+      styleProps: {
+        selector:
+          '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h2,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h6.et_pb_pricing_title',
         background: {
           selector: '{{selectorPrefix}}.et_pb_pricing {{baseSelector}}.et_pb_pricing_table .et_pb_pricing_heading',
         },
         font: {
-          selector:  '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h2,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h6.et_pb_pricing_title',
+          selector:
+            '{{selector}} .et_pb_pricing_heading h2,{{selector}} .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}} .et_pb_pricing_heading h6.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h2,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h1.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h3.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h4.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h5.et_pb_pricing_title,{{selector}}.et_pb_featured_table .et_pb_pricing_heading h6.et_pb_pricing_title',
           important: true,
         },
       },
     },
     price: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_et_price .et_pb_sum',
+      supportsCustomAttributes: true,
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            description: 'Input the value of the product here.',
-            groupSlug:   'contentText',
-            label:       'Price',
-            priority:    50,
-            render:      true,
-
+          item: {
+            description: __('Input the value of the product here.', 'et_builder_5'),
+            groupSlug: 'contentText',
+            label: __('Price', 'et_builder_5'),
+            priority: 50,
+            render: true,
+            category: 'basic_option',
             features: {
               dynamicContent: {
                 type: 'text',
@@ -403,13 +445,21 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designPriceText',
-              subName:     'color',
-              label:       'Pricing Area Background Color',
-              description: 'Pick a color to use for the background area that appears behind the pricing text.',
-              render:      true,
-              priority:    10,
+            item: {
+              groupSlug: 'designPriceText',
+              subName: 'color',
+              label: __('Pricing Area Background Color', 'et_builder_5'),
+              description: __(
+                'Pick a color to use for the background area that appears behind the pricing text.',
+                'et_builder_5',
+              ),
+              render: true,
+              priority: 10,
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               // Built-in component.
               component: {
@@ -420,28 +470,28 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
           },
           font: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designPriceText',
-              render:    true,
-              priority:  20,
+              render: true,
+              priority: 20,
 
               // Built-in component.
               component: {
-                name:  'divi/font',
-                type:  'group',
+                name: 'divi/font',
+                type: 'group',
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Price',
+                  grouped: false,
+                  fieldLabel: __('Price', 'et_builder_5'),
                 },
               },
             },
           },
           border: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designPriceText',
-              priority:  30,
-              render:    true,
+              priority: 30,
+              render: true,
 
               // Built-in component.
               component: {
@@ -459,13 +509,22 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       attributes: {
         class: 'et_pb_sum',
       },
-      tagName:           'span',
-      inlineEditor:      'plainText',
+      tagName: 'span',
+      inlineEditor: 'plainText',
       childrenSanitizer: 'et_core_esc_previously',
-      styleProps:        {
+      styleProps: {
         selector: '{{selector}} .et_pb_et_price .et_pb_sum,{{selector}} .et_pb_pricing_content_top',
-        font:     {
-          selector:  '{{selector}} .et_pb_et_price .et_pb_sum',
+        font: {
+          selector: '{{selector}} .et_pb_et_price .et_pb_sum',
+          propertySelectors: {
+            font: {
+              desktop: {
+                value: {
+                  'text-align': '{{selector}} .et_pb_pricing_content_top',
+                },
+              },
+            },
+          },
           important: {
             font: {
               desktop: {
@@ -485,22 +544,23 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       },
     },
     button: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_pb_button',
+      supportsCustomAttributes: true,
       settings: {
         innerContent: {
           groupType: 'into-multiple-groups',
-          groups:    {
+          groups: {
             text: {
               groupType: 'group-item',
-              item:      {
-                description: 'Input your desired button text, or leave blank for no button.',
-                groupSlug:   'contentText',
-                label:       'Button',
-                priority:    60,
-                render:      true,
-                subName:     'text',
-
+              item: {
+                description: __('Input your desired button text, or leave blank for no button.', 'et_builder_5'),
+                groupSlug: 'contentText',
+                label: __('Button', 'et_builder_5'),
+                priority: 60,
+                render: true,
+                subName: 'text',
+                category: 'basic_option',
                 features: {
                   dynamicContent: {
                     type: 'text',
@@ -515,21 +575,42 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
                 },
               },
             },
+            link: {
+              groupType: 'group-item',
+              item: {
+                groupSlug: 'contentLink',
+                attrName: 'button.innerContent',
+                priority: 70,
+                render: true,
+
+                // Built-in group component
+                component: {
+                  type: 'group',
+                  name: 'divi/button-link',
+
+                  props: {
+                    grouped: false,
+                    attrName: 'button.innerContent',
+                    fieldLabel: __('Button', 'et_builder_5'),
+                  },
+                },
+              },
+            },
           },
         },
         decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          button:     {
+          border: {},
+          boxShadow: {},
+          button: {
             component: {
               props: {
                 fields: {
                   alignment: {
-                    description:     'Align you button to the left, right or center of the module.',
-                    visible:         true,
+                    description: __('Align you button to the left, right or center of the module.', 'et_builder_5'),
+                    visible: true,
                     multipleChoices: false,
-                    component:       {
+                    component: {
                       props: {
                         options: {
                           left: {
@@ -550,20 +631,20 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
               },
             },
           },
-          font:    {},
+          font: {},
           spacing: {},
         },
       },
       attributes: {
         class: 'et_pb_pricing_table_button',
       },
-      elementType:  'button',
+      elementType: 'button',
       elementProps: {
         hasWrapper: true,
       },
       styleProps: {
         selector: '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_table_button.et_pb_button',
-        border:   {
+        border: {
           important: {
             desktop: {
               value: {
@@ -582,13 +663,13 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
           },
         },
         font: {
-          selector:  '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_table_button.et_pb_button',
+          selector: '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_table_button.et_pb_button',
           important: {
             font: true,
           },
         },
         spacing: {
-          selector:  '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_table_button.et_pb_button',
+          selector: '{{selectorPrefix}}.et_pb_pricing {{baseSelector}} .et_pb_pricing_table_button.et_pb_button',
           important: {
             desktop: {
               value: {
@@ -600,44 +681,49 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
       },
     },
     excluded: {
-      type:     'object',
-      selector: '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
+      type: 'object',
+      selector:
+        '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
       settings: {
         decoration: {
           font: {
-            priority:  24,
+            priority: 24,
             component: {
               props: {
-                groupLabel: 'Excluded Item Text',
-                fieldLabel: 'Excluded Item',
+                groupLabel: __('Excluded Item Text', 'et_builder_5'),
+                fieldLabel: __('Excluded Item', 'et_builder_5'),
               },
             },
           },
         },
       },
       styleProps: {
-        selector: '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
-        font:     {
-          selector: '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
+        selector:
+          '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
+        font: {
+          selector:
+            '{{selector}} ul.et_pb_pricing li.et_pb_not_available,{{selector}} ul.et_pb_pricing li.et_pb_not_available span,{{selector}} ul.et_pb_pricing li.et_pb_not_available a',
         },
       },
     },
     content: {
-      type:        'object',
-      selector:    '{{selector}} .et_pb_pricing_content',
+      type: 'object',
+      selector: '{{selector}} .et_pb_pricing_content',
+      supportsCustomAttributes: true,
       elementType: 'content',
-      settings:    {
+      settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            description: 'Input the main text content for your module here.',
-            groupSlug:   'contentText',
-            label:       'Body',
-            priority:    70,
-            render:      true,
+          item: {
+            description: __('Input the main text content for your module here.', 'et_builder_5'),
+            groupSlug: 'contentText',
+            label: __('Body', 'et_builder_5'),
+            category: 'basic_option',
+            priority: 70,
+            render: true,
 
             features: {
-              sticky:         false,
+              sticky: false,
               dynamicContent: {
                 type: 'text',
               },
@@ -652,12 +738,12 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
         },
         decoration: {
           bodyFont: {
-            priority:  21,
+            priority: 21,
             component: {
               props: {
                 groups: {
                   body: {
-                    fieldLabel: 'Body',
+                    fieldLabel: __('Body', 'et_builder_5'),
                   },
                 },
               },
@@ -666,22 +752,30 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
         },
         advanced: {
           bulletColor: {
-            groupType:  'group',
-            panel:      'design',
-            priority:   15,
-            groupName:  'bullet',
-            groupLabel: 'Bullet',
-            component:  {
-              name:  'divi/composite',
+            groupType: 'group',
+            panel: 'design',
+            priority: 15,
+            groupName: 'bullet',
+            groupLabel: __('Bullet', 'et_builder_5'),
+            component: {
+              name: 'divi/composite',
               props: {
-                groupLabel:        'Bullet',
+                groupLabel: __('Bullet', 'et_builder_5'),
                 clipboardCategory: 'style',
-                fields:            {
+                fields: {
                   bulletColor: {
-                    render:      true,
-                    label:       'Bullet Color',
-                    description: 'Pick a color to use for the bullets that appear next to each list item within the pricing table\'s feature area.',
-                    component:   {
+                    render: true,
+                    label: __('Bullet Color', 'et_builder_5'),
+                    description: __(
+                      "Pick a color to use for the bullets that appear next to each list item within the pricing table's feature area.",
+                      'et_builder_5',
+                    ),
+                    features: {
+                      dynamicContent: {
+                        type: 'color',
+                      },
+                    },
+                    component: {
                       name: 'divi/color-picker',
                     },
                   },
@@ -701,107 +795,151 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
   },
   customCssFields: {
     pricingHeading: {
-      label:          'Pricing Heading',
-      subName:        'pricingHeading',
+      label: __('Pricing Heading', 'et_builder_5'),
+      subName: 'pricingHeading',
       selectorSuffix: ' .et_pb_pricing_heading',
     },
     pricingTitle: {
-      label:          'Pricing Title',
-      subName:        'pricingTitle',
+      label: __('Pricing Title', 'et_builder_5'),
+      subName: 'pricingTitle',
       selectorSuffix: ' .et_pb_pricing_heading h2',
     },
     pricingSubtitle: {
-      label:          'Pricing Subtitle',
-      subName:        'pricingSubtitle',
+      label: __('Pricing Subtitle', 'et_builder_5'),
+      subName: 'pricingSubtitle',
       selectorSuffix: ' .et_pb_pricing_heading .et_pb_best_value',
     },
     pricingTop: {
-      label:          'Pricing Top',
-      subName:        'pricingTop',
+      label: __('Pricing Top', 'et_builder_5'),
+      subName: 'pricingTop',
       selectorSuffix: ' .et_pb_pricing_content_top',
     },
     price: {
-      label:          'Price',
-      subName:        'price',
+      label: __('Price', 'et_builder_5'),
+      subName: 'price',
       selectorSuffix: ' .et_pb_et_price',
     },
     currency: {
-      label:          'Currency',
-      subName:        'currency',
+      label: __('Currency', 'et_builder_5'),
+      subName: 'currency',
       selectorSuffix: ' .et_pb_dollar_sign',
     },
     frequency: {
-      label:          'Frequency',
-      subName:        'frequency',
+      label: __('Frequency', 'et_builder_5'),
+      subName: 'frequency',
       selectorSuffix: ' .et_pb_frequency',
     },
     pricingContent: {
-      label:          'Pricing Content',
-      subName:        'pricingContent',
+      label: __('Pricing Content', 'et_builder_5'),
+      subName: 'pricingContent',
       selectorSuffix: ' .et_pb_pricing_content',
     },
     pricingItem: {
-      label:          'Pricing Item',
-      subName:        'pricingItem',
+      label: __('Pricing Item', 'et_builder_5'),
+      subName: 'pricingItem',
       selectorSuffix: ' ul.et_pb_pricing li',
     },
     pricingItemExcluded: {
-      label:          'Excluded Item',
-      subName:        'pricingItemExcluded',
+      label: __('Excluded Item', 'et_builder_5'),
+      subName: 'pricingItemExcluded',
       selectorSuffix: ' ul.et_pb_pricing li.et_pb_not_available',
     },
     pricingButton: {
-      label:          'Pricing Button',
-      subName:        'pricingButton',
+      label: __('Pricing Button', 'et_builder_5'),
+      subName: 'pricingButton',
       selectorSuffix: ' .et_pb_pricing_table_button',
     },
   },
   settings: {
-    content:  'auto',
-    design:   'auto',
+    content: 'auto',
+    design: 'auto',
     advanced: 'auto',
-    groups:   {
-
+    groups: {
       // Content > Text
       contentText: {
-        panel:         'content',
-        priority:      10,
-        groupName:     'text',
+        panel: 'content',
+        priority: 10,
+        groupName: 'text',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Text',
+            groupLabel: __('Text', 'et_builder_5'),
+          },
+        },
+      },
+
+      // Content > Link
+      contentLink: {
+        panel: 'content',
+        priority: 20,
+        groupName: 'link',
+        component: {
+          name: 'divi/composite',
+          props: {
+            groupLabel: __('Link', 'et_builder_5'),
+            preset: 'content',
+          },
+        },
+      },
+
+      // Design > Layout
+      designLayout: {
+        panel: 'design',
+        priority: 5,
+        groupName: 'layout',
+        component: {
+          name: 'divi/composite',
+          props: {
+            groupLabel: __('Layout', 'et_builder_5'),
+            clipboardCategory: 'style',
+            presetGroup: 'divi/layout',
+          },
+        },
+      },
+
+      // Design > Sizing
+      designSizing: {
+        panel: 'design',
+        priority: 60,
+        groupName: 'sizing',
+        multiElements: true,
+        component: {
+          name: 'divi/composite',
+          props: {
+            groupLabel: __('Sizing', 'et_builder_5'),
+            clipboardCategory: 'style',
+            presetGroup: 'divi/sizing',
           },
         },
       },
 
       // Design > Title Text
       designTitleText: {
-        panel:     'design',
-        priority:  20,
+        panel: 'design',
+        priority: 20,
         groupName: 'titleText',
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel:        'Title Text',
+            groupLabel: __('Title Text', 'et_builder_5'),
             clipboardCategory: 'style',
-            presetGroup:       'divi/font',
+            presetGroup: 'divi/font',
           },
         },
       },
 
       // Design > Price Text
       designPriceText: {
-        panel:     'design',
-        priority:  23,
+        panel: 'design',
+        priority: 23,
         groupName: 'priceText',
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel:        'Price Text',
+            groupLabel: __('Price Text', 'et_builder_5'),
             clipboardCategory: 'style',
-            presetGroup:       'divi/font',
+            presetGroup: 'divi/font',
           },
         },
       },
@@ -809,6 +947,4 @@ const pricingTableModuleMetaData: Metadata.Values<PricingTableAttrs> = {
   },
 };
 
-export {
-  pricingTableModuleMetaData,
-};
+export { pricingTableModuleMetaData };

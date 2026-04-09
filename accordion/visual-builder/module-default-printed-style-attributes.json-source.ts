@@ -1,8 +1,4 @@
-import {
-  type AccordionAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type AccordionAttrs, type Metadata } from '@divi/types';
 
 /**
  * Accordion Module Default Printed Style Attributes.
@@ -13,6 +9,14 @@ import {
 const accordionModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<AccordionAttrs> = {
   module: {
     decoration: {
+      layout: {
+        desktop: {
+          value: {
+            flexDirection: 'column',
+            rowGap: '10px',
+          },
+        },
+      },
       border: {
         desktop: {
           value: {
@@ -32,7 +36,7 @@ const accordionModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<A
         font: {
           desktop: {
             value: {
-              size:       '16px',
+              size: '16px',
               lineHeight: '1em',
             },
           },
@@ -46,9 +50,9 @@ const accordionModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<A
         font: {
           desktop: {
             value: {
-              size:          '16px',
+              size: '16px',
               letterSpacing: '0px',
-              lineHeight:    '1.7em',
+              lineHeight: '1.7em',
             },
           },
         },
@@ -61,7 +65,7 @@ const accordionModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<A
         font: {
           desktop: {
             value: {
-              size:       '16px',
+              size: '16px',
               lineHeight: '1em',
             },
           },
@@ -78,6 +82,4 @@ const accordionModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<A
   },
 };
 
-export {
-  accordionModuleDefaultPrintedStyleAttributes,
-};
+export { accordionModuleDefaultPrintedStyleAttributes };

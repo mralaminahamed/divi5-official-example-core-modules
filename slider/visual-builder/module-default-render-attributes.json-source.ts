@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type SliderAttrs,
-} from '@divi/types';
-
+import { type Metadata, type SliderAttrs } from '@divi/types';
 
 /**
  * Slider Module Default Render Attributes.
@@ -93,6 +89,4 @@ const sliderModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SliderAttr
   },
 };
 
-export {
-  sliderModuleDefaultRenderAttributes,
-};
+export { sliderModuleDefaultRenderAttributes };

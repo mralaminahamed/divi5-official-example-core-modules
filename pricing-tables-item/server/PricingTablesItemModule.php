@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
@@ -24,10 +24,13 @@ use ET\Builder\Packages\Module\Layout\Components\MultiView\MultiViewScriptData;
 use ET\Builder\Packages\Module\Module;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
-use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
+use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use WP_Block;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
-use ET\Builder\Packages\GlobalData\GlobalPresetItemGroup;
+use ET\Builder\Packages\GlobalData\GlobalData;
+use ET\Builder\Framework\Breakpoint\Breakpoint;
+use ET\Builder\Packages\ModuleLibrary\PricingTables\PricingTablesModule;
 
 /**
  * `PricingTablesItemModule` is consisted of functions used for Pricing Table Module such as Front-End rendering, REST API Endpoints etc.
@@ -52,16 +55,31 @@ class PricingTablesItemModule implements DependencyInterface {
 	 *     @type object  $classnamesInstance Instance of ET\Builder\Packages\Module\Layout\Components\Classnames.
 	 *     @type array   $attrs              Block attributes data that being rendered.
 	 *     @type boolean $isFirst            Is the child element the first element.
+	 *     @type string  $id                 Module ID.
+	 *     @type array   $parentAttrs        Parent module attributes.
 	 * }
 	 */
 	public static function module_classnames( $args ) {
 		$classnames_instance = $args['classnamesInstance'];
 		$attrs               = $args['attrs'];
+		$id                  = $args['id'] ?? '';
+		$parent_attrs        = $args['parentAttrs'] ?? [];
 
 		// Featured Table.
 		$featured = $attrs['module']['advanced']['featured']['desktop']['value'] ?? '';
 
 		$classnames_instance->add( 'et_pb_featured_table', 'on' === $featured );
+
+		// Check if the parent is a grid layout.
+		// Note: Flex column classes are handled by Module.php, not here.
+		// This module uses module.decoration.sizing (not module.advanced.sizing),
+		// so Module.php will handle flex column width classes correctly.
+		$parent_layout_display = $parent_attrs['module']['decoration']['layout']['desktop']['value']['display'] ?? 'flex';
+		$is_parent_grid_layout = 'grid' === $parent_layout_display;
+
+		if ( $is_parent_grid_layout ) {
+			$classnames_instance->add( 'et_grid_column', true );
+		}
 	}
 
 	/**
@@ -95,35 +113,6 @@ class PricingTablesItemModule implements DependencyInterface {
 				'attrName' => 'module',
 			]
 		);
-
-		// Show bullet script data.
-		MultiViewScriptData::set(
-			[
-				'id'            => $id,
-				'name'          => $name,
-				'storeInstance' => $store_instance,
-				'hoverSelector' => $selector,
-				'setContent'    => [
-					[
-						'selector'      => $selector . ' .et_pb_dollar_sign',
-						'data'          => $attrs['currencyFrequency']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
-							$currency = $value['currency'] ?? '';
-							return $currency ?? 'T';
-						},
-						'sanitizer'     => 'et_core_esc_previously',
-					],
-					[
-						'selector'      => $selector . ' .et_pb_pricing_content',
-						'data'          => $attrs['content']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
-							return PricingTablesItemModule::render_pricing_list( $value );
-						},
-						'sanitizer'     => 'et_core_esc_previously',
-					],
-				],
-			]
-		);
 	}
 
 	/**
@@ -140,60 +129,7 @@ class PricingTablesItemModule implements DependencyInterface {
 		return \WP_Block_Type_Registry::get_instance()->get_registered( 'divi/pricing-table' )->customCssFields;
 	}
 
-	/**
-	 * Overflow style declaration if border radius is set.
-	 *
-	 * This function will declare overflow style for Pricing Tables module.
-	 *
-	 * @param array $params {
-	 *     An array of arguments.
-	 *
-	 *     @type array      $attrValue  The value (breakpoint > state > value) of module attribute.
-	 *     @type bool|array $important  If set to true, the CSS will be added with !important.
-	 *     @type string     $returnType This is the type of value that the function will return. Can be either string or key_value_pair.
-	 * }
-	 *
-	 * @return string
-	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
 
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * Pricing Table Module's style components.
@@ -281,7 +217,10 @@ class PricingTablesItemModule implements DependencyInterface {
 										'props'         => [
 											'selector' => "{$selector_prefix}.et_pb_pricing .et_pb_pricing_table{$base_order_class}",
 											'attr'     => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 								],
@@ -306,6 +245,14 @@ class PricingTablesItemModule implements DependencyInterface {
 							'attrName'   => 'content',
 							'styleProps' => [
 								'advancedStyles' => [
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => "{$args['orderClass']}.et_pb_pricing_table .et_pb_pricing li",
+											'attr'     => $attrs['content']['decoration']['bodyFont']['body']['font'] ?? [],
+											'declarationFunction' => [ PricingTablesModule::class, 'pricing_table_body_content_spacing_style_declaration' ],
+										],
+									],
 									[
 										'componentName' => 'divi/common',
 										'props'         => [
@@ -383,60 +330,60 @@ class PricingTablesItemModule implements DependencyInterface {
 			}
 
 			$plus_minus_sign = substr( $list_item_trimmed, 0, 1 );
-			$list_content    = in_array( $plus_minus_sign, array( '-', '+' ) ) ? substr( $list_item_trimmed, 1 ) : $list_item_trimmed;
+			$list_content    = in_array( $plus_minus_sign, [ '-', '+' ], true ) ? substr( $list_item_trimmed, 1 ) : $list_item_trimmed;
 
 			if ( '-' === $plus_minus_sign ) {
 				$children .= HTMLUtility::render(
-					array(
+					[
 						'tag'               => 'li',
-						'attributes'        => array(
+						'attributes'        => [
 							'class' => HTMLUtility::classnames(
-								array(
+								[
 									'et_pb_not_available' => true,
-								)
+								]
 							),
-						),
+						],
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'children'          => HTMLUtility::render(
-							array(
+							[
 								'tag'               => 'span',
 								'childrenSanitizer' => 'et_core_esc_previously',
 								'children'          => $list_content,
-							)
+							]
 						),
-					)
+					]
 				);
 			} else {
 				$children .= HTMLUtility::render(
-					array(
+					[
 						'tag'               => 'li',
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'children'          => HTMLUtility::render(
-							array(
+							[
 								'tag'               => 'span',
 								'childrenSanitizer' => 'et_core_esc_previously',
 								'children'          => $list_content,
-							)
+							]
 						),
-					)
+					]
 				);
 			}
 		}
 
 		// Pricing Table List Items Wrapper.
 		$list_items_wrapper = HTMLUtility::render(
-			array(
+			[
 				'tag'               => 'ul',
-				'attributes'        => array(
+				'attributes'        => [
 					'class' => HTMLUtility::classnames(
-						array(
+						[
 							'et_pb_pricing' => true,
-						)
+						]
 					),
-				),
+				],
 				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => $children,
-			)
+			]
 		);
 
 		return $list_items_wrapper;
@@ -448,17 +395,17 @@ class PricingTablesItemModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array          $attrs                       Block attributes that were saved by VB.
-	 * @param string         $content                     Block content.
+	 * @param string         $child_modules_content       Block content.
 	 * @param WP_Block       $block                       Parsed block object that being rendered.
 	 * @param ModuleElements $elements                    ModuleElements instance.
 	 * @param array          $default_printed_style_attrs Default printed style attributes.
 	 *
 	 * @return string HTML rendered of BarCountersItem module.
 	 */
-	public static function render_callback( $attrs, $content, $block, $elements, $default_printed_style_attrs ) {
-		$parent               = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
-		$default_parent_attrs = ModuleRegistration::get_default_attrs( 'divi/pricing-tables' );
-		$parent_attrs         = array_replace_recursive( $default_parent_attrs, $parent->attrs ?? [] );
+	public static function render_callback( $attrs, $child_modules_content, $block, $elements, $default_printed_style_attrs ) {
+		$children_ids = ChildrenUtils::extract_children_ids( $block );
+		$parent       = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
+		$parent_attrs = ModuleUtils::get_all_attrs( $parent );
 
 		// Heading Level.
 		$parent_heading_level = $parent_attrs['title']['decoration']['font']['font']['desktop']['value']['headingLevel'] ?? 'h2';
@@ -499,6 +446,7 @@ class PricingTablesItemModule implements DependencyInterface {
 		// Currency Frequency.
 		$currency_frequency = $elements->render(
 			[
+				'selector'    => '{{selector}} .et_pb_dollar_sign',
 				'attrName'    => 'currencyFrequency',
 				'attrSubName' => 'currency',
 				'attributes'  => [
@@ -521,6 +469,7 @@ class PricingTablesItemModule implements DependencyInterface {
 		// Currency Frequency Per.
 		$currency_frequency_per = $elements->render(
 			[
+				'selector'      => '{{selector}} .et_pb_frequency',
 				'attrName'      => 'currencyFrequency',
 				'attrSubName'   => 'per',
 				'attributes'    => [
@@ -581,10 +530,12 @@ class PricingTablesItemModule implements DependencyInterface {
 		// Pricing Table List Content.
 		$pricing_list_content = $elements->render(
 			[
+				'attrName'          => 'content',
 				'tagName'           => 'div',
 				'attributes'        => [
 					'class' => 'et_pb_pricing_content',
 				],
+				'skipAttrChildren'  => true,
 				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => [
 					'attrName'      => 'content',
@@ -615,18 +566,19 @@ class PricingTablesItemModule implements DependencyInterface {
 				'attrs'                    => $attrs,
 				'elements'                 => $elements,
 				'defaultPrintedStyleAttrs' => $default_printed_style_attrs,
-				'hasModuleClassName'       => false,
+				'hasModuleClassName'       => true,
 				'classnamesFunction'       => [ self::class, 'module_classnames' ],
 				'scriptDataComponent'      => [ self::class, 'module_script_data' ],
 				'stylesComponent'          => [ self::class, 'module_styles' ],
 				'parentAttrs'              => $parent_attrs,
 				'parentId'                 => $parent->id ?? '',
 				'parentName'               => $parent->blockName ?? '',
+				'childrenIds'              => $children_ids,
 				'children'                 => $elements->style_components(
 					[
 						'attrName' => 'module',
 					]
-				) . $pricing_table_heading_wrapper . $pricing_table_price_content_wrapper . $pricing_list_content . $button,
+				) . $pricing_table_heading_wrapper . $pricing_table_price_content_wrapper . $pricing_list_content . $button . $child_modules_content,
 			]
 		);
 	}
@@ -704,7 +656,7 @@ class PricingTablesItemModule implements DependencyInterface {
 	public function load() {
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/pricing-table/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( PricingTablesItemPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ PricingTablesItemPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

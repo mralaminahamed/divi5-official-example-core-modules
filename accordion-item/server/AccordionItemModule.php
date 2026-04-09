@@ -12,22 +12,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
-use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
-use ET\Builder\Framework\Utility\SanitizerUtility;
-use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
-use ET\Builder\FrontEnd\Module\Style;
-use ET\Builder\Packages\Module\Layout\Components\ModuleElements\ModuleElements;
-use ET\Builder\Packages\Module\Module;
-use ET\Builder\Packages\Module\Options\Css\CssStyle;
-use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
-use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
-use ET\Builder\Packages\ModuleUtils\ModuleUtils;
-use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
-use WP_Block_Type_Registry;
 use WP_Block;
+use WP_Block_Type_Registry;
+use ET\Builder\FrontEnd\Module\Style;
+use ET\Builder\Packages\Module\Module;
+use ET\Builder\Packages\GlobalData\GlobalData;
+use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
+use ET\Builder\Framework\Utility\HTMLUtility;
+use ET\Builder\Framework\Utility\SanitizerUtility;
+use ET\Builder\Packages\Module\Options\Css\CssStyle;
+use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroup;
+use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
+use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
+use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
+use ET\Builder\Packages\Module\Layout\Components\ModuleElements\ModuleElements;
+use ET\Builder\Packages\ModuleLibrary\AccordionItem\AccordionItemModuleUtils;
 
 /**
  * AccordionItemModule class.
@@ -79,14 +84,9 @@ class AccordionItemModule implements DependencyInterface {
 		$classnames_instance = $args['classnamesInstance'];
 		$attrs               = $args['attrs'];
 
-		// Text Options classnames.
-		$is_toggle_open = 'on' === ( $attrs['module']['advanced']['open']['desktop']['value'] ?? 'off' );
-
 		// Module.
 		$classnames_instance->add( 'et_pb_toggle' );
 		$classnames_instance->add( 'et_pb_module' );
-		$classnames_instance->add( 'et_pb_toggle_open', $is_toggle_open );
-		$classnames_instance->add( 'et_pb_toggle_close', ! $is_toggle_open );
 
 		// Module.
 		$classnames_instance->add(
@@ -116,7 +116,7 @@ class AccordionItemModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array          $attrs                       Block attributes that were saved by Divi Builder.
-	 * @param string         $content                     The block's content.
+	 * @param string         $child_modules_content       The block's content from child modules.
 	 * @param WP_Block       $block                       Parsed block object that is being rendered.
 	 * @param ModuleElements $elements                    An instance of the ModuleElements class.
 	 * @param array          $default_printed_style_attrs Default printed style attributes.
@@ -144,12 +144,26 @@ class AccordionItemModule implements DependencyInterface {
 	 * AccordionItemModule::render_callback( $attrs, $content, $block, $elements, $default_printed_style_attrs );
 	 * ```
 	 */
-	public static function render_callback( array $attrs, string $content, WP_Block $block, ModuleElements $elements, array $default_printed_style_attrs ): string {
+	public static function render_callback( array $attrs, string $child_modules_content, WP_Block $block, ModuleElements $elements, array $default_printed_style_attrs ): string {
 		$parent = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
 
 		$parent_attrs = ModuleUtils::get_all_attrs( $parent );
 
 		$heading_level = self::get_heading_level( $attrs, $parent_attrs );
+
+		// Layout classes for content element.
+		// These classes are merged with the existing 'et_pb_toggle_content' class from metadata.
+		$layout_display_value = $attrs['module']['decoration']['layout']['desktop']['value']['display'] ?? 'flex';
+		$content_classes      = HTMLUtility::classnames(
+			'et_pb_toggle_content',
+			[
+				'et_flex_module' => 'flex' === $layout_display_value,
+				'et_grid_module' => 'grid' === $layout_display_value,
+			]
+		);
+
+		// Extract child modules IDs using helper utility.
+		$children_ids = ChildrenUtils::extract_children_ids( $block );
 
 		return Module::render(
 			[
@@ -171,7 +185,9 @@ class AccordionItemModule implements DependencyInterface {
 				'stylesComponent'          => [ self::class, 'module_styles' ],
 				'classnamesFunction'       => [ self::class, 'module_classnames' ],
 				'scriptDataComponent'      => [ self::class, 'module_script_data' ],
+				'className'                => AccordionItemModuleUtils::get_toggle_class_name( $block->parsed_block['id'], $parent ),
 
+				'childrenIds'              => $children_ids,
 				'children'                 => [
 					$elements->style_components(
 						[
@@ -186,7 +202,12 @@ class AccordionItemModule implements DependencyInterface {
 					),
 					$elements->render(
 						[
-							'attrName' => 'content',
+							'attrName'        => 'content',
+							'attributes'      => [
+								'class' => $content_classes,
+							],
+							'children'        => $child_modules_content,
+							'allowEmptyValue' => ! empty( $child_modules_content ), // Allow empty content if children exist.
 						]
 					),
 				],
@@ -348,7 +369,10 @@ class AccordionItemModule implements DependencyInterface {
 										'props'         => [
 											'selector' => ".et_pb_accordion .et_pb_module{$main_class}",
 											'attr'     => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 									[
@@ -474,7 +498,8 @@ class AccordionItemModule implements DependencyInterface {
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => $args['orderClass'] . '.et_pb_toggle',
+
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -577,8 +602,10 @@ class AccordionItemModule implements DependencyInterface {
 	 * ```
 	 */
 	public static function toggle_close_icon_size_style_declaration( $args ) {
-		$size     = $args['attrValue']['size'] ?? '';
-		$use_size = $args['attrValue']['useSize'] ?? '';
+		$use_size                   = $args['attr']['desktop']['value']['useSize'] ?? '';
+		$maybe_global_variable_size = $args['attrValue']['size'] ?? '';
+
+		$size = GlobalData::resolve_global_variable_value( $maybe_global_variable_size );
 
 		$style_declarations = new StyleDeclarations(
 			[
@@ -590,13 +617,29 @@ class AccordionItemModule implements DependencyInterface {
 		);
 
 		if ( 'on' === $use_size && $size ) {
-			$icon_size         = SanitizerUtility::numeric_parse_value( $size );
-			$default_attrs     = ModuleRegistration::get_default_attrs( 'divi/accordion-item', 'defaultPrintedStyle' );
-			$default_icon_size = SanitizerUtility::numeric_parse_value(
-				$default_attrs['closedToggleIcon']['decoration']['icon']['desktop']['value']['size']
-			);
-			$size_diff         = ( $default_icon_size['valueNumber'] ?? 0 ) - ( $icon_size['valueNumber'] ?? 0 );
-			$style_declarations->add( 'right', 0 !== $size_diff ? round( $size_diff / 2 ) . $icon_size['valueUnit'] : 0 );
+			// Hence we can not directly calculate the css math functions in PHP, It can only be calculated on the Browser in runtime.
+			// So, the numeric_parse_value( $size ) will return null for the CSS math functions.
+			// And now, we have added is_css_math_function() to check, if it is a CSS math function or not.
+			// If it is a CSS math function, we are sending the right: property value with its original format.
+			// Same applies to CSS variables and CSS keywords (inherit, unset, etc.).
+			if ( ModuleUtils::is_css_math_function( $size ) || ModuleUtils::is_css_variable( $size ) || ModuleUtils::is_css_keyword( $size ) ) {
+				$style_declarations->add( 'right', $size );
+			} else {
+				$icon_size = SanitizerUtility::numeric_parse_value( $size );
+				if ( $icon_size && ModuleUtils::is_non_relative_css_unit( $icon_size['valueUnit'] ) ) {
+					$default_attrs     = ModuleRegistration::get_default_attrs( 'divi/accordion-item', 'defaultPrintedStyle' );
+					$default_icon_size = SanitizerUtility::numeric_parse_value(
+						$default_attrs['closedToggleIcon']['decoration']['icon']['desktop']['value']['size']
+					);
+					if ( $default_icon_size ) {
+						$size_diff = ( $default_icon_size['valueNumber'] ?? 0 ) - ( $icon_size['valueNumber'] ?? 0 );
+						$style_declarations->add( 'right', 0 !== $size_diff ? round( $size_diff / 2 ) . $icon_size['valueUnit'] : 0 );
+					}
+				} elseif ( $icon_size ) {
+					// Set line-height to normal for relative units to override the general Icon style declaration.
+					$style_declarations->add( 'line-height', 'normal' );
+				}
+			}
 		}
 
 		return $style_declarations->value();
@@ -648,80 +691,6 @@ class AccordionItemModule implements DependencyInterface {
 		return $style_declarations->value();
 	}
 
-	/**
-	 * Set the style declaration for the Accordion Item's border.
-	 *
-	 * This function generates the style declaration for the Accordion Item's
-	 * border based on the provided arguments.
-	 *
-	 * @since ??
-	 *
-	 * @param array $args An array of arguments.
-	 *
-	 * @return string The style declarations as a string.
-	 *
-	 * @example
-	 * ```php
-	 * $args = [
-	 *   'attrValue'  => [
-	 *     'radius' => [
-	 *       'desktop' => [
-	 *         'normal' => '2px',
-	 *         'hover'  => '4px',
-	 *         'focus'  => '6px',
-	 *       ],
-	 *       'tablet'  => [
-	 *         'normal' => '3px',
-	 *         'hover'  => '5px',
-	 *         'focus'  => '7px',
-	 *       ],
-	 *     ],
-	 *   ],
-	 * ];
-	 * $styleDeclarations = AccordionItemModule::overflow_style_declaration( $args );
-	 *
-	 * // Result: 'overflow: hidden;'
-	 * ```
-	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
-
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * Determine the heading level for an accordion item.
@@ -790,7 +759,7 @@ class AccordionItemModule implements DependencyInterface {
 	public function load(): void {
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/accordion-item/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( AccordionItemPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ AccordionItemPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

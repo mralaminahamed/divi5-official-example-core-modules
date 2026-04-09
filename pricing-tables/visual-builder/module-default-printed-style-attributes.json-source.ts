@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type PricingTablesAttrs,
-} from '@divi/types';
-
+import { type Metadata, type PricingTablesAttrs } from '@divi/types';
 
 /**
  * Pricing Tables Module Default Printed Style Attributes.
@@ -19,27 +15,32 @@ const pricingTablesModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribut
             styles: {
               all: {
                 width: '1px',
-              },
-              top: {
-                width: '1px',
-              },
-              right: {
-                width: '1px',
-              },
-              bottom: {
-                width: '1px',
-              },
-              left: {
-                width: '1px',
+                color: '#bebebe',
+                style: 'solid',
               },
             },
+          },
+        },
+      },
+      layout: {
+        desktop: {
+          value: {
+            display: 'flex',
+            flexDirection: 'row',
+            columnGap: '30px',
+            rowGap: '0px',
+          },
+        },
+        phone: {
+          value: {
+            flexDirection: 'column',
           },
         },
       },
       position: {
         desktop: {
           value: {
-            mode:   'relative',
+            mode: 'relative',
             origin: {
               relative: 'top left',
             },
@@ -54,7 +55,7 @@ const pricingTablesModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribut
         font: {
           desktop: {
             value: {
-              size:       '22px',
+              size: '22px',
               lineHeight: '1em',
             },
           },
@@ -68,7 +69,7 @@ const pricingTablesModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribut
         font: {
           desktop: {
             value: {
-              size:       '16px',
+              size: '16px',
               lineHeight: '1em',
             },
           },
@@ -82,8 +83,26 @@ const pricingTablesModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribut
         font: {
           desktop: {
             value: {
-              size:       '80px',
+              size: '80px',
               lineHeight: '82px',
+            },
+          },
+        },
+      },
+      border: {
+        desktop: {
+          value: {
+            styles: {
+              all: {
+                width: '0px',
+                color: '#bebebe',
+                style: 'solid',
+              },
+              bottom: {
+                width: '1px',
+                color: '#bebebe',
+                style: 'solid',
+              },
             },
           },
         },
@@ -105,6 +124,4 @@ const pricingTablesModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribut
   },
 };
 
-export {
-  pricingTablesModuleDefaultPrintedStyleAttributes,
-};
+export { pricingTablesModuleDefaultPrintedStyleAttributes };

@@ -1,12 +1,5 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
-import {
-  type ContactFormAttrs,
-} from '@divi/types';
-
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
+import { type ContactFormAttrs } from '@divi/types';
 
 /**
  * Set CSS class names to the module.
@@ -22,10 +15,12 @@ export const moduleClassnames = ({
   state,
 }: ModuleClassnamesParams<ContactFormAttrs>): void => {
   // Text Options.
-  classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text, {
-    color:       true,
-    orientation: true,
-  }));
+  classnamesInstance.add(
+    textOptionsClassnames(attrs?.module?.advanced?.text, {
+      color: true,
+      orientation: true,
+    }),
+  );
 
   classnamesInstance.add('clearfix', true);
 

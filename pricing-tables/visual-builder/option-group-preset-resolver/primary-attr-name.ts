@@ -1,13 +1,10 @@
-import {
-  type OptionGroupPresetPrimaryAttrNameResolverFilterParams,
-} from '@divi/module-utils';
-
+import { type OptionGroupPresetPrimaryAttrNameResolverFilterParams } from '@divi/module-utils';
 
 export const optionGroupPresetPrimaryAttrNameResolverPricingTables = (
   primaryAttrName: string,
   filterParams: OptionGroupPresetPrimaryAttrNameResolverFilterParams,
 ) => {
-  // Set primaryAttrName for designTitleText composite group as it contains multiple attributes with similar suffixes.
+  // Set primaryAttrName for designTitleText composite group.
   // - title.decoration.font.
   // - featuredTitle.decoration.font.
   if ('designTitleText' === filterParams.groupId) {

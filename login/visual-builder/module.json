@@ -58,10 +58,11 @@
       },
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
           "elements": {},
+          "html": {},
           "link": {},
           "loop": {},
           "text": {},
@@ -73,6 +74,7 @@
               "render": true,
               "label": "Redirect To The Current Page",
               "description": "Here you can choose whether the user should be redirected back to the current page after logging in.",
+              "category": "configuration",
               "defaultAttr": {
                 "desktop": {
                   "value": "off"
@@ -142,6 +144,7 @@
           "groupType": "group-item",
           "item": {
             "groupSlug": "contentText",
+            "category": "basic_option",
             "priority": 5,
             "render": true,
             "label": "Title",
@@ -230,6 +233,7 @@
           "groupType": "group-item",
           "item": {
             "groupSlug": "contentText",
+            "category": "basic_option",
             "priority": 10,
             "render": true,
             "label": "Body",

@@ -1,8 +1,4 @@
-import {
-  type ContactFieldAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type ContactFieldAttrs, type Metadata } from '@divi/types';
 
 /**
  * Contact Field Module Default Printed Style Attributes.
@@ -17,8 +13,8 @@ const contactFieldModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribute
         desktop: {
           value: {
             flexDirection: 'column',
-            rowGap:        '10px',
-            columnGap:     '10px',
+            rowGap: '10px',
+            columnGap: '10px',
           },
         },
       },
@@ -45,6 +41,4 @@ const contactFieldModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttribute
   },
 };
 
-export {
-  contactFieldModuleDefaultPrintedStyleAttributes,
-};
+export { contactFieldModuleDefaultPrintedStyleAttributes };

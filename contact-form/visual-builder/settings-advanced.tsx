@@ -3,13 +3,8 @@ import React, { type ReactElement, useContext } from 'react';
 import { set } from 'lodash';
 
 import { moduleContext } from '@divi/context-library';
-import {
-  ModuleGroups,
-} from '@divi/module';
-import {
-  type ContactFormAttrs,
-  type Module,
-} from '@divi/types';
+import { ModuleGroups } from '@divi/module';
+import { type ContactFormAttrs, type Module } from '@divi/types';
 
 /**
  * Advanced panel component for the contact form module settings modal.
@@ -38,9 +33,5 @@ export const SettingsAdvanced = ({
     set(groupConfiguration, ['module-idClasses', 'component', 'props', 'defaultGroupAttr'], defaultCSSId);
   }
 
-  return (
-    <ModuleGroups
-      groups={groupConfiguration}
-    />
-  );
+  return <ModuleGroups groups={groupConfiguration} />;
 };

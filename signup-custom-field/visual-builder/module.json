@@ -15,6 +15,7 @@
       "elementType": "element",
       "settings": {
         "advanced": {
+          "html": {},
           "loop": {},
           "link": {
             "priority": 70,
@@ -155,7 +156,7 @@
           }
         },
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         }
       },
       "styleProps": {

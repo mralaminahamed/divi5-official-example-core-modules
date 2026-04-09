@@ -1,13 +1,7 @@
-import React, {
-  Fragment,
-  type ReactElement,
-} from 'react';
+import React, { Fragment, type ReactElement } from 'react';
 
-import {
-  type ScriptDataProps,
-} from '@divi/module';
+import { type ScriptDataProps } from '@divi/module';
 import { type PricingTablesAttrs } from '@divi/types';
-
 
 /**
  * Pricing Tables module's script data component.
@@ -24,4 +18,4 @@ export const ModuleScriptData = <TProps extends ScriptDataProps<PricingTablesAtt
       attrName: 'module',
     })}
   </Fragment>
-  );
+);

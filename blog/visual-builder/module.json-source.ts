@@ -1,3 +1,5 @@
+import { __ } from '@wordpress/i18n';
+
 import { type BlogAttrs, type Metadata } from '@divi/types';
 
 /**
@@ -7,34 +9,35 @@ import { type BlogAttrs, type Metadata } from '@divi/types';
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
-  name:        'divi/blog',
+  name: 'divi/blog',
   d4Shortcode: 'et_pb_blog',
-  title:       'Blog',
-  titles:      'Blogs',
-  moduleIcon:  'divi/module-blog',
-  category:    'module',
-  videos:      [
+  title: __('Blog', 'et_builder_5'),
+  titles: __('Blogs', 'et_builder_5'),
+  moduleIcon: 'divi/module-blog',
+  childrenName: [], // Supports any module type as children
+  category: 'module',
+  videos: [
     {
-      id:   'bJ0MBUQfmog',
+      id: 'bJ0MBUQfmog',
       name: 'An introduction to the Blog module',
     },
     {
-      id:   'jETCzKVv6P0',
+      id: 'jETCzKVv6P0',
       name: 'How To Use Divi Blog Post Formats',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:       'object',
-      selector:   '{{selector}}',
+      type: 'object',
+      selector: '{{selector}}',
       styleProps: {
         boxShadow: {
           selector: '{{selector}} article.et_pb_post',
@@ -42,13 +45,28 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
       settings: {
         meta: {
-          adminLabel: {},
+          meta: {},
         },
         advanced: {
-          link:           {},
-          htmlAttributes: {},
-          text:           {
-            priority:  10,
+          elements: {
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'contentElements',
+              priority: 5,
+              render: true,
+              component: {
+                type: 'group',
+                name: 'divi/elements',
+                props: {
+                  grouped: false,
+                },
+              },
+            },
+          },
+          html: {},
+          link: {},
+          text: {
+            priority: 10,
             component: {
               props: {
                 fields: {
@@ -61,13 +79,14 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
         },
         decoration: {
-          animation:  {},
+          animation: {},
+          attributes: {},
           background: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'contentBackground',
-              priority:  10,
-              render:    true,
+              priority: 10,
+              render: true,
 
               // Built-in group component
               component: {
@@ -82,23 +101,25 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           conditions: {},
           disabledOn: {},
-          filters:    {},
-          overflow:   {},
-          position:   {},
-          scroll:     {
+          filters: {},
+          interactions: {},
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {
             groupType: 'group-item',
-            item:      {
-              priority:  20,
-              render:    true,
+            item: {
+              priority: 20,
+              render: true,
               groupSlug: 'advancedScrollModule',
 
               // Built-in group component
               component: {
-                name:  'divi/scroll',
-                type:  'group',
+                name: 'divi/scroll',
+                type: 'group',
                 props: {
                   grouped: false,
-                  fields:  {
+                  fields: {
                     gridMotion: {
                       render: true,
                     },
@@ -107,35 +128,36 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
               },
             },
           },
-          sizing:     {},
-          spacing:    {},
-          sticky:     {},
-          boxShadow:  {},
-          transform:  {},
+          sizing: {},
+          spacing: {},
+          sticky: {},
+          boxShadow: {},
+          transform: {},
           transition: {},
-          zIndex:     {},
+          zIndex: {},
         },
       },
     },
     post: {
-      type:     'object',
-      selector: '{{selector}} .et_pb_blog_grid .et_pb_post',
+      type: 'object',
+      selector: '{{selector}} .et_grid_module article.et_pb_post',
       settings: {
         advanced: {
           useCurrentLoop: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.useCurrentLoop',
-              label:       'Posts For Current Page',
-              description: 'Display posts for the current page. Useful on archive and index pages.',
-              priority:    10,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.useCurrentLoop',
+              label: __('Posts For Current Page', 'et_builder_5'),
+              description: __('Display posts for the current page. Useful on archive and index pages.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 10,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -147,18 +169,19 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           type: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.type',
-              label:       'Post Type',
-              description: 'Choose posts of which post type you would like to display.',
-              priority:    10,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.type',
+              label: __('Post Type', 'et_builder_5'),
+              description: __('Choose posts of which post type you would like to display.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 10,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -174,18 +197,19 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           number: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.number',
-              label:       'Post Count',
-              description: 'Choose how much posts you would like to display per page.',
-              priority:    20,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.number',
+              label: __('Post Count', 'et_builder_5'),
+              description: __('Choose how much posts you would like to display per page.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 20,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -201,18 +225,19 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           categories: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.categories',
-              label:       'Included Categories',
-              description: 'Choose which categories you would like to include in the feed.',
-              priority:    30,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.categories',
+              label: __('Included Categories', 'et_builder_5'),
+              description: __('Choose which categories you would like to include in the feed.', 'et_builder_5'),
+              category: 'basic_option',
+              priority: 30,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -228,18 +253,22 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           dateFormat: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.dateFormat',
-              label:       'Date Format',
-              description: 'If you would like to adjust the date format, input the appropriate PHP date format here.',
-              priority:    30,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.dateFormat',
+              label: __('Date Format', 'et_builder_5'),
+              description: __(
+                'If you would like to adjust the date format, input the appropriate PHP date format here.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              priority: 30,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -251,14 +280,17 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           excerptContent: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.excerptContent',
-              label:       'Content Length',
-              description: 'Showing the full content will not truncate your posts on the index page. Showing the excerpt will only display your excerpt text.',
-              priority:    50,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.excerptContent',
+              label: __('Content Length', 'et_builder_5'),
+              description: __(
+                'Showing the full content will not truncate your posts on the index page. Showing the excerpt will only display your excerpt text.',
+                'et_builder_5',
+              ),
+              priority: 50,
+              render: true,
+              features: {
                 sticky: false,
                 preset: 'content',
               },
@@ -271,12 +303,11 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
                 props: {
                   options: {
                     off: {
-                      label: 'Show Excerpt',
+                      label: __('Show Excerpt', 'et_builder_5'),
                     },
                     on: {
-                      label: 'Show Content',
+                      label: __('Show Content', 'et_builder_5'),
                     },
-
                   },
                 },
               },
@@ -284,18 +315,22 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           excerptManual: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.excerptManual',
-              label:       'Use Post Excerpts',
-              description: 'Disable this option if you want to ignore manually defined excerpts and always generate it automatically.',
-              priority:    60,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.excerptManual',
+              label: __('Use Post Excerpts', 'et_builder_5'),
+              description: __(
+                'Disable this option if you want to ignore manually defined excerpts and always generate it automatically.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              priority: 60,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -307,18 +342,22 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           excerptLength: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.excerptLength',
-              label:       'Excerpt Length',
-              description: 'Define the length of automatically generated excerpts. Leave blank for default ( 270 ) ',
-              priority:    70,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.excerptLength',
+              label: __('Excerpt Length', 'et_builder_5'),
+              description: __(
+                'Define the length of automatically generated excerpts. Leave blank for default ( 270 ) ',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              priority: 70,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -330,18 +369,22 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           offset: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'content',
-              attrName:    'post.advanced.offset',
-              label:       'Post Offset Number',
-              description: 'Choose how many posts you would like to skip. These posts will not be shown in the feed.',
-              priority:    80,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'content',
+              attrName: 'post.advanced.offset',
+              label: __('Post Offset Number', 'et_builder_5'),
+              description: __(
+                'Choose how many posts you would like to skip. These posts will not be shown in the feed.',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              priority: 80,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
-                preset:     'content',
+                preset: 'content',
               },
 
               // Built-in component
@@ -353,14 +396,15 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           showExcerpt: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'post.advanced.showExcerpt',
-              label:       'Show Excerpt',
-              description: 'Turn excerpt on and off.',
-              priority:    70,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'post.advanced.showExcerpt',
+              label: __('Show Excerpt', 'et_builder_5'),
+              description: __('Turn excerpt on and off.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 70,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -376,11 +420,11 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         decoration: {
           border: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designBorder',
-              attrName:  'post.decoration.border',
-              priority:  10,
-              render:    true,
+              attrName: 'post.decoration.border',
+              priority: 10,
+              render: true,
 
               // Built-in group component
               component: {
@@ -388,8 +432,8 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
                 name: 'divi/border',
 
                 props: {
-                  grouped:    false,
-                  fieldLabel: 'Grid Layout',
+                  grouped: false,
+                  fieldLabel: __('Grid Layout', 'et_builder_5'),
                 },
               },
             },
@@ -398,11 +442,14 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     image: {
-      type:       'object',
-      selector:   '{{selector}} .et_pb_post .entry-featured-image-url,{{selector}} .et_pb_post .et_pb_slides,{{selector}} .et_pb_post .et_pb_video_overlay',
+      type: 'object',
+      selector:
+        '{{selector}} .et_pb_post .entry-featured-image-url,{{selector}} .et_pb_post .et_pb_slides,{{selector}} .et_pb_post .et_pb_video_overlay',
+      supportsCustomAttributes: true,
       styleProps: {
         boxShadow: {
-          selector: '{{selector}} .et_pb_post .entry-featured-image-url,{{selector}} .et_pb_post img,{{selector}} .et_pb_post .et_pb_slides,{{selector}} .et_pb_post .et_pb_video_overlay',
+          selector:
+            '{{selector}} .et_pb_post .entry-featured-image-url,{{selector}} .et_pb_post img,{{selector}} .et_pb_post .et_pb_slides,{{selector}} .et_pb_post .et_pb_video_overlay',
         },
         filters: {
           selector: '{{selector}} img,{{selector}} .et_pb_slides,{{selector}} .et_pb_video_overlay',
@@ -412,14 +459,15 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         advanced: {
           enable: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'image.advanced.enable',
-              label:       'Show Featured Image',
-              description: 'This will turn thumbnails on and off.',
-              priority:    10,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'image.advanced.enable',
+              label: __('Show Featured Image', 'et_builder_5'),
+              description: __('This will turn thumbnails on and off.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 10,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -435,10 +483,10 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         decoration: {
           border: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designImage',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in group component
               component: {
@@ -446,17 +494,17 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
                 name: 'divi/border',
 
                 props: {
-                  grouped: false,
+                  grouped: true,
                 },
               },
             },
           },
           boxShadow: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designImage',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in group component
               component: {
@@ -464,17 +512,17 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
                 name: 'divi/box-shadow',
 
                 props: {
-                  grouped: false,
+                  grouped: true,
                 },
               },
             },
           },
           filters: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designImage',
-              priority:  20,
-              render:    true,
+              priority: 20,
+              render: true,
 
               // Built-in group component
               component: {
@@ -482,7 +530,7 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
                 name: 'divi/filters',
 
                 props: {
-                  grouped: false,
+                  grouped: true,
                 },
               },
             },
@@ -491,8 +539,9 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     readMore: {
-      type:       'object',
-      selector:   '{{selector}} .et_pb_post div.post-content a.more-link',
+      type: 'object',
+      selector: '{{selector}} .et_pb_post div.post-content a.more-link',
+      supportsCustomAttributes: true,
       styleProps: {
         font: {
           important: {
@@ -510,14 +559,15 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         advanced: {
           enable: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'readMore.advanced.enable',
-              label:       'Show Read More Button',
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'readMore.advanced.enable',
+              label: __('Show Read More Button', 'et_builder_5'),
               description: 'Here you can define whether to show "read more" link after the excerpts or not.',
-              priority:    20,
-              render:      true,
-              features:    {
+              category: 'configuration',
+              priority: 20,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -537,8 +587,8 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
             // Built-in component
             component: {
               props: {
-                groupLabel: 'Read More Text',
-                fieldLabel: 'Read More',
+                groupLabel: __('Read More Text', 'et_builder_5'),
+                fieldLabel: __('Read More', 'et_builder_5'),
               },
             },
           },
@@ -546,20 +596,45 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     pagination: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .wp-pagenavi a, {{selector}} .wp-pagenavi span, {{selector}} .pagination a',
+      styleProps: {
+        font: {
+          propertySelectors: {
+            font: {
+              desktop: {
+                value: {
+                  'text-align': '{{selector}} .wp-pagenavi',
+                },
+              },
+            },
+          },
+          important: {
+            font: {
+              desktop: {
+                value: {
+                  color: true,
+                  'font-size': true,
+                  'font-weight': true,
+                },
+              },
+            },
+          },
+        },
+      },
       settings: {
         advanced: {
           enable: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'pagination.advanced.enable',
-              label:       'Show Pagination',
-              description: 'Turn pagination on and off.',
-              priority:    80,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'pagination.advanced.enable',
+              label: __('Show Pagination', 'et_builder_5'),
+              description: __('Turn pagination on and off.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 80,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -579,8 +654,8 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
             // Built-in component
             component: {
               props: {
-                groupLabel: 'Pagination Text',
-                fieldLabel: 'Pagination',
+                groupLabel: __('Pagination Text', 'et_builder_5'),
+                fieldLabel: __('Pagination', 'et_builder_5'),
               },
             },
           },
@@ -588,8 +663,10 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     meta: {
-      type:       'object',
-      selector:   '{{selector}} .et_pb_post .post-meta, {{selector}} .et_pb_post .post-meta a, #left-area {{selector}} .et_pb_post .post-meta, #left-area {{selector}} .et_pb_post .post-meta a',
+      type: 'object',
+      selector:
+        '{{selector}} .et_pb_post .post-meta, {{selector}} .et_pb_post .post-meta a, #left-area {{selector}} .et_pb_post .post-meta, #left-area {{selector}} .et_pb_post .post-meta a',
+      supportsCustomAttributes: true,
       styleProps: {
         font: {
           important: {
@@ -607,14 +684,15 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         advanced: {
           showAuthor: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'meta.advanced.showAuthor',
-              label:       'Show Author',
-              description: 'Turn on or off the author link.',
-              priority:    30,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'meta.advanced.showAuthor',
+              label: __('Show Author', 'et_builder_5'),
+              description: __('Turn on or off the author link.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 30,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -628,14 +706,15 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           showDate: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'meta.advanced.showDate',
-              label:       'Show Date',
-              description: 'Turn the date on or off.',
-              priority:    40,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'meta.advanced.showDate',
+              label: __('Show Date', 'et_builder_5'),
+              description: __('Turn the date on or off.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 40,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -649,14 +728,15 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           showCategories: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'meta.advanced.showCategories',
-              label:       'Show Categories',
-              description: 'Turn the category links on or off.',
-              priority:    50,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'meta.advanced.showCategories',
+              label: __('Show Categories', 'et_builder_5'),
+              description: __('Turn the category links on or off.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 50,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -670,14 +750,15 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
           },
           showComments: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentElements',
-              attrName:    'meta.advanced.showComments',
-              label:       'Show Comment Count',
-              description: 'Turn comment count on and off.',
-              priority:    60,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'contentElements',
+              attrName: 'meta.advanced.showComments',
+              label: __('Show Comment Count', 'et_builder_5'),
+              description: __('Turn comment count on and off.', 'et_builder_5'),
+              category: 'configuration',
+              priority: 60,
+              render: true,
+              features: {
                 sticky: false,
                 preset: ['html'],
               },
@@ -697,8 +778,9 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
             // Built-in component
             component: {
               props: {
-                fieldLabel: 'Meta',
-                groupLabel: 'Meta Text',
+                fieldLabel: __('Meta', 'et_builder_5'),
+                groupLabel: __('Meta Text', 'et_builder_5'),
+                presetGroup: 'divi/font-body',
               },
             },
           },
@@ -706,19 +788,21 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     title: {
-      type:       'object',
-      selector:   '{{selector}} .et_pb_post .entry-title, {{selector}} .not-found-title',
+      type: 'object',
+      selector: '{{selector}} .et_pb_post .entry-title, {{selector}} .not-found-title',
+      supportsCustomAttributes: true,
       styleProps: {
-        selector: '{{selector}} .et_pb_post .entry-title, {{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
-        font:     {
+        selector:
+          '{{selector}} .et_pb_post .entry-title, {{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
+        font: {
           propertySelectors: {
             font: {
               desktop: {
                 value: {
-                  'font-family':    '{{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
-                  'font-weight':    '{{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
+                  'font-family': '{{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
+                  'font-weight': '{{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
                   'text-transform': '{{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
-                  color:            '{{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
+                  color: '{{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title',
                 },
               },
             },
@@ -728,11 +812,11 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       settings: {
         decoration: {
           font: {
-            priority:  20,
+            priority: 20,
             component: {
               props: {
-                groupLabel: 'Title Text',
-                fieldLabel: 'Title',
+                groupLabel: __('Title Text', 'et_builder_5'),
+                fieldLabel: __('Title', 'et_builder_5'),
 
                 fields: {
                   headingLevel: {
@@ -746,8 +830,10 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     content: {
-      type:       'object',
-      selector:   '{{selector}} .et_pb_post .post-content, {{selector}}.et_pb_bg_layout_light .et_pb_post .post-content p, {{selector}}.et_pb_bg_layout_dark .et_pb_post .post-content p',
+      type: 'object',
+      selector:
+        '{{selector}} .et_pb_post .post-content, {{selector}}.et_pb_bg_layout_light .et_pb_post .post-content p, {{selector}}.et_pb_bg_layout_dark .et_pb_post .post-content p',
+      supportsCustomAttributes: true,
       styleProps: {
         bodyFont: {
           propertySelectors: {
@@ -755,7 +841,7 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
               font: {
                 desktop: {
                   value: {
-                    color:         '{{selector}} .et_pb_post,{{selector}} .et_pb_post .post-content * ',
+                    color: '{{selector}} .et_pb_post,{{selector}} .et_pb_post .post-content * ',
                     'line-height': '{{selector}} .et_pb_post p',
                   },
                 },
@@ -772,19 +858,28 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
                 },
               },
             },
+            link: {
+              font: {
+                desktop: {
+                  value: {
+                    color: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
       settings: {
         decoration: {
           bodyFont: {
-            priority:  30,
+            priority: 30,
             component: {
               props: {
                 groups: {
                   body: {
-                    groupLabel: 'Body Text',
-                    fieldLabel: 'Body',
+                    groupLabel: __('Body Text', 'et_builder_5'),
+                    fieldLabel: __('Body', 'et_builder_5'),
                   },
                 },
               },
@@ -794,22 +889,25 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     overlay: {
-      type:     'object',
+      type: 'object',
       selector: '{{selector}} .et_overlay',
       settings: {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designOverlay',
-              attrName:    'overlay.decoration.background',
-              subName:     'color',
-              label:       'Overlay Background Color',
-              description: 'Here you can define a custom color for the overlay',
-              priority:    30,
-              render:      true,
-              features:    {
+            item: {
+              groupSlug: 'designOverlay',
+              attrName: 'overlay.decoration.background',
+              subName: 'color',
+              label: __('Overlay Background Color', 'et_builder_5'),
+              description: __('Here you can define a custom color for the overlay', 'et_builder_5'),
+              priority: 30,
+              render: true,
+              features: {
                 hover: false,
+                dynamicContent: {
+                  type: 'color',
+                },
               },
 
               component: {
@@ -822,16 +920,20 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         advanced: {
           enable: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'designOverlay',
-              attrName:    'overlay.advanced.enable',
-              label:       'Featured Image Overlay',
-              description: 'If enabled, an overlay color and icon will be displayed when a visitors hovers over the featured image of a post.',
-              priority:    10,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
+            item: {
+              groupSlug: 'designOverlay',
+              attrName: 'overlay.advanced.enable',
+              label: __('Featured Image Overlay', 'et_builder_5'),
+              description: __(
+                'If enabled, an overlay color and icon will be displayed when a visitors hovers over the featured image of a post.',
+                'et_builder_5',
+              ),
+              category: 'layout',
+              priority: 10,
+              render: true,
+              features: {
+                hover: false,
+                sticky: false,
                 responsive: false,
               },
 
@@ -846,8 +948,8 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     overlayIcon: {
-      type:       'object',
-      selector:   '{{selector}} .et_overlay::before',
+      type: 'object',
+      selector: '{{selector}} .et_overlay::before',
       styleProps: {
         icon: {
           important: true,
@@ -857,17 +959,20 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         decoration: {
           icon: {
             groupType: 'group-items',
-            items:     {
+            items: {
               color: {
-                groupSlug:   'designOverlay',
-                attrName:    'overlayIcon.decoration.icon',
-                subName:     'color',
-                label:       'Overlay Icon Color',
-                description: 'Here you can define a custom color for the overlay icon',
-                priority:    20,
-                render:      true,
-                features:    {
+                groupSlug: 'designOverlay',
+                attrName: 'overlayIcon.decoration.icon',
+                subName: 'color',
+                label: __('Overlay Icon Color', 'et_builder_5'),
+                description: __('Here you can define a custom color for the overlay icon', 'et_builder_5'),
+                priority: 20,
+                render: true,
+                features: {
                   hover: false,
+                  dynamicContent: {
+                    type: 'color',
+                  },
                 },
 
                 component: {
@@ -876,13 +981,14 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
                 },
               },
               icon: {
-                groupSlug:   'designOverlay',
-                attrName:    'overlayIcon.decoration.icon',
-                label:       'Overlay Icon',
-                description: 'Here you can define a custom icon for the overlay',
-                priority:    40,
-                render:      true,
-                features:    {
+                groupSlug: 'designOverlay',
+                attrName: 'overlayIcon.decoration.icon',
+                label: __('Overlay Icon', 'et_builder_5'),
+                description: __('Here you can define a custom icon for the overlay', 'et_builder_5'),
+                category: 'configuration',
+                priority: 40,
+                render: true,
+                features: {
                   hover: false,
                 },
 
@@ -897,52 +1003,17 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
     fullwidth: {
-      type:     'object',
-      selector: '{{selector}}:not(.et_pb_blog_grid_wrapper) .et_pb_post',
+      type: 'object',
+      selector: '{{selector}}:not(.et_pb_blog_grid_wrapper) article.et_pb_post',
       settings: {
-        advanced: {
-          enable: {
-            groupType: 'group-item',
-            item:      {
-              groupSlug:   'designLayout',
-              attrName:    'fullwidth.advanced.enable',
-              label:       'Layout',
-              description: 'Toggle between the various blog layout types.',
-              priority:    10,
-              render:      true,
-              features:    {
-                hover:      false,
-                sticky:     false,
-                responsive: false,
-              },
-
-              // Built-in component
-              component: {
-                type: 'field',
-                name: 'divi/select',
-
-                props: {
-                  options: {
-                    on: {
-                      label: 'Fullwidth',
-                    },
-                    off: {
-                      label: 'Grid',
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
         decoration: {
           border: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'designBorder',
-              attrName:  'fullwidth.decoration.border',
-              priority:  10,
-              render:    true,
+              attrName: 'fullwidth.decoration.border',
+              priority: 10,
+              render: true,
 
               // Built-in group component
               component: {
@@ -958,29 +1029,74 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
         },
       },
     },
+    blogGrid: {
+      type: 'object',
+      selector: '{{selector}} .et_pb_posts',
+      settings: {
+        decoration: {
+          layout: {
+            groupType: 'group-item',
+            item: {
+              groupSlug: 'designLayout',
+              priority: 10,
+              render: true,
+
+              // Built-in group component
+              component: {
+                type: 'group',
+                name: 'divi/layout',
+
+                props: {
+                  grouped: false,
+                  defaultGroupAttr: {
+                    desktop: {
+                      value: {
+                        display: 'grid',
+                        gridColumnCount: '3',
+                        flexDirection: 'column',
+                      },
+                    },
+                  },
+                  fields: {
+                    gridColumnCount: {
+                      baseFieldDefault: '3',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     masonry: {
-      type:     'object',
-      selector: '{{selector}} .et_pb_blog_grid .et_pb_post',
+      type: 'object',
+      selector: '{{selector}} .et_grid_module .et_pb_post',
       settings: {
         decoration: {
           background: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'contentBackground',
-              attrName:  'masonry.decoration.background',
-              subName:   'color',
-              label:     'Grid Tile Background Color',
-              priority:  5,
-              render:    true,
+              attrName: 'masonry.decoration.background',
+              subName: 'color',
+              label: __('Grid Tile Background Color', 'et_builder_5'),
+              priority: 5,
+              render: true,
 
+              features: {
+                dynamicContent: {
+                  type: 'color',
+                },
+              },
 
               component: {
                 type: 'field',
                 name: 'divi/color-picker',
 
                 props: {
-                  showPickerPalettes:        false,
-                  addTitle:                  'Add Background Color',
+                  showPickerPalettes: false,
+                  addTitle: 'Add Background Color',
                   showPaletteOnPickerActive: true,
                 },
               },
@@ -990,39 +1106,42 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
       },
     },
   },
-  script: [
-    'divi-module-library-script-blog',
-  ],
+  script: ['divi-module-library-script-blog'],
   customCssFields: {
     title: {
-      label:          'Title',
-      subName:        'title',
-      selectorSuffix: ' .entry-title',
+      label: __('Title', 'et_builder_5'),
+      subName: 'title',
+      selector: '{{selector}} .et_pb_post .entry-title',
+      selectorSuffix: '',
     },
     content: {
-      label:          'Body',
-      subName:        'content',
-      selectorSuffix: ' .post-content',
+      label: __('Body', 'et_builder_5'),
+      subName: 'content',
+      selector: '{{selector}} .post-content',
+      selectorSuffix: '',
     },
     postMeta: {
-      label:          'Post Meta',
-      subName:        'postMeta',
-      selectorSuffix: ' .post-meta',
+      label: __('Post Meta', 'et_builder_5'),
+      subName: 'postMeta',
+      selector: '{{selector}} .post-meta',
+      selectorSuffix: '',
     },
     pagenavi: {
-      label:          'Pagenavi',
-      subName:        'pagenavi',
+      label: __('Pagenavi', 'et_builder_5'),
+      subName: 'pagenavi',
       selectorSuffix: ' .wp-pagenavi',
     },
     featuredImage: {
-      label:          'Featured Image',
-      subName:        'featuredImage',
-      selectorSuffix: ' .entry-featured-image-url img',
+      label: __('Featured Image', 'et_builder_5'),
+      subName: 'featuredImage',
+      selector: '{{selector}} .entry-featured-image-url img',
+      selectorSuffix: '',
     },
     readMore: {
-      label:          'Read More Button',
-      subName:        'readMore',
-      selectorSuffix: ' a.more-link',
+      label: __('Read More Button', 'et_builder_5'),
+      subName: 'readMore',
+      selector: '{{selector}} a.more-link',
+      selectorSuffix: '',
     },
   },
   settings: {
@@ -1031,43 +1150,44 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
     groups: {
       // Content > Content
       content: {
-        panel:     'content',
-        priority:  10,
+        panel: 'content',
+        priority: 10,
         groupName: 'content',
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Content',
+            groupLabel: __('Content', 'et_builder_5'),
           },
         },
       },
 
       // Content > Elements
       contentElements: {
-        panel:         'content',
-        priority:      10,
-        groupName:     'elements',
+        panel: 'content',
+        priority: 10,
+        groupName: 'elements',
         multiElements: true,
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Elements',
+            groupLabel: __('Elements', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Content > Background
       contentBackground: {
-        panel:     'content',
+        panel: 'content',
         groupName: 'background',
-        priority:  90,
+        priority: 90,
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel:  'Background',
+            groupLabel: __('Background', 'et_builder_5'),
             presetGroup: 'divi/background',
           },
         },
@@ -1075,69 +1195,64 @@ const blogModuleMetaData: Metadata.Values<BlogAttrs> = {
 
       // Design > Layout
       designLayout: {
-        panel:     'design',
-        priority:  10,
+        panel: 'design',
+        priority: 10,
         groupName: 'designLayout',
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Layout',
+            groupLabel: __('Layout', 'et_builder_5'),
+            clipboardCategory: 'style',
+            presetGroup: 'divi/layout',
           },
         },
       },
 
       // Design > Overlay
       designOverlay: {
-        panel:     'design',
-        priority:  10,
+        panel: 'design',
+        priority: 10,
         groupName: 'designOverlay',
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Overlay',
+            groupLabel: __('Overlay', 'et_builder_5'),
           },
         },
       },
 
       // Design > Image
       designImage: {
-        panel:     'design',
-        priority:  10,
+        panel: 'design',
+        priority: 10,
         groupName: 'designImage',
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Image',
+            groupLabel: __('Image', 'et_builder_5'),
           },
         },
       },
 
       // Design > Border
       designBorder: {
-        panel:     'design',
-        priority:  90,
+        panel: 'design',
+        priority: 90,
         groupName: 'designBorder',
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel:  'Border',
+            groupLabel: __('Border', 'et_builder_5'),
             presetGroup: 'divi/border',
           },
         },
       },
     },
   },
-  mousetrap: {
-    zIndex: {
-      edited: 'aboveModuleElements',
-    },
-  },
 };
 
-export {
-  blogModuleMetaData,
-};
+export { blogModuleMetaData };

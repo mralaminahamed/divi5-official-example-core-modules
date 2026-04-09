@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
@@ -25,8 +25,12 @@ use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\ModuleLibrary\Slider\SliderPresetAttrsMap;
+use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroupAttrNameResolved;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
+use ET\Builder\Packages\GlobalData\GlobalData;
 
 // phpcs:disable Squiz.Commenting.InlineComment -- Temporarily disabled to get the PR CI pass for now. TODO: Fix this later.
 
@@ -79,6 +83,7 @@ class SliderModule implements DependencyInterface {
 		$classnames_instance->add(
 			ElementClassnames::classnames(
 				[
+					// phpcs:ignore ET.Comments.Todo.TodoFound -- Legacy TODO: May not be tracked in GitHub issues yet. Preserve for future tracking/removal.
 					// TODO feat(D5, Module Attribute Refactor) Once link is merged as part of options property, remove this.
 					'attrs' => array_merge(
 						$attrs['module']['decoration'] ?? [],
@@ -153,43 +158,41 @@ class SliderModule implements DependencyInterface {
 	 *
 	 * @since ??
 	 *
-	 * @param array          $attrs    Block attributes that were saved by VB.
-	 * @param string         $content  Block content.
-	 * @param WP_Block       $block    Parsed block object that being rendered.
-	 * @param ModuleElements $elements ModuleElements instance.
+	 * @param array          $attrs                       Block attributes that were saved by VB.
+	 * @param string         $content                     Block content.
+	 * @param WP_Block       $block                       Parsed block object that being rendered.
+	 * @param ModuleElements $elements                    ModuleElements instance.
+	 * @param array          $default_printed_style_attrs Default printed style attributes.
 	 *
 	 * @return string HTML rendered of Slider module.
 	 */
-	public static function render_callback( $attrs, $content, $block, $elements ) {
-		$children_ids = $block->parsed_block['innerBlocks'] ? array_map(
-			function ( $inner_block ) {
-				return $inner_block['id'];
-			},
-			$block->parsed_block['innerBlocks']
-		) : [];
-
+	public static function render_callback( $attrs, $content, $block, $elements, $default_printed_style_attrs ) {
 		$parent = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
+
+		// Extract child modules IDs using helper utility.
+		$children_ids = ChildrenUtils::extract_children_ids( $block );
 
 		return Module::render(
 			[
 				// FE only.
-				'orderIndex'          => $block->parsed_block['orderIndex'],
-				'storeInstance'       => $block->parsed_block['storeInstance'],
+				'orderIndex'               => $block->parsed_block['orderIndex'],
+				'storeInstance'            => $block->parsed_block['storeInstance'],
 
 				// VB equivalent.
-				'attrs'               => $attrs,
-				'elements'            => $elements,
-				'id'                  => $block->parsed_block['id'],
-				'name'                => $block->block_type->name,
-				'classnamesFunction'  => [ self::class, 'module_classnames' ],
-				'moduleCategory'      => $block->block_type->category,
-				'stylesComponent'     => [ self::class, 'module_styles' ],
-				'scriptDataComponent' => [ self::class, 'module_script_data' ],
-				'childrenIds'         => $children_ids,
-				'parentAttrs'         => $parent->attrs ?? [],
-				'parentId'            => $parent->id ?? '',
-				'parentName'          => $parent->blockName ?? '',
-				'children'            => $elements->style_components(
+				'attrs'                    => $attrs,
+				'elements'                 => $elements,
+				'defaultPrintedStyleAttrs' => $default_printed_style_attrs,
+				'id'                       => $block->parsed_block['id'],
+				'name'                     => $block->block_type->name,
+				'classnamesFunction'       => [ self::class, 'module_classnames' ],
+				'moduleCategory'           => $block->block_type->category,
+				'stylesComponent'          => [ self::class, 'module_styles' ],
+				'scriptDataComponent'      => [ self::class, 'module_script_data' ],
+				'childrenIds'              => $children_ids,
+				'parentAttrs'              => $parent->attrs ?? [],
+				'parentId'                 => $parent->id ?? '',
+				'parentName'               => $parent->blockName ?? '',
+				'children'                 => $elements->style_components(
 					[
 						'attrName' => 'module',
 					]
@@ -253,73 +256,6 @@ class SliderModule implements DependencyInterface {
 		return $style_declarations->value();
 	}
 
-	/**
-	 * Style declaration for slider's border overflow.
-	 *
-	 * This function is used to generate the style declaration for the border overflow of a slider module.
-	 *
-	 * @since ??
-	 *
-	 * @param array $params An array of arguments.
-	 *
-	 * @return string The generated CSS style declaration.
-	 *
-	 * @example
-	 * ```php
-	 * $args = [
-	 *   'attrValue' => [
-	 *     'radius' => [
-	 *       'desktop' => [
-	 *         'default' => '10px',
-	 *         'hover'   => '8px',
-	 *       ],
-	 *     ],
-	 *   ],
-	 *   'important'  => true,
-	 *   'returnType' => 'string',
-	 * ];
-	 * $styleDeclaration = AccordionModule::overflow_style_declaration( $args );
-	 * ```
-	 */
-	public static function overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
-
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * Slider Module's style components.
@@ -385,7 +321,10 @@ class SliderModule implements DependencyInterface {
 										'componentName' => 'divi/common',
 										'props'         => [
 											'attr' => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 									[
@@ -393,6 +332,15 @@ class SliderModule implements DependencyInterface {
 										'props'         => [
 											'selector' => "{$args['orderClass']} .et_pb_slide .et_pb_slide_description",
 											'attr'     => $attrs['module']['advanced']['text'] ?? [],
+											'defaultPrintedStyleAttr' => $default_printed_style_attrs['module']['advanced']['text'] ?? [],
+										],
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => "{$args['orderClass']} .et_pb_slide .et_pb_slide_description",
+											'attr'     => $attrs['module']['advanced']['text']['textShadow'] ?? [],
+											'declarationFunction' => [ ModuleUtils::class, 'remove_text_shadow_style_declaration' ],
 										],
 									],
 								],
@@ -444,7 +392,7 @@ class SliderModule implements DependencyInterface {
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => "{$args['orderClass']}.et_pb_slider",
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -462,7 +410,7 @@ class SliderModule implements DependencyInterface {
 	 * @return void
 	 */
 	public function load() {
-		add_filter( 'divi_conversion_presets_attrs_map', array( SliderPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ SliderPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		add_filter(
 			'divi.moduleLibrary.conversion.moduleConversionOutline',
@@ -514,7 +462,7 @@ class SliderModule implements DependencyInterface {
 	 *
 	 * @return GlobalPresetItemGroupAttrNameResolved The resolved attribute name.
 	 */
-	public static function option_group_preset_resolver_attr_name( $attr_name_to_resolve, array $params ):?GlobalPresetItemGroupAttrNameResolved {
+	public static function option_group_preset_resolver_attr_name( $attr_name_to_resolve, array $params ): ?GlobalPresetItemGroupAttrNameResolved {
 		// Bydefault, $attr_name_to_resolve is a null value.
 		// If it is not null, it means that the attribute name is already resolved.
 		// In this case, we return the resolved attribute name.

@@ -1,16 +1,9 @@
 import React, { type ReactElement } from 'react';
 
-import {
-  CssStyle,
-  ElementStyle,
-  FormFieldStyle,
-  StyleContainer,
-  type StylesProps,
-} from '@divi/module';
-import {
-  type ContactFormAttrs,
-} from '@divi/types';
+import { CssStyle, ElementStyle, FormFieldStyle, StyleContainer, type StylesProps } from '@divi/module';
+import { type ContactFormAttrs } from '@divi/types';
 
+import { buttonAlignmentDeclaration } from './style-declarations';
 
 /**
  * Set CSS styles to the module.
@@ -28,22 +21,30 @@ export const ModuleStyles = ({
   state,
   noStyleTag,
   settings,
+  isInsideStickyModule,
+  stickyParentOrderClass,
 }: StylesProps<ContactFormAttrs>): ReactElement => (
-  <StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>
+  <StyleContainer
+    mode={mode}
+    state={state}
+    noStyleTag={noStyleTag}
+    isInsideStickyModule={isInsideStickyModule}
+    stickyParentOrderClass={stickyParentOrderClass}
+  >
     {/* module */}
     {elements.style({
-      attrName:   'module',
+      attrName: 'module',
       styleProps: {
         defaultPrintedStyleAttrs: defaultPrintedStyleAttrs?.module?.decoration,
-        disabledOn:               {
+        disabledOn: {
           disabledModuleVisibility: settings?.disabledModuleVisibility,
         },
         advancedStyles: [
           {
             componentName: 'divi/text',
-            props:         {
-              attr:              attrs?.module?.advanced?.text,
-              selector:          `${orderClass}.et_pb_contact_form_container`,
+            props: {
+              attr: attrs?.module?.advanced?.text,
+              selector: `${orderClass}.et_pb_contact_form_container`,
               propertySelectors: {
                 text: {
                   desktop: {
@@ -75,13 +76,25 @@ export const ModuleStyles = ({
     })}
     {/* button */}
     {elements.style({
-      attrName:   'button',
+      attrName: 'button',
       styleProps: {
         spacing: {
-          selector: [`${orderClass}.et_pb_contact_form_container.et_pb_module .et_pb_button`,
-            `${orderClass}.et_pb_contact_form_container.et_pb_module .et_pb_button:hover`].join(', '),
+          selector: [
+            `${orderClass}.et_pb_contact_form_container.et_pb_module .et_pb_button`,
+            `${orderClass}.et_pb_contact_form_container.et_pb_module .et_pb_button:hover`,
+          ].join(', '),
           important: true,
         },
+        advancedStyles: [
+          {
+            componentName: 'divi/common',
+            props: {
+              selector: `${orderClass} .et_contact_bottom_container`,
+              attr: attrs?.button?.decoration?.button,
+              declarationFunction: buttonAlignmentDeclaration,
+            },
+          },
+        ],
       },
     })}
     {/* Contact form field */}
@@ -95,11 +108,20 @@ export const ModuleStyles = ({
       ].join(', ')}
       attr={attrs?.field}
       orderClass={orderClass}
+      important={{
+        spacing: {
+          desktop: {
+            value: {
+              'margin-bottom': true,
+            },
+          },
+        },
+      }}
       propertySelectors={{
         spacing: {
           desktop: {
             value: {
-              margin:  `${orderClass} .et_pb_contact_field`,
+              margin: `${orderClass} .et_pb_contact_field`,
               padding: `${orderClass} .et_pb_contact_field .input`,
             },
           },
@@ -167,9 +189,7 @@ export const ModuleStyles = ({
             font: {
               desktop: {
                 value: {
-                  color: [
-                    `${orderClass} .input`,
-                  ].join(', '),
+                  color: [`${orderClass} .input`].join(', '),
                 },
                 hover: {
                   color: [
@@ -215,7 +235,7 @@ export const ModuleStyles = ({
       orderClass={orderClass}
     />
     <CssStyle
-      selector={orderClass}
+      selector={`${orderClass}.et_pb_contact_form_container`}
       attr={attrs.css}
       cssFields={elements?.moduleMetadata?.customCssFields}
     />

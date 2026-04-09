@@ -1,9 +1,6 @@
 import { type LoginAttrs } from '@divi/types';
 
-import {
-  type ModuleEditProps,
-} from '../types-module';
-
+import { type ModuleEditProps } from '../types-module';
 
 export interface LoginEditProps extends ModuleEditProps<LoginAttrs> {
   urls?: {

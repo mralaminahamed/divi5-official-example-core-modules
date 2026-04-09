@@ -1,8 +1,4 @@
-import {
-  type AccordionItemAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type AccordionItemAttrs, type Metadata } from '@divi/types';
 
 /**
  * Accordion Item Module Default Render Attributes.
@@ -33,6 +29,4 @@ const accordionItemModuleDefaultRenderAttributes: Metadata.DefaultAttributes<Acc
   },
 };
 
-export {
-  accordionItemModuleDefaultRenderAttributes,
-};
+export { accordionItemModuleDefaultRenderAttributes };

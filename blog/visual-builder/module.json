@@ -5,6 +5,7 @@
   "title": "Blog",
   "titles": "Blogs",
   "moduleIcon": "divi/module-blog",
+  "childrenName": [],
   "category": "module",
   "videos": [
     {
@@ -35,11 +36,26 @@
       },
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
+          "elements": {
+            "groupType": "group-item",
+            "item": {
+              "groupSlug": "contentElements",
+              "priority": 5,
+              "render": true,
+              "component": {
+                "type": "group",
+                "name": "divi/elements",
+                "props": {
+                  "grouped": false
+                }
+              }
+            }
+          },
+          "html": {},
           "link": {},
-          "htmlAttributes": {},
           "text": {
             "priority": 10,
             "component": {
@@ -55,6 +71,7 @@
         },
         "decoration": {
           "animation": {},
+          "attributes": {},
           "background": {
             "groupType": "group-item",
             "item": {
@@ -73,7 +90,9 @@
           "conditions": {},
           "disabledOn": {},
           "filters": {},
+          "interactions": {},
           "overflow": {},
+          "order": {},
           "position": {},
           "scroll": {
             "groupType": "group-item",
@@ -107,7 +126,7 @@
     },
     "post": {
       "type": "object",
-      "selector": "{{selector}} .et_pb_blog_grid .et_pb_post",
+      "selector": "{{selector}} .et_grid_module article.et_pb_post",
       "settings": {
         "advanced": {
           "useCurrentLoop": {
@@ -117,6 +136,7 @@
               "attrName": "post.advanced.useCurrentLoop",
               "label": "Posts For Current Page",
               "description": "Display posts for the current page. Useful on archive and index pages.",
+              "category": "configuration",
               "priority": 10,
               "render": true,
               "features": {
@@ -138,6 +158,7 @@
               "attrName": "post.advanced.type",
               "label": "Post Type",
               "description": "Choose posts of which post type you would like to display.",
+              "category": "configuration",
               "priority": 10,
               "render": true,
               "features": {
@@ -162,6 +183,7 @@
               "attrName": "post.advanced.number",
               "label": "Post Count",
               "description": "Choose how much posts you would like to display per page.",
+              "category": "configuration",
               "priority": 20,
               "render": true,
               "features": {
@@ -186,6 +208,7 @@
               "attrName": "post.advanced.categories",
               "label": "Included Categories",
               "description": "Choose which categories you would like to include in the feed.",
+              "category": "basic_option",
               "priority": 30,
               "render": true,
               "features": {
@@ -210,6 +233,7 @@
               "attrName": "post.advanced.dateFormat",
               "label": "Date Format",
               "description": "If you would like to adjust the date format, input the appropriate PHP date format here.",
+              "category": "configuration",
               "priority": 30,
               "render": true,
               "features": {
@@ -260,6 +284,7 @@
               "attrName": "post.advanced.excerptManual",
               "label": "Use Post Excerpts",
               "description": "Disable this option if you want to ignore manually defined excerpts and always generate it automatically.",
+              "category": "configuration",
               "priority": 60,
               "render": true,
               "features": {
@@ -281,6 +306,7 @@
               "attrName": "post.advanced.excerptLength",
               "label": "Excerpt Length",
               "description": "Define the length of automatically generated excerpts. Leave blank for default ( 270 ) ",
+              "category": "configuration",
               "priority": 70,
               "render": true,
               "features": {
@@ -302,6 +328,7 @@
               "attrName": "post.advanced.offset",
               "label": "Post Offset Number",
               "description": "Choose how many posts you would like to skip. These posts will not be shown in the feed.",
+              "category": "configuration",
               "priority": 80,
               "render": true,
               "features": {
@@ -323,6 +350,7 @@
               "attrName": "post.advanced.showExcerpt",
               "label": "Show Excerpt",
               "description": "Turn excerpt on and off.",
+              "category": "configuration",
               "priority": 70,
               "render": true,
               "features": {
@@ -362,6 +390,7 @@
     "image": {
       "type": "object",
       "selector": "{{selector}} .et_pb_post .entry-featured-image-url,{{selector}} .et_pb_post .et_pb_slides,{{selector}} .et_pb_post .et_pb_video_overlay",
+      "supportsCustomAttributes": true,
       "styleProps": {
         "boxShadow": {
           "selector": "{{selector}} .et_pb_post .entry-featured-image-url,{{selector}} .et_pb_post img,{{selector}} .et_pb_post .et_pb_slides,{{selector}} .et_pb_post .et_pb_video_overlay"
@@ -379,6 +408,7 @@
               "attrName": "image.advanced.enable",
               "label": "Show Featured Image",
               "description": "This will turn thumbnails on and off.",
+              "category": "configuration",
               "priority": 10,
               "render": true,
               "features": {
@@ -405,7 +435,7 @@
                 "type": "group",
                 "name": "divi/border",
                 "props": {
-                  "grouped": false
+                  "grouped": true
                 }
               }
             }
@@ -420,7 +450,7 @@
                 "type": "group",
                 "name": "divi/box-shadow",
                 "props": {
-                  "grouped": false
+                  "grouped": true
                 }
               }
             }
@@ -435,7 +465,7 @@
                 "type": "group",
                 "name": "divi/filters",
                 "props": {
-                  "grouped": false
+                  "grouped": true
                 }
               }
             }
@@ -446,6 +476,7 @@
     "readMore": {
       "type": "object",
       "selector": "{{selector}} .et_pb_post div.post-content a.more-link",
+      "supportsCustomAttributes": true,
       "styleProps": {
         "font": {
           "important": {
@@ -468,6 +499,7 @@
               "attrName": "readMore.advanced.enable",
               "label": "Show Read More Button",
               "description": "Here you can define whether to show \"read more\" link after the excerpts or not.",
+              "category": "configuration",
               "priority": 20,
               "render": true,
               "features": {
@@ -499,6 +531,30 @@
     "pagination": {
       "type": "object",
       "selector": "{{selector}} .wp-pagenavi a, {{selector}} .wp-pagenavi span, {{selector}} .pagination a",
+      "styleProps": {
+        "font": {
+          "propertySelectors": {
+            "font": {
+              "desktop": {
+                "value": {
+                  "text-align": "{{selector}} .wp-pagenavi"
+                }
+              }
+            }
+          },
+          "important": {
+            "font": {
+              "desktop": {
+                "value": {
+                  "color": true,
+                  "font-size": true,
+                  "font-weight": true
+                }
+              }
+            }
+          }
+        }
+      },
       "settings": {
         "advanced": {
           "enable": {
@@ -508,6 +564,7 @@
               "attrName": "pagination.advanced.enable",
               "label": "Show Pagination",
               "description": "Turn pagination on and off.",
+              "category": "configuration",
               "priority": 80,
               "render": true,
               "features": {
@@ -539,6 +596,7 @@
     "meta": {
       "type": "object",
       "selector": "{{selector}} .et_pb_post .post-meta, {{selector}} .et_pb_post .post-meta a, #left-area {{selector}} .et_pb_post .post-meta, #left-area {{selector}} .et_pb_post .post-meta a",
+      "supportsCustomAttributes": true,
       "styleProps": {
         "font": {
           "important": {
@@ -561,6 +619,7 @@
               "attrName": "meta.advanced.showAuthor",
               "label": "Show Author",
               "description": "Turn on or off the author link.",
+              "category": "configuration",
               "priority": 30,
               "render": true,
               "features": {
@@ -582,6 +641,7 @@
               "attrName": "meta.advanced.showDate",
               "label": "Show Date",
               "description": "Turn the date on or off.",
+              "category": "configuration",
               "priority": 40,
               "render": true,
               "features": {
@@ -603,6 +663,7 @@
               "attrName": "meta.advanced.showCategories",
               "label": "Show Categories",
               "description": "Turn the category links on or off.",
+              "category": "configuration",
               "priority": 50,
               "render": true,
               "features": {
@@ -624,6 +685,7 @@
               "attrName": "meta.advanced.showComments",
               "label": "Show Comment Count",
               "description": "Turn comment count on and off.",
+              "category": "configuration",
               "priority": 60,
               "render": true,
               "features": {
@@ -645,7 +707,8 @@
             "component": {
               "props": {
                 "fieldLabel": "Meta",
-                "groupLabel": "Meta Text"
+                "groupLabel": "Meta Text",
+                "presetGroup": "divi/font-body"
               }
             }
           }
@@ -655,6 +718,7 @@
     "title": {
       "type": "object",
       "selector": "{{selector}} .et_pb_post .entry-title, {{selector}} .not-found-title",
+      "supportsCustomAttributes": true,
       "styleProps": {
         "selector": "{{selector}} .et_pb_post .entry-title, {{selector}} .et_pb_post .entry-title a, {{selector}} .not-found-title",
         "font": {
@@ -694,6 +758,7 @@
     "content": {
       "type": "object",
       "selector": "{{selector}} .et_pb_post .post-content, {{selector}}.et_pb_bg_layout_light .et_pb_post .post-content p, {{selector}}.et_pb_bg_layout_dark .et_pb_post .post-content p",
+      "supportsCustomAttributes": true,
       "styleProps": {
         "bodyFont": {
           "propertySelectors": {
@@ -710,6 +775,15 @@
           },
           "important": {
             "body": {
+              "font": {
+                "desktop": {
+                  "value": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "link": {
               "font": {
                 "desktop": {
                   "value": {
@@ -755,7 +829,10 @@
               "priority": 30,
               "render": true,
               "features": {
-                "hover": false
+                "hover": false,
+                "dynamicContent": {
+                  "type": "color"
+                }
               },
               "component": {
                 "type": "field",
@@ -772,6 +849,7 @@
               "attrName": "overlay.advanced.enable",
               "label": "Featured Image Overlay",
               "description": "If enabled, an overlay color and icon will be displayed when a visitors hovers over the featured image of a post.",
+              "category": "layout",
               "priority": 10,
               "render": true,
               "features": {
@@ -810,7 +888,10 @@
                 "priority": 20,
                 "render": true,
                 "features": {
-                  "hover": false
+                  "hover": false,
+                  "dynamicContent": {
+                    "type": "color"
+                  }
                 },
                 "component": {
                   "type": "field",
@@ -822,6 +903,7 @@
                 "attrName": "overlayIcon.decoration.icon",
                 "label": "Overlay Icon",
                 "description": "Here you can define a custom icon for the overlay",
+                "category": "configuration",
                 "priority": 40,
                 "render": true,
                 "features": {
@@ -839,40 +921,8 @@
     },
     "fullwidth": {
       "type": "object",
-      "selector": "{{selector}}:not(.et_pb_blog_grid_wrapper) .et_pb_post",
+      "selector": "{{selector}}:not(.et_pb_blog_grid_wrapper) article.et_pb_post",
       "settings": {
-        "advanced": {
-          "enable": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designLayout",
-              "attrName": "fullwidth.advanced.enable",
-              "label": "Layout",
-              "description": "Toggle between the various blog layout types.",
-              "priority": 10,
-              "render": true,
-              "features": {
-                "hover": false,
-                "sticky": false,
-                "responsive": false
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/select",
-                "props": {
-                  "options": {
-                    "on": {
-                      "label": "Fullwidth"
-                    },
-                    "off": {
-                      "label": "Grid"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
         "decoration": {
           "border": {
             "groupType": "group-item",
@@ -893,9 +943,46 @@
         }
       }
     },
+    "blogGrid": {
+      "type": "object",
+      "selector": "{{selector}} .et_pb_posts",
+      "settings": {
+        "decoration": {
+          "layout": {
+            "groupType": "group-item",
+            "item": {
+              "groupSlug": "designLayout",
+              "priority": 10,
+              "render": true,
+              "component": {
+                "type": "group",
+                "name": "divi/layout",
+                "props": {
+                  "grouped": false,
+                  "defaultGroupAttr": {
+                    "desktop": {
+                      "value": {
+                        "display": "grid",
+                        "gridColumnCount": "3",
+                        "flexDirection": "column"
+                      }
+                    }
+                  },
+                  "fields": {
+                    "gridColumnCount": {
+                      "baseFieldDefault": "3"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "masonry": {
       "type": "object",
-      "selector": "{{selector}} .et_pb_blog_grid .et_pb_post",
+      "selector": "{{selector}} .et_grid_module .et_pb_post",
       "settings": {
         "decoration": {
           "background": {
@@ -907,6 +994,11 @@
               "label": "Grid Tile Background Color",
               "priority": 5,
               "render": true,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker",
@@ -929,17 +1021,20 @@
     "title": {
       "label": "Title",
       "subName": "title",
-      "selectorSuffix": " .entry-title"
+      "selector": "{{selector}} .et_pb_post .entry-title",
+      "selectorSuffix": ""
     },
     "content": {
       "label": "Body",
       "subName": "content",
-      "selectorSuffix": " .post-content"
+      "selector": "{{selector}} .post-content",
+      "selectorSuffix": ""
     },
     "postMeta": {
       "label": "Post Meta",
       "subName": "postMeta",
-      "selectorSuffix": " .post-meta"
+      "selector": "{{selector}} .post-meta",
+      "selectorSuffix": ""
     },
     "pagenavi": {
       "label": "Pagenavi",
@@ -949,12 +1044,14 @@
     "featuredImage": {
       "label": "Featured Image",
       "subName": "featuredImage",
-      "selectorSuffix": " .entry-featured-image-url img"
+      "selector": "{{selector}} .entry-featured-image-url img",
+      "selectorSuffix": ""
     },
     "readMore": {
       "label": "Read More Button",
       "subName": "readMore",
-      "selectorSuffix": " a.more-link"
+      "selector": "{{selector}} a.more-link",
+      "selectorSuffix": ""
     }
   },
   "settings": {
@@ -979,7 +1076,8 @@
         "component": {
           "name": "divi/composite",
           "props": {
-            "groupLabel": "Elements"
+            "groupLabel": "Elements",
+            "preset": "content"
           }
         }
       },
@@ -1002,7 +1100,9 @@
         "component": {
           "name": "divi/composite",
           "props": {
-            "groupLabel": "Layout"
+            "groupLabel": "Layout",
+            "clipboardCategory": "style",
+            "presetGroup": "divi/layout"
           }
         }
       },
@@ -1040,11 +1140,6 @@
           }
         }
       }
-    }
-  },
-  "mousetrap": {
-    "zIndex": {
-      "edited": "aboveModuleElements"
     }
   }
 }

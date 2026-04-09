@@ -1,11 +1,6 @@
-import {
-  type ContactFormAttrs,
-} from '@divi/types';
+import { type ContactFormAttrs } from '@divi/types';
 
-import {
-  type ModuleEditProps,
-} from '../types-module';
-
+import { type ModuleEditProps } from '../types-module';
 
 export interface ContactFormEditProps extends ModuleEditProps<ContactFormAttrs> {
   urls?: {

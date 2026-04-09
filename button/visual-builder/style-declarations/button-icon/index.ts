@@ -1,42 +1,39 @@
-import {
-  type ButtonIconStyleDeclarationParams,
-  StyleDeclarations,
-} from '@divi/style-library';
-
+import { type ButtonIconStyleDeclarationParams, StyleDeclarations } from '@divi/style-library';
 
 /**
  * Generate a style declaration for a button's icon.
  *
  * @since ??
  *
- * @param {object} params Parameters for generating the style declaration.
- * @param {object} params.attrValue The value of the attribute.
- *
  * @returns {string} The generated style declaration for the button's icon.
  */
-export const buttonIconStyleDeclaration = ({
-  attrValue,
-}: ButtonIconStyleDeclarationParams): string => {
-  const placement = attrValue?.icon?.placement;
-
+export const buttonIconStyleDeclaration = ({ attrValue }: ButtonIconStyleDeclarationParams): string => {
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  {
-      'margin-left': true,
-      'font-size':   true,
+    important: {
+      'font-size': true,
       'line-height': true,
     },
   });
 
-  const marginLeft = 'left' === placement ? '-1.3em' : '0';
-
-  // Checking if the icon is enabled.
-  // It is important to check this because sometimes we are getting different values for the icon settings.
-  // As a result, placement right value always is applied.
-  if ('on' === attrValue?.enable) {
-    declarations.add('margin-left', marginLeft);
+  // Skip icon styles when "Use Custom Styles For Button" is disabled.
+  // This matches D4 behavior where disabling custom styles removes icon styles.
+  const enable = attrValue?.enable ?? 'off';
+  if ('off' === enable) {
+    return declarations.value as string;
   }
-  declarations.add('font-size', '1.6em');
+
+  // This code matches the logic in ButtonModule.php::icon_style_declaration.
+  // Add margin-left based on icon placement to position the icon correctly.
+  const iconPlacement = attrValue?.icon?.placement ?? 'right';
+  const hasCustomIcon = Boolean(attrValue?.icon?.settings?.unicode);
+
+  if ('left' === iconPlacement) {
+    declarations.add('margin-left', '-1.3em');
+  } else if (hasCustomIcon) {
+    declarations.add('margin-left', '0.3em');
+  }
+
   declarations.add('line-height', '1em');
 
   return declarations.value as string;

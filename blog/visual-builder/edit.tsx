@@ -1,20 +1,10 @@
-import React, {
-  type ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import {
-  debounce,
-  isArray,
-  isNaN,
-  join,
-  toString,
-} from 'lodash';
+import React, { type ReactElement, useEffect, useRef, useState } from 'react';
+import { debounce, isArray, isNaN, join, toString } from 'lodash';
 import objectHash from 'object-hash';
 
 import { usePrevious } from '@wordpress/compose';
 
+import { useSelect } from '@divi/data';
 import { ModuleContainer } from '@divi/module';
 import { getAttrByMode } from '@divi/module-utils';
 import { useFetch } from '@divi/rest';
@@ -22,11 +12,7 @@ import { WindowEventEmitterInstance } from '@divi/script-library';
 import { type BlogMetadata, type BlogPost } from '@divi/types';
 import { Loading } from '@divi/ui-library';
 
-import {
-  LayoutFullwidth,
-  LayoutGrid,
-  NoResultsFound,
-} from './components';
+import { NoResultsFound, PostFeed } from './components';
 import { moduleClassnames } from './module-classnames';
 import { ModuleScriptData } from './module-script-data';
 import { ModuleStyles } from './module-styles';
@@ -43,36 +29,42 @@ import { type BlogEditProps } from './types';
  */
 const BlogEdit = (props: BlogEditProps): ReactElement => {
   /**
+   * Get Theme Builder flag from Redux store.
+   */
+  const isThemeBuilder = useSelect(
+    selectStore => selectStore('divi/settings').getSetting(['conditionalTags', 'is_tb']),
+    [],
+  );
+
+  /**
    * Setups initial variables.
    */
-  const {
-    attrs,
-    id,
-    isFirst,
-    isLast,
-    name,
-    elements,
-  } = props;
+  const { attrs, defaultPrintedStyleAttrs, id, isFirst, isLast, name, elements, childrenIds, isLooped, loopIndex } =
+    props;
 
-  const blogRef        = useRef(null);
+  const blogRef = useRef(null);
   const useCurrentLoop = getAttrByMode(attrs?.post?.advanced?.useCurrentLoop);
-  const postType       = getAttrByMode(attrs?.post?.advanced?.type);
-  const categories     = getAttrByMode(attrs?.post?.advanced?.categories);
-  const fullwidth      = getAttrByMode(attrs?.fullwidth?.advanced?.enable);
-  const dateFormat     = getAttrByMode(attrs?.post?.advanced?.dateFormat);
+  const postType = getAttrByMode(attrs?.post?.advanced?.type);
+  const categories = getAttrByMode(attrs?.post?.advanced?.categories);
+
+  /**
+   * Get current post ID from settings store (for VB context).
+   */
+  const currentPageId = useSelect(select => Number(select('divi/settings').getSetting(['post', 'id'])) || 0, []);
+  const dateFormat = getAttrByMode(attrs?.post?.advanced?.dateFormat);
   const excerptContent = getAttrByMode(attrs?.post?.advanced?.excerptContent);
-  const manualExcerpt  = getAttrByMode(attrs?.post?.advanced?.excerptManual);
-  const showExcerpt    = getAttrByMode(attrs?.post?.advanced?.showExcerpt);
-  const showThumbnail  = 'on' === getAttrByMode(attrs?.image?.advanced?.enable);
-  const showOverlay    = 'on' === getAttrByMode(attrs?.overlay?.advanced?.enable);
-  const showReadMore   = 'on' === getAttrByMode(attrs?.readMore?.advanced?.enable) && 'on' !== excerptContent;
+  const manualExcerpt = getAttrByMode(attrs?.post?.advanced?.excerptManual);
+  const showExcerpt = getAttrByMode(attrs?.post?.advanced?.showExcerpt);
+  const showThumbnail = 'on' === getAttrByMode(attrs?.image?.advanced?.enable);
+  const showOverlay = 'on' === getAttrByMode(attrs?.overlay?.advanced?.enable);
+  const showReadMore = 'on' === getAttrByMode(attrs?.readMore?.advanced?.enable) && 'on' !== excerptContent;
   const showPagination = 'on' === getAttrByMode(attrs?.pagination?.advanced?.enable);
-  const showAuthor     = 'on' === getAttrByMode(attrs?.meta?.advanced?.showAuthor);
-  const showDate       = 'on' === getAttrByMode(attrs?.meta?.advanced?.showDate);
+  const showAuthor = 'on' === getAttrByMode(attrs?.meta?.advanced?.showAuthor);
+  const showDate = 'on' === getAttrByMode(attrs?.meta?.advanced?.showDate);
   const showCategories = 'on' === getAttrByMode(attrs?.meta?.advanced?.showCategories);
-  const showComments   = 'on' === getAttrByMode(attrs?.meta?.advanced?.showComments);
-  const overlayIcon    = getAttrByMode(attrs?.overlayIcon?.decoration?.icon);
-  const headingLevel   = getAttrByMode(attrs?.title?.decoration?.font?.font)?.headingLevel ?? 'h2';
+  const showComments = 'on' === getAttrByMode(attrs?.meta?.advanced?.showComments);
+  const overlayIcon = getAttrByMode(attrs?.overlayIcon?.decoration?.icon);
+  const headingLevel = getAttrByMode(attrs?.title?.decoration?.font?.font)?.headingLevel ?? 'h2';
 
   // Get the number of posts per page.
   let postsPerPage = parseInt(getAttrByMode(attrs?.post?.advanced?.number));
@@ -97,7 +89,10 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
 
   const [paged, setPaged] = useState(1);
 
-  const setPagedNumber = (rawPaged:string | number) => {
+  // Get blog grid layout at top level (hooks must be called at top level)
+  const blogGridLayout = getAttrByMode(attrs?.blogGrid?.decoration?.layout)?.display ?? 'grid';
+
+  const setPagedNumber = (rawPaged: string | number) => {
     let parsed = parseInt(rawPaged.toString());
 
     if (isNaN(parsed) || parsed < 1) {
@@ -112,15 +107,15 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
     response: { posts, metadata },
     isLoading,
     abort,
-  } = useFetch<{posts: BlogPost[], metadata: BlogMetadata}>({ posts: [], metadata: {} }, true);
+  } = useFetch<{ posts: BlogPost[]; metadata: BlogMetadata }>({ posts: [], metadata: {} }, true);
 
   const categoriesStringified = isArray(categories) ? join(categories, ',') : toString(categories);
 
   // We need to keep track of the previous values of the `categoriesStringified`, `postsPerPage`, and `postType`
   // to determine whether we need to reset the `paged` to 1 or not.
   const categoriesStringifiedPrev = usePrevious(categoriesStringified);
-  const postsPerPagePrev          = usePrevious(postsPerPage);
-  const postTypePrev              = usePrevious(postType);
+  const postsPerPagePrev = usePrevious(postsPerPage);
+  const postTypePrev = usePrevious(postType);
 
   const fetchDebounced = debounce(() => {
     let pagedNormalized = paged;
@@ -143,30 +138,34 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
     }
 
     fetch({
-      method:    'GET',
+      method: 'GET',
       restRoute: '/divi/v1/module-data/blog/posts',
-      data:      {
+      data: {
         useCurrentLoop,
         postType,
         postsPerPage,
-        paged:      pagedNormalized,
+        paged: pagedNormalized,
         categories: categoriesStringified,
-        fullwidth,
         dateFormat,
         excerptContent,
         excerptLength,
         manualExcerpt,
         showExcerpt,
         offset,
+        layoutDisplay: blogGridLayout,
+        isThemeBuilder,
+        currentPageId,
       },
-    }).then(() => {
-      // Trigger an update on window's height, so components depending on it will re-render e.g. background video.
-      WindowEventEmitterInstance.trigger('height.changed');
-    }).catch(error => {
-      // TODO feat(D5, Logger) - We need to introduce a new logging system to log errors/rejections/etc.
-      // eslint-disable-next-line no-console
-      console.log(error);
-    });
+    })
+      .then(() => {
+        // Trigger an update on window's height, so components depending on it will re-render e.g. background video.
+        WindowEventEmitterInstance.trigger('height.changed');
+      })
+      .catch(error => {
+        // TODO feat(D5, Logger) - We need to introduce a new logging system to log errors/rejections/etc.
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
   }, 300);
 
   useEffect(() => {
@@ -182,23 +181,22 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
     postsPerPage,
     paged,
     categoriesStringified,
-    fullwidth,
     dateFormat,
     excerptContent,
     excerptLength,
     manualExcerpt,
     showExcerpt,
     offset,
+    blogGridLayout,
+    currentPageId,
   ]);
 
   const renderLoading = () => {
-    if (! isLoading) {
+    if (!isLoading) {
       return null;
     }
 
-    return (
-      <Loading />
-    );
+    return <Loading />;
   };
 
   const renderNoResultsFound = () => {
@@ -208,50 +206,26 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
       return null;
     }
 
-    return (
-      <NoResultsFound />
-    );
+    return <NoResultsFound />;
   };
 
   const renderPosts = () => {
     const postsLength = posts?.length ?? 0;
 
-    if (isLoading || ! postsLength) {
+    if (isLoading || !postsLength) {
       return null;
     }
 
-    if ('on' === fullwidth) {
-      return (
-        <LayoutFullwidth
-          headingLevel={headingLevel}
-          overlayIcon={overlayIcon}
-          pagination={{
-            paged,
-            onChangePage: setPagedNumber,
-            metadata,
-          }}
-          moduleId={id}
-          posts={posts}
-          showOverlay={showOverlay}
-          showPagination={showPagination}
-          showReadMore={showReadMore}
-          showThumbnail={showThumbnail}
-          showAuthor={showAuthor}
-          showDate={showDate}
-          showCategories={showCategories}
-          showComments={showComments}
-        />
-      );
-    }
+    // Generate a key to force re-render for the PostFeed component when the posts data or layout display changes.
+    // This is necessary to avoid issues with the Salvattore script when switching between block and flex layouts.
+    const postFeedRenderKey = `${id}--${objectHash(posts ?? {})}--${blogGridLayout}`;
 
-    // Generate a key to force re-render for the LayoutGrid component when the posts data is changed.
-    // This is necessary to avoid issues with the Salvattore script.
-    const layoutGridRenderKey = `${id}--${objectHash(posts ?? {})}`;
-
+    // Always use grid layout now.
     return (
-      <LayoutGrid
-        key={layoutGridRenderKey}
+      <PostFeed
+        key={postFeedRenderKey}
         headingLevel={headingLevel}
+        layoutDisplay={blogGridLayout}
         overlayIcon={overlayIcon}
         pagination={{
           paged,
@@ -268,6 +242,10 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
         showDate={showDate}
         showCategories={showCategories}
         showComments={showComments}
+        elements={elements}
+        childrenIds={childrenIds}
+        isLooped={isLooped}
+        loopIndex={loopIndex}
       />
     );
   };
@@ -275,6 +253,7 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
   return (
     <ModuleContainer
       attrs={attrs}
+      defaultPrintedStyleAttrs={defaultPrintedStyleAttrs}
       domRef={blogRef}
       elements={elements}
       id={id}
@@ -284,6 +263,8 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
       scriptDataComponent={ModuleScriptData}
       classnamesFunction={moduleClassnames}
       name={name}
+      isLooped={isLooped}
+      loopIndex={loopIndex}
     >
       {elements.styleComponents({
         attrName: 'module',
@@ -295,6 +276,4 @@ const BlogEdit = (props: BlogEditProps): ReactElement => {
   );
 };
 
-export {
-  BlogEdit,
-};
+export { BlogEdit };

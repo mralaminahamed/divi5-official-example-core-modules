@@ -2,7 +2,6 @@ import { registerSettingsStore } from '@divi/settings';
 
 import { includedCategories } from '../index';
 
-
 const originalDiviSettingsData = window?.DiviSettingsData;
 
 beforeAll(() => {
@@ -13,11 +12,11 @@ beforeAll(() => {
         postCategories: [
           {
             term_id: 86,
-            name:    'foo',
+            name: 'foo',
           },
           {
             term_id: 89,
-            name:    'bar',
+            name: 'bar',
           },
         ],
       },
@@ -33,7 +32,6 @@ afterAll(() => {
     value: originalDiviSettingsData,
   });
 });
-
 
 describe('includedCategories()', () => {
   it('should return an empty array when categories is an empty string', () => {

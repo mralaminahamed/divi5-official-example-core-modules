@@ -1,7 +1,4 @@
-import React, {
-  type MouseEvent,
-  type ReactElement,
-} from 'react';
+import React, { type MouseEvent, type ReactElement } from 'react';
 
 import { __ } from '@wordpress/i18n';
 
@@ -17,11 +14,11 @@ import { type PaginationProps } from './types';
  * @returns {ReactElement}
  */
 const Pagination = ({ metadata, paged, onChangePage }: PaginationProps): ReactElement => {
-  const maxNumPages   = metadata?.maxNumPages || 1;
-  const wpPagenavi    = metadata?.wpPagenavi;
-  const hasPrevPage   = paged < maxNumPages;
-  const hasNextPage   = paged > 1 && paged <= maxNumPages;
-  const hasWpPagenavi = !! wpPagenavi;
+  const maxNumPages = metadata?.maxNumPages || 1;
+  const wpPagenavi = metadata?.wpPagenavi;
+  const hasPrevPage = paged < maxNumPages;
+  const hasNextPage = paged > 1 && paged <= maxNumPages;
+  const hasWpPagenavi = !!wpPagenavi;
 
   const handleNextPage = (event?: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -82,7 +79,7 @@ const Pagination = ({ metadata, paged, onChangePage }: PaginationProps): ReactEl
         role="navigation"
         aria-label="Pagination Navigation"
         onClick={handleWpPagenaviPagination}
-            // eslint-disable-next-line @typescript-eslint/naming-convention, react/no-danger
+        // eslint-disable-next-line @typescript-eslint/naming-convention, react/no-danger
         dangerouslySetInnerHTML={{ __html: wpPagenavi }}
       />
     );
@@ -91,31 +88,21 @@ const Pagination = ({ metadata, paged, onChangePage }: PaginationProps): ReactEl
   return (
     <div className="pagination clearfix">
       {hasPrevPage && (
-      <div className="alignleft">
-        <a
-          href="#prev"
-          aria-label={__('Previous Page', 'et_builder')}
-          onClick={handlePreviousPage}
-        >
-          {__('« Older Entries', 'et_builder')}
-        </a>
-      </div>
+        <div className="alignleft">
+          <a href="#prev" aria-label={__('Previous Page', 'et_builder_5')} onClick={handlePreviousPage}>
+            {__('« Older Entries', 'et_builder_5')}
+          </a>
+        </div>
       )}
       {hasNextPage && (
-      <div className="alignright">
-        <a
-          href="#next"
-          aria-label={__('Next Page', 'et_builder')}
-          onClick={handleNextPage}
-        >
-          {__('Next Entries »', 'et_builder')}
-        </a>
-      </div>
+        <div className="alignright">
+          <a href="#next" aria-label={__('Next Page', 'et_builder_5')} onClick={handleNextPage}>
+            {__('Next Entries »', 'et_builder_5')}
+          </a>
+        </div>
       )}
     </div>
   );
 };
 
-export {
-  Pagination,
-};
+export { Pagination };

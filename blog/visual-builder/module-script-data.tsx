@@ -1,12 +1,7 @@
-import {
-  type ReactElement,
-} from 'react';
+import React, { type ReactElement } from 'react';
 
-import {
-  type ModuleScriptDataProps,
-} from '@divi/module';
+import { type ModuleScriptDataProps } from '@divi/module';
 import { type BlogAttrs } from '@divi/types';
-
 
 /**
  * Blog module's script data component.
@@ -15,8 +10,13 @@ import { type BlogAttrs } from '@divi/types';
  *
  * @returns {ReactElement}
  */
-export const ModuleScriptData = ({
-  elements,
-}: ModuleScriptDataProps<BlogAttrs>): ReactElement => elements.scriptData({
-  attrName: 'module',
-});
+export const ModuleScriptData = ({ elements }: ModuleScriptDataProps<BlogAttrs>): ReactElement => (
+  <React.Fragment>
+    {elements.scriptData({
+      attrName: 'module',
+    })}
+    {elements.scriptData({
+      attrName: 'blogGrid',
+    })}
+  </React.Fragment>
+);

@@ -1,18 +1,11 @@
 import React, { type ReactElement } from 'react';
 import { merge } from 'lodash';
 
-import {
-  CssStyle,
-  FormFieldStyle,
-  StyleContainer,
-  type StylesProps,
-} from '@divi/module';
+import { CssStyle, FormFieldStyle, StyleContainer, type StylesProps } from '@divi/module';
+import { overflowForBorderRadiusStyleDeclaration } from '@divi/style-library';
 import { type LoginAttrs } from '@divi/types';
 
-import {
-  iconSpacingDeclaration,
-  overflowStyleDeclaration,
-} from './style-declarations';
+import { iconSpacingDeclaration } from './style-declarations';
 
 /**
  * Login Module's style components.
@@ -27,8 +20,11 @@ const ModuleStyles = <TProps extends StylesProps<LoginAttrs>>({
   settings,
   state,
   noStyleTag,
+  isInsideStickyModule,
+  stickyParentOrderClass,
 }: TProps): ReactElement => {
-  const iconPlacement = 'left' === attrs?.button?.decoration?.button?.desktop?.value?.icon?.placement ? 'before' : 'after';
+  const iconPlacement =
+    'left' === attrs?.button?.decoration?.button?.desktop?.value?.icon?.placement ? 'before' : 'after';
 
   // TODO - Styles are not 100% matching D4. Need to check and implement. the D4 style fully.
 
@@ -43,10 +39,16 @@ const ModuleStyles = <TProps extends StylesProps<LoginAttrs>>({
   }
 
   return (
-    <StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>
+    <StyleContainer
+      mode={mode}
+      state={state}
+      noStyleTag={noStyleTag}
+      isInsideStickyModule={isInsideStickyModule}
+      stickyParentOrderClass={stickyParentOrderClass}
+    >
       {/* Module */}
       {elements.style({
-        attrName:   'module',
+        attrName: 'module',
         styleProps: {
           disabledOn: {
             disabledModuleVisibility: settings?.disabledModuleVisibility,
@@ -54,21 +56,25 @@ const ModuleStyles = <TProps extends StylesProps<LoginAttrs>>({
           advancedStyles: [
             {
               componentName: 'divi/text',
-              props:         {
+              props: {
                 selector: [
                   `${orderClass} .et_pb_module_header`,
                   `${orderClass} .et_pb_newsletter_description_content`,
                   `${orderClass} .et_pb_forgot_password a`,
                 ].join(', '),
-                attr:        attrs?.module?.advanced?.text,
+                attr: attrs?.module?.advanced?.text,
                 orientation: false,
               },
             },
             {
               componentName: 'divi/common',
-              props:         {
-                attr:                attrs?.module?.decoration?.border,
-                declarationFunction: overflowStyleDeclaration,
+              props: {
+                attr: attrs?.module?.decoration?.border,
+                declarationFunction: params =>
+                  overflowForBorderRadiusStyleDeclaration({
+                    ...params,
+                    overflowAttr: attrs?.module?.decoration?.overflow,
+                  }),
               },
             },
           ],
@@ -78,10 +84,12 @@ const ModuleStyles = <TProps extends StylesProps<LoginAttrs>>({
       {/* TODO feat(D5, Transition Styles) Convert FormFieldStyle into advanced styles */}
       {/* @see https://github.com/elegantthemes/Divi/issues/34446 */}
       <FormFieldStyle
-        selector={[`${orderClass} input[type="password"]`,
+        selector={[
+          `${orderClass} input[type="password"]`,
           `${orderClass} input[type="text"]`,
           `${orderClass} textarea`,
-          `${orderClass} input`].join(', ')}
+          `${orderClass} input`,
+        ].join(', ')}
         attr={attrs?.field}
         important={{
           spacing: {
@@ -97,11 +105,13 @@ const ModuleStyles = <TProps extends StylesProps<LoginAttrs>>({
             font: {
               desktop: {
                 value: {
-                  color: [`${orderClass} input[type="password"]`,
+                  color: [
+                    `${orderClass} input[type="password"]`,
                     `${orderClass} input[type="text"]`,
                     `${orderClass} textarea`,
                     `${orderClass} input`,
-                    `${orderClass} input::placeholder`].join(', '),
+                    `${orderClass} input::placeholder`,
+                  ].join(', '),
                 },
               },
             },
@@ -170,14 +180,14 @@ const ModuleStyles = <TProps extends StylesProps<LoginAttrs>>({
       })}
       {/* Button */}
       {elements.style({
-        attrName:   'button',
+        attrName: 'button',
         styleProps: {
           advancedStyles: [
             {
               componentName: 'divi/common',
-              props:         {
-                selector:            `${orderClass}.et_pb_login .et_pb_newsletter_form .et_pb_newsletter_button.et_pb_button:${iconPlacement}`,
-                attr:                merge({}, attrs?.button?.decoration?.font, attrs?.button?.decoration?.button),
+              props: {
+                selector: `${orderClass}.et_pb_login .et_pb_newsletter_form .et_pb_newsletter_button.et_pb_button:${iconPlacement}`,
+                attr: merge({}, attrs?.button?.decoration?.font, attrs?.button?.decoration?.button),
                 declarationFunction: iconSpacingDeclaration,
               },
             },
@@ -186,26 +196,23 @@ const ModuleStyles = <TProps extends StylesProps<LoginAttrs>>({
       })}
 
       {/* Module
-        * This is only to output the CSS form Custom CSS from Advanced Tab
-        * at the very end of the DOM, so that it can override the css from
-        * design tab. This is to fix the issue for re-ordering css
-        * https://github.com/elegantthemes/Divi/issues/38331
-        *
-        * This may not be the ideal solution as per the conversation here
-        * https://elegantthemes.slack.com/archives/C01CW343ZJ9/p1724934785470029?
-        * thread_ts=1708688820.993489&cid=C01CW343ZJ9
-        * so might need to re-visit this sometime later.
-      */}
+       * This is only to output the CSS form Custom CSS from Advanced Tab
+       * at the very end of the DOM, so that it can override the css from
+       * design tab. This is to fix the issue for re-ordering css
+       * https://github.com/elegantthemes/Divi/issues/38331
+       *
+       * This may not be the ideal solution as per the conversation here
+       * https://elegantthemes.slack.com/archives/C01CW343ZJ9/p1724934785470029?
+       * thread_ts=1708688820.993489&cid=C01CW343ZJ9
+       * so might need to re-visit this sometime later.
+       */}
       <CssStyle
-        selector={orderClass}
+        selector={`${orderClass}.et_pb_login`}
         attr={attrs.css}
         cssFields={elements?.moduleMetadata?.customCssFields}
       />
-
     </StyleContainer>
   );
 };
 
-export {
-  ModuleStyles,
-};
+export { ModuleStyles };

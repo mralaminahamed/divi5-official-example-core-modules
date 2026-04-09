@@ -1,6 +1,5 @@
 import { useSelect } from '@divi/data';
 
-
 /**
  * Get currently edited slide index.
  *

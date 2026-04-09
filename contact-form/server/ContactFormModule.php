@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\Conditions;
@@ -31,6 +31,7 @@ use ET\Builder\Packages\ModuleLibrary\ContactForm\ContactFormHandler;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
+use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use WP_Block_Type_Registry;
 use WP_Block;
 
@@ -53,7 +54,7 @@ class ContactFormModule implements DependencyInterface {
 	 *
 	 * @return array The array of custom CSS fields.
 	 */
-	public static function custom_css():array {
+	public static function custom_css(): array {
 		return WP_Block_Type_Registry::get_instance()->get_registered( 'divi/contact-form' )->customCssFields;
 	}
 
@@ -188,7 +189,7 @@ class ContactFormModule implements DependencyInterface {
 	 *     @type ModuleElements $elements         The ModuleElements instance.
 	 * }
 	 */
-	public static function module_styles( array $args ) : void {
+	public static function module_styles( array $args ): void {
 		$attrs                       = $args['attrs'] ?? [];
 		$elements                    = $args['elements'];
 		$settings                    = $args['settings'] ?? [];
@@ -196,6 +197,8 @@ class ContactFormModule implements DependencyInterface {
 		$base_order_class            = $args['baseOrderClass'] ?? '';
 		$default_printed_style_attrs = $args['defaultPrintedStyleAttrs'] ?? [];
 		$is_custom_post_type         = $args['isCustomPostType'] ?? false;
+		$is_inside_sticky_module     = $elements->get_is_inside_sticky_module();
+		$sticky_parent_order_class   = $elements->get_sticky_parent_order_class();
 
 		$base_selector = $is_custom_post_type
 			? 'body.et-db #page-container #et-boc .et-l .et_pb_section'
@@ -262,7 +265,7 @@ class ContactFormModule implements DependencyInterface {
 						[
 							'attrName'   => 'button',
 							'styleProps' => [
-								'spacing' => [
+								'spacing'        => [
 									'selector'  => implode(
 										', ',
 										[
@@ -271,6 +274,16 @@ class ContactFormModule implements DependencyInterface {
 										]
 									),
 									'important' => true,
+								],
+								'advancedStyles' => [
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => "{$base_selector} {$base_order_class} .et_contact_bottom_container",
+											'attr'     => $attrs['button']['decoration']['button'] ?? [],
+											'declarationFunction' => [ self::class, 'button_alignment_declaration' ],
+										],
+									],
 								],
 							],
 						]
@@ -286,6 +299,15 @@ class ContactFormModule implements DependencyInterface {
 									"{$order_class} .input",
 								]
 							),
+							'important'         => [
+								'spacing' => [
+									'desktop' => [
+										'value' => [
+											'margin-bottom' => true,
+										],
+									],
+								],
+							],
 							'propertySelectors' => [
 								'spacing'    => [
 									'desktop' => [
@@ -404,44 +426,52 @@ class ContactFormModule implements DependencyInterface {
 					),
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_form_container .input::placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_form_container .input::placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_form_container .input::-webkit-input-placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_form_container .input::-webkit-input-placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_form_container .input::-moz-placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_form_container .input::-moz-placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => "{$order_class}.et_pb_contact_form_container .input::-ms-input-placeholder",
-							'attrs'      => [
+							'selector'               => "{$order_class}.et_pb_contact_form_container .input::-ms-input-placeholder",
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => $args['orderClass'] . '.et_pb_contact_form_container',
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -473,12 +503,71 @@ class ContactFormModule implements DependencyInterface {
 		// Reset the $half_width_counter.
 		$half_width_counter = 0;
 
+		$children_ids = $block->parsed_block['innerBlocks'] ? array_map(
+			function ( $inner_block ) {
+				return $inner_block['id'];
+			},
+			$block->parsed_block['innerBlocks']
+		) : [];
+
+		// Apply filtering to child Contact Fields for form submission validation.
+		// This ensures Contact Field attributes (like 'required') are properly filtered.
+		$filtered_field_attrs = [];
+		if ( ! empty( $children_ids ) ) {
+			foreach ( $children_ids as $child_id ) {
+				$child_block = BlockParserStore::get( $child_id, $block->parsed_block['storeInstance'] );
+				if ( $child_block && 'divi/contact-field' === $child_block->blockName ) {
+					// Apply the same filtering as used during rendering.
+					$default_child_attrs = ModuleRegistration::get_default_attrs( 'divi/contact-field' );
+					$merged_child_attrs  = array_replace_recursive( $default_child_attrs, $child_block->attrs ?? [] );
+
+					// Apply the same filter that was applied to the parent.
+					$child_filter_args = [
+						'id'            => $child_id,
+						'name'          => $child_block->blockName,
+						'parentId'      => $block->parsed_block['id'],
+						'parentName'    => $block->name,
+						'parentAttrs'   => $attrs,
+						'storeInstance' => $block->parsed_block['storeInstance'],
+					];
+
+					/**
+					 * Filters module attributes before registration.
+					 *
+					 * This filter is documented in includes/builder-5/server/FrontEnd/ModuleRegistration.php.
+					 *
+					 * Note: We apply this filter here for Contact Field children because the main
+					 * `divi_module_library_register_module_attrs` filter is applied during the rendering
+					 * phase in ModuleRegistration::register_module(). However, ContactFormHandler processes
+					 * form submissions and validates Contact Field attributes (such as 'required') before
+					 * the normal rendering/filtering cycle occurs. To ensure third-party modifications via
+					 * the filter hook are properly applied during form submission, we manually apply the
+					 * filter here and pass the filtered attributes to ContactFormHandler.
+					 *
+					 * @since ??
+					 *
+					 * @param array $merged_child_attrs Module attributes merged with defaults.
+					 * @param array $child_filter_args  Filter arguments containing id, name, parentId, parentName, parentAttrs, and storeInstance.
+					 */
+					$filtered_child_attrs = apply_filters(
+						'divi_module_library_register_module_attrs',
+						$merged_child_attrs,
+						$child_filter_args
+					);
+
+					// Store filtered field attributes keyed by field ID.
+					$filtered_field_attrs[ $child_id ] = $filtered_child_attrs;
+				}
+			}
+		}
+
 		$children_ids = ChildrenUtils::extract_children_ids( $block );
 		$parent       = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
-		$form_handler = new ContactFormHandler( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
+		$form_handler = new ContactFormHandler( $block->parsed_block['id'], $block->parsed_block['storeInstance'], $attrs, $filtered_field_attrs );
 
-		// Module Order Index.
-		$order_index = $block->parsed_block['orderIndex'] ?? 0;
+		// Use uniqueId (module UUID) instead of orderIndex for form field names to ensure
+		// globally unique field names across all Theme Builder areas (Header, Body, Footer).
+		$unique_id = ContactFormUtils::get_unique_id( $attrs, $block->parsed_block );
 
 		// Contact Form Title.
 		$title = $elements->render(
@@ -560,7 +649,7 @@ class ContactFormModule implements DependencyInterface {
 					'tagEscaped' => true,
 					'attributes' => [
 						'type'  => 'hidden',
-						'name'  => 'et_pb_contactform_submit_' . $order_index,
+						'name'  => 'et_pb_contactform_submit_' . $unique_id,
 						'value' => 'et_contact_proccess',
 					],
 				]
@@ -573,7 +662,7 @@ class ContactFormModule implements DependencyInterface {
 				]
 			);
 
-			$basic_captcha = self::render_element_basic_captcha( $attrs, $order_index );
+			$basic_captcha = self::render_element_basic_captcha( $attrs, $unique_id );
 
 			$bottom_container = HTMLUtility::render(
 				[
@@ -591,8 +680,8 @@ class ContactFormModule implements DependencyInterface {
 			);
 
 			// Contact Form - Fields.
-		// phpcs:ignore ET.Sniffs.ValidatedSanitizedInput.InputNotSanitized -- intentionally done.
-			$current_url = ( is_ssl() ? 'https://' : 'http://' ) . ( $_SERVER['HTTP_HOST'] ?? '' ) . ( $_SERVER['REQUEST_URI'] ?? '' );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- intentionally done.
+			$current_url = ( is_ssl() ? 'https://' : 'http://' ) . ( sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ?? '' ) ) ) . ( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) );
 
 			// Get layout display to add appropriate classes to the form element.
 			$layout_display = $attrs['module']['decoration']['layout']['desktop']['value']['display'] ?? 'flex';
@@ -619,7 +708,7 @@ class ContactFormModule implements DependencyInterface {
 						$content,
 						$process_input,
 						$bottom_container,
-						wp_nonce_field( 'et-pb-contact-form-submit-' . $order_index, '_wpnonce-et-pb-contact-form-submitted-' . $order_index, true, false ),
+						wp_nonce_field( 'et-pb-contact-form-submit-' . $unique_id, '_wpnonce-et-pb-contact-form-submitted-' . $unique_id, true, false ),
 					],
 				]
 			);
@@ -639,7 +728,6 @@ class ContactFormModule implements DependencyInterface {
 
 		$use_redirect = $attrs['redirect']['advanced']['useRedirect']['desktop']['value'] ?? 'off';
 		$redirect_url = $attrs['redirect']['innerContent']['desktop']['value'] ?? '';
-		$unique_id    = $attrs['module']['advanced']['uniqueId']['desktop']['value'] ?? $block->parsed_block['id'] ?? '';
 
 		return Module::render(
 			[
@@ -657,7 +745,6 @@ class ContactFormModule implements DependencyInterface {
 				'classnamesFunction'       => [ self::class, 'module_classnames' ],
 				'stylesComponent'          => [ self::class, 'module_styles' ],
 				'scriptDataComponent'      => [ self::class, 'module_script_data' ],
-				'defaultPrintedStyleAttrs' => $default_printed_style_attrs,
 				'parentId'                 => $parent->id ?? '',
 				'parentName'               => $parent->blockName ?? '',
 				'parentAttrs'              => $parent->attrs ?? [],
@@ -704,7 +791,10 @@ class ContactFormModule implements DependencyInterface {
 		$id = $parsed_block['attrs']['module']['advanced']['htmlAttributes']['desktop']['value']['id'] ?? '';
 
 		if ( ! $id ) {
-			$parsed_block['attrs']['module']['advanced']['htmlAttributes']['desktop']['value']['id'] = 'et_pb_contact_form_' . ( $parsed_block['orderIndex'] ?? 0 );
+			// Use uniqueId (module UUID) instead of orderIndex to ensure globally unique IDs
+			// across all Theme Builder areas (Header, Body, Footer).
+			$unique_id = ContactFormUtils::get_unique_id( $parsed_block['attrs'], $parsed_block );
+			$parsed_block['attrs']['module']['advanced']['htmlAttributes']['desktop']['value']['id'] = 'et_pb_contact_form_' . $unique_id;
 		}
 
 		return $parsed_block;
@@ -713,12 +803,12 @@ class ContactFormModule implements DependencyInterface {
 	/**
 	 * Render element basic captcha.
 	 *
-	 * @param array $attrs Module attributes.
-	 * @param int   $order_index Module order index.
+	 * @param array  $attrs Module attributes.
+	 * @param string $unique_id Module unique ID (UUID).
 	 *
 	 * @return string
 	 */
-	public static function render_element_basic_captcha( array $attrs, int $order_index ):string {
+	public static function render_element_basic_captcha( array $attrs, string $unique_id ): string {
 		$use_spam_service = $attrs['module']['advanced']['spamProtection']['desktop']['value']['enabled'] ?? 'off';
 
 		if ( 'on' === $use_spam_service ) {
@@ -758,7 +848,7 @@ class ContactFormModule implements DependencyInterface {
 					'data-first_digit'   => $et_pb_first_digit,
 					'data-second_digit'  => $et_pb_second_digit,
 					'data-required_mark' => 'required',
-					'name'               => 'et_pb_contact_captcha_' . $order_index,
+					'name'               => 'et_pb_contact_captcha_' . $unique_id,
 					'autocomplete'       => 'off',
 				],
 			]
@@ -841,7 +931,7 @@ class ContactFormModule implements DependencyInterface {
 		// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.dirname_levelsFound -- We have PHP 7 support now, This can be deleted once PHPCS config is updated.
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/contact-form/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( ContactFormPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ ContactFormPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		add_filter(
 			'render_block_data',
@@ -860,5 +950,42 @@ class ContactFormModule implements DependencyInterface {
 		);
 	}
 
-}
+	/**
+	 * Button alignment for button tag (margin-left and margin-right only).
+	 *
+	 * This function will declare margin style for button element.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params An array of arguments.
+	 *
+	 * @return string The CSS for button alignment.
+	 */
+	public static function button_alignment_declaration( array $params ): string {
+		$alignment = $params['attrValue']['alignment'] ?? '';
 
+		$style_declarations = new StyleDeclarations(
+			[
+				'returnType' => 'string',
+				'important'  => false,
+			]
+		);
+
+		switch ( $alignment ) {
+			case 'left':
+				$style_declarations->add( 'margin-left', '0' );
+				$style_declarations->add( 'margin-right', 'auto' );
+				break;
+			case 'center':
+				$style_declarations->add( 'margin-left', 'auto' );
+				$style_declarations->add( 'margin-right', 'auto' );
+				break;
+			default: // 'right' is default.
+				$style_declarations->add( 'margin-left', 'auto' );
+				$style_declarations->add( 'margin-right', '0' );
+				break;
+		}
+
+		return $style_declarations->value();
+	}
+}

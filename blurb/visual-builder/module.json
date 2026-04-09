@@ -6,6 +6,7 @@
   "titles": "Blurbs",
   "moduleIcon": "divi/module-blurb",
   "category": "module",
+  "childrenName": [],
   "videos": [
     {
       "id": "SFuDWEMH-qg",
@@ -23,7 +24,9 @@
   "attributes": {
     "imageIcon": {
       "type": "object",
-      "selector": "{{selector}} .et_pb_main_blurb_image img",
+      "label": "Image or Icon",
+      "selector": "{{selector}} .et_pb_main_blurb_image .et-pb-icon, {{selector}} .et_pb_main_blurb_image img",
+      "supportsCustomAttributes": true,
       "settings": {
         "innerContent": {
           "groupType": "group-items",
@@ -34,6 +37,7 @@
               "subName": "useIcon",
               "label": "Use Icon",
               "description": "Here you can choose whether icon set below should be used.",
+              "category": "basic_option",
               "features": {
                 "hover": false,
                 "sticky": false,
@@ -53,6 +57,7 @@
               "subName": "icon",
               "label": "Icon",
               "description": "Choose an icon to display with your blurb.",
+              "category": "basic_option",
               "features": {
                 "sticky": false,
                 "preset": "content"
@@ -70,6 +75,7 @@
               "subName": "src",
               "label": "Image",
               "description": "Upload an image to display at the top of your blurb.",
+              "category": "basic_option",
               "features": {
                 "dynamicContent": {
                   "type": "image"
@@ -89,33 +95,9 @@
                     "src": true,
                     "id": true,
                     "alt": true,
-                    "titleText": false
+                    "titleText": true
                   }
                 }
-              }
-            },
-            "alt": {
-              "groupSlug": "advancedAttributes",
-              "attrName": "imageIcon.innerContent",
-              "subName": "alt",
-              "label": "Image Alt Text",
-              "description": "Define the HTML ALT text for your image here.",
-              "features": {
-                "dynamicContent": {
-                  "type": "text"
-                },
-                "sticky": false,
-                "responsive": false,
-                "hover": false,
-                "preset": [
-                  "html"
-                ]
-              },
-              "render": true,
-              "priority": 10,
-              "component": {
-                "type": "field",
-                "name": "divi/text"
               }
             },
             "animation": {
@@ -169,6 +151,11 @@
               "description": "Here you can define a custom color for your icon.",
               "render": true,
               "priority": 10,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker"
@@ -182,6 +169,7 @@
               "attrName": "imageIcon.advanced.placement",
               "label": "Image/Icon Placement",
               "description": "Here you can choose where to place the icon.",
+              "category": "layout",
               "render": true,
               "priority": 30,
               "features": {
@@ -213,6 +201,7 @@
                 "subName": "image",
                 "label": "Image Width",
                 "description": "Here you can choose image width.",
+                "category": "layout",
                 "render": true,
                 "priority": 40,
                 "component": {
@@ -268,6 +257,7 @@
               "attrName": "imageIcon.advanced.alignment",
               "label": "Image/Icon Alignment",
               "description": "Align image/icon to the left, right or center.",
+              "category": "layout",
               "render": true,
               "priority": 50,
               "features": {
@@ -306,6 +296,11 @@
               "description": "Here you can define a custom background color.",
               "render": true,
               "priority": 20,
+              "features": {
+                "dynamicContent": {
+                  "type": "color"
+                }
+              },
               "component": {
                 "type": "field",
                 "name": "divi/color-picker"
@@ -322,7 +317,7 @@
                 "type": "group",
                 "name": "divi/border",
                 "props": {
-                  "grouped": false,
+                  "grouped": true,
                   "fieldLabel": "Image/Icon"
                 }
               }
@@ -338,7 +333,7 @@
                 "type": "group",
                 "name": "divi/spacing",
                 "props": {
-                  "grouped": false,
+                  "grouped": true,
                   "fieldLabel": "Image/Icon"
                 }
               }
@@ -354,7 +349,7 @@
                 "type": "group",
                 "name": "divi/box-shadow",
                 "props": {
-                  "grouped": false,
+                  "grouped": true,
                   "fieldLabel": "Image"
                 }
               }
@@ -370,7 +365,7 @@
                 "type": "group",
                 "name": "divi/filters",
                 "props": {
-                  "grouped": false,
+                  "grouped": true,
                   "fieldLabel": "Image/Icon"
                 }
               }
@@ -385,7 +380,7 @@
           "important": true
         },
         "boxShadow": {
-          "selector": "{{selector}} .et_pb_main_blurb_image .et_pb_image_wrap",
+          "selector": "{{selector}} .et_pb_main_blurb_image .et_pb_image_wrap.et_pb_only_image_mode_wrap",
           "useOverlay": true
         },
         "filters": {
@@ -430,11 +425,13 @@
       "selector": "{{selector}}",
       "settings": {
         "meta": {
-          "adminLabel": {}
+          "meta": {}
         },
         "advanced": {
+          "elements": {},
+          "html": {},
           "link": {},
-          "htmlAttributes": {},
+          "loop": {},
           "text": {}
         },
         "decoration": {
@@ -453,13 +450,16 @@
               }
             }
           },
+          "attributes": {},
           "background": {},
           "border": {},
           "boxShadow": {},
           "conditions": {},
           "disabledOn": {},
-          "order": {},
           "filters": {},
+          "interactions": {},
+          "layout": {},
+          "order": {},
           "overflow": {},
           "position": {},
           "scroll": {},
@@ -488,12 +488,16 @@
       "styleProps": {
         "spacing": {
           "important": true
+        },
+        "layout": {
+          "selector": "{{selector}} .et_pb_blurb_content"
         }
       }
     },
     "title": {
       "type": "object",
-      "selector": "{{selector}} .et_pb_module_header, {{selector}} .et_pb_module_header a",
+      "selector": "{{selector}} .et_pb_module_header",
+      "supportsCustomAttributes": true,
       "settings": {
         "innerContent": {},
         "decoration": {
@@ -511,8 +515,8 @@
         "font": {
           "selectors": {
             "desktop": {
-              "value": "{{selector}} .et_pb_module_header, {{selector}} .et_pb_module_header a",
-              "hover": "{{selector}}{{:hover}} .et_pb_module_header, {{selector}}{{:hover}} .et_pb_module_header a"
+              "value": "{{selector}} .et_pb_module_header",
+              "hover": "{{selector}}{{:hover}} .et_pb_module_header"
             }
           },
           "important": {
@@ -530,6 +534,7 @@
     "content": {
       "type": "object",
       "selector": "{{selector}} .et_pb_blurb_description",
+      "supportsCustomAttributes": true,
       "elementType": "content",
       "attributes": {
         "class": "et_pb_blurb_description"
@@ -538,6 +543,7 @@
         "innerContent": {
           "item": {
             "groupSlug": "contentText",
+            "category": "basic_option",
             "features": {
               "dynamicContent": {
                 "type": "text"
@@ -578,6 +584,7 @@
                 "subName": "maxWidth",
                 "label": "Content Width",
                 "description": "Adjust the width of the content within the blurb.",
+                "category": "layout",
                 "priority": 10,
                 "render": true,
                 "component": {
@@ -604,7 +611,7 @@
     "blurbImage": {
       "label": "Blurb Image",
       "subName": "blurbImage",
-      "selectorSuffix": " .et_pb_main_blurb_image"
+      "selectorSuffix": ".et_pb_module .et_pb_main_blurb_image"
     },
     "blurbTitle": {
       "label": "Blurb Title",
@@ -669,18 +676,6 @@
             "groupLabel": "Animation",
             "clipboardCategory": "style",
             "presetGroup": "divi/animation"
-          }
-        }
-      },
-      "advancedAttributes": {
-        "panel": "advanced",
-        "priority": 30,
-        "groupName": "attributes",
-        "multiElements": true,
-        "component": {
-          "name": "divi/composite",
-          "props": {
-            "groupLabel": "Attributes"
           }
         }
       }

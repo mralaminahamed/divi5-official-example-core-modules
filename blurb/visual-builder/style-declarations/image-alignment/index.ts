@@ -1,6 +1,5 @@
 import { type DeclarationFunctionProps } from '@divi/module';
 
-
 /**
  * Style declaration for blurb's image alignment.
  *
@@ -10,9 +9,7 @@ import { type DeclarationFunctionProps } from '@divi/module';
  *
  * @returns {string}
  */
-export const imageAlignmentStyleDeclaration = ({
-  attrValue,
-}: DeclarationFunctionProps<string>): string => {
+export const imageAlignmentStyleDeclaration = ({ attrValue }: DeclarationFunctionProps<string>): string => {
   switch (attrValue) {
     case 'left':
       return 'margin: auto auto auto 0;';

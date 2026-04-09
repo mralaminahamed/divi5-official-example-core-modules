@@ -1,7 +1,4 @@
-import {
-  wpKses,
-} from '@divi/dynamic-data';
-
+import { wpKses } from '@divi/module-utils';
 
 /**
  * Extract the title for a link.
@@ -12,4 +9,4 @@ import {
  *
  * @returns {string} The extracted title.
  */
-export const extractLinkTitle = (htmlContent: string):string => wpKses(htmlContent);
+export const extractLinkTitle = (htmlContent: string): string => wpKses(htmlContent);

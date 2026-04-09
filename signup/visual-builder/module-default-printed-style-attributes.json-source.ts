@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type SignupAttrs,
-} from '@divi/types';
-
+import { type Metadata, type SignupAttrs } from '@divi/types';
 
 /**
  * SignUp Module Default Printed Style Attributes.
@@ -44,6 +40,4 @@ const signupModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Sign
   },
 };
 
-export {
-  signupModuleDefaultPrintedStyleAttributes,
-};
+export { signupModuleDefaultPrintedStyleAttributes };

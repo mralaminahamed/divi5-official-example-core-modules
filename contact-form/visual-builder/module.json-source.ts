@@ -1,9 +1,6 @@
 import { __ } from '@wordpress/i18n';
 
-import {
-  type ContactFormAttrs,
-  type Metadata,
-} from '@divi/types';
+import { type ContactFormAttrs, type Metadata } from '@divi/types';
 
 /**
  * Contact Form Module Meta Data.
@@ -12,45 +9,45 @@ import {
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
-  name:                      'divi/contact-form',
-  d4Shortcode:               'et_pb_contact_form',
-  moduleClassName:           'et_pb_contact_form_container',
-  moduleOrderClassName:      'et_pb_contact_form',
-  title:                     'Contact Form',
-  titles:                    'Contact Forms',
-  moduleIcon:                'divi/module-contact-form',
-  childModuleName:           'divi/contact-field',
-  childModuleTitle:          'Field',
+  name: 'divi/contact-form',
+  d4Shortcode: 'et_pb_contact_form',
+  moduleClassName: 'et_pb_contact_form_container',
+  moduleOrderClassName: 'et_pb_contact_form',
+  title: __('Contact Form', 'et_builder_5'),
+  titles: __('Contact Forms', 'et_builder_5'),
+  moduleIcon: 'divi/module-contact-form',
+  childModuleName: 'divi/contact-field',
+  childModuleTitle: __('Field', 'et_builder_5'),
   childModuleTitleAttribute: 'fieldItem',
-  category:                  'module',
-  childrenName:              ['divi/contact-field'],
-  allowAllElements:          true,
-  videos:                    [
+  category: 'module',
+  childrenName: ['divi/contact-field'],
+  allowAllElements: true,
+  videos: [
     {
-      id:   'YM5qQRKKvVk',
+      id: 'YM5qQRKKvVk',
       name: 'An introduction to the Contact Form module',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:        'object',
-      selector:    '{{selector}}',
+      type: 'object',
+      selector: '{{selector}}',
       elementType: 'element',
-      styleProps:  {
+      styleProps: {
         sizing: {
           propertySelectors: {
             desktop: {
               value: {
                 'margin-right': '{{selector}}.et_pb_contact_form_container.et_pb_module',
-                'margin-left':  '{{selector}}.et_pb_contact_form_container.et_pb_module',
+                'margin-left': '{{selector}}.et_pb_contact_form_container.et_pb_module',
               },
             },
           },
@@ -68,14 +65,17 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
           propertySelectors: {
             desktop: {
               value: {
-                'border-radius': '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type="checkbox"] + label i, {{selector}}.et_pb_contact_form_container .input[type="radio"] + label i',
-                'border-style':  '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type="checkbox"] + label i, {{selector}}.et_pb_contact_form_container .input[type="radio"] + label i',
+                'border-radius':
+                  '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type="checkbox"] + label i, {{selector}}.et_pb_contact_form_container .input[type="radio"] + label i',
+                'border-style':
+                  '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type="checkbox"] + label i, {{selector}}.et_pb_contact_form_container .input[type="radio"] + label i',
               },
             },
           },
         },
         boxShadow: {
-          selector: '{{selector}} .et_pb_contact_field input, {{selector}} .et_pb_contact_field select, {{selector}} .et_pb_contact_field textarea, {{selector}} .et_pb_contact_field .et_pb_contact_field_options_list label > i, {{selector}} input.et_pb_contact_captcha',
+          selector:
+            '{{selector}} .et_pb_contact_field input, {{selector}} .et_pb_contact_field select, {{selector}} .et_pb_contact_field textarea, {{selector}} .et_pb_contact_field .et_pb_contact_field_options_list label > i, {{selector}} input.et_pb_contact_captcha',
         },
         layout: {
           selector: '{{selector}} .et_pb_contact_form',
@@ -83,24 +83,25 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
       },
       settings: {
         meta: {
-          adminLabel: {},
+          meta: {},
         },
         advanced: {
           elements: {
             groupType: 'group-item',
-            item:      {
+            item: {
               groupSlug: 'contentElements',
-              priority:  5,
-              render:    true,
+              priority: 5,
+              render: true,
               component: {
-                type:  'group',
-                name:  'divi/elements',
+                type: 'group',
+                name: 'divi/elements',
                 props: {
                   grouped: false,
                 },
               },
             },
           },
+          html: {},
           link: {},
           loop: {},
           text: {
@@ -116,21 +117,25 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
           },
           successMessage: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentText',
-              priority:    10,
-              render:      true,
-              attrName:    'module.advanced.successMessage',
-              label:       __('Success Message', 'et_builder'),
-              description: __('Type the message you want to display after successful form submission. Leave blank for default', 'et_builder'),
-              features:    {
+            item: {
+              groupSlug: 'contentText',
+              priority: 10,
+              render: true,
+              attrName: 'module.advanced.successMessage',
+              label: __('Success Message', 'et_builder_5'),
+              description: __(
+                'Type the message you want to display after successful form submission. Leave blank for default',
+                'et_builder_5',
+              ),
+              category: 'configuration',
+              features: {
                 dynamicContent: {
                   type: 'text',
                 },
-                sticky:     false,
+                sticky: false,
                 responsive: false,
-                hover:      false,
-                preset:     'content',
+                hover: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/text',
@@ -140,57 +145,59 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
           },
         },
         decoration: {
-          layout:     {},
-          animation:  {},
+          layout: {},
+          animation: {},
           attributes: {},
           background: {},
-          border:     {
+          border: {
             component: {
               props: {
-                fieldLabel: 'Inputs',
+                fieldLabel: __('Inputs', 'et_builder_5'),
               },
             },
           },
-          boxShadow:    {},
-          conditions:   {},
-          disabledOn:   {},
-          filters:      {},
+          boxShadow: {},
+          conditions: {},
+          disabledOn: {},
+          filters: {},
           interactions: {},
-          overflow:     {},
-          order:        {},
-          position:     {},
-          scroll:       {},
-          sizing:       {},
-          spacing:      {},
-          sticky:       {},
-          transform:    {},
-          transition:   {},
-          zIndex:       {},
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {},
+          sizing: {},
+          spacing: {},
+          sticky: {},
+          transform: {},
+          transition: {},
+          zIndex: {},
         },
       },
     },
     title: {
-      type:                     'object',
-      selector:                 '{{selector}} h1, {{selector}} h2.et_pb_contact_main_title, {{selector}} h3.et_pb_contact_main_title, {{selector}} h4.et_pb_contact_main_title, {{selector}} h5.et_pb_contact_main_title, {{selector}} h6.et_pb_contact_main_title',
+      type: 'object',
+      selector:
+        '{{selector}} h1, {{selector}} h2.et_pb_contact_main_title, {{selector}} h3.et_pb_contact_main_title, {{selector}} h4.et_pb_contact_main_title, {{selector}} h5.et_pb_contact_main_title, {{selector}} h6.et_pb_contact_main_title',
       supportsCustomAttributes: true,
-      elementType:              'heading',
-      attributes:               {
+      elementType: 'heading',
+      attributes: {
         class: 'et_pb_contact_main_title',
       },
-      tagName:           'h1',
-      inlineEditor:      'plainText',
+      tagName: 'h1',
+      inlineEditor: 'plainText',
       childrenSanitizer: 'et_core_esc_previously',
-      settings:          {
+      settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            groupSlug:   'contentText',
-            priority:    5,
-            render:      true,
-            attrName:    'title.innerContent',
-            label:       __('Title', 'et_builder'),
-            description: __('Define a title for your contact form.', 'et_builder'),
-            features:    {
+          item: {
+            groupSlug: 'contentText',
+            priority: 5,
+            render: true,
+            attrName: 'title.innerContent',
+            label: __('Title', 'et_builder_5'),
+            description: __('Define a title for your contact form.', 'et_builder_5'),
+            category: 'basic_option',
+            features: {
               dynamicContent: {
                 type: 'text',
               },
@@ -205,12 +212,12 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
         },
         decoration: {
           font: {
-            priority:  10,
+            priority: 10,
             component: {
               props: {
-                groupLabel: 'Title Text',
-                fieldLabel: 'Title',
-                fields:     {
+                groupLabel: __('Title Text', 'et_builder_5'),
+                fieldLabel: __('Title', 'et_builder_5'),
+                fields: {
                   headingLevel: {
                     render: true,
                   },
@@ -221,25 +228,26 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
         },
       },
       styleProps: {
-        selector: '{{selector}}.et_pb_contact_form_container h1, {{selector}}.et_pb_contact_form_container h2.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h3.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h4.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h5.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h6.et_pb_contact_main_title',
+        selector:
+          '{{selector}}.et_pb_contact_form_container h1, {{selector}}.et_pb_contact_form_container h2.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h3.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h4.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h5.et_pb_contact_main_title, {{selector}}.et_pb_contact_form_container h6.et_pb_contact_main_title',
       },
     },
     captcha: {
-      type:        'object',
-      selector:    '',
+      type: 'object',
+      selector: '',
       elementType: 'element',
-      styleProps:  {
+      styleProps: {
         selector: '{{selector}}.et_pb_contact_form_container .et_pb_contact_right p',
       },
       settings: {
         decoration: {
           font: {
-            priority:  15,
+            priority: 15,
             component: {
               props: {
-                groupLabel: 'Captcha Text',
-                fieldLabel: 'Captcha',
-                fields:     {
+                groupLabel: __('Captcha Text', 'et_builder_5'),
+                fieldLabel: __('Captcha', 'et_builder_5'),
+                fields: {
                   textAlign: {
                     render: false,
                   },
@@ -251,23 +259,25 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
       },
     },
     field: {
-      type:        'object',
+      type: 'object',
       elementType: 'field',
-      selector:    '{{selector}} .input',
-      styleProps:  {
-        selector:  '{{selector}} .input',
+      selector: '{{selector}} .input',
+      styleProps: {
+        selector: '{{selector}} .input',
         selectors: {
           desktop: {
-            value: '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input::placeholder, {{selector}}.et_pb_contact_form_container .input::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox] + label, {{selector}}.et_pb_contact_form_container .input[type=radio] + label',
-            hover: '{{selector}}.et_pb_contact_form_container .input:hover, {{selector}}.et_pb_contact_form_container .input:hover::placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:hover:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox]:hover + label, {{selector}}.et_pb_contact_form_container .input[type=radio]:hover + label',
+            value:
+              '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input::placeholder, {{selector}}.et_pb_contact_form_container .input::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox] + label, {{selector}}.et_pb_contact_form_container .input[type=radio] + label',
+            hover:
+              '{{selector}}.et_pb_contact_form_container .input:hover, {{selector}}.et_pb_contact_form_container .input:hover::placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:hover:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox]:hover + label, {{selector}}.et_pb_contact_form_container .input[type=radio]:hover + label',
           },
         },
       },
       settings: {
         decoration: {
           background: {},
-          font:       {},
-          spacing:    {},
+          font: {},
+          spacing: {},
         },
         advanced: {
           focus: {},
@@ -275,20 +285,20 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
       },
     },
     button: {
-      type:                     'object',
-      selector:                 '{{selector}} .et_pb_contact_submit.et_pb_button',
+      type: 'object',
+      selector: '{{selector}} .et_pb_contact_submit.et_pb_button',
       supportsCustomAttributes: true,
-      elementType:              'button',
-      tagName:                  'button',
-      attributes:               {
-        type:  'submit',
-        name:  'et_builder_submit_button',
+      elementType: 'button',
+      tagName: 'button',
+      attributes: {
+        type: 'submit',
+        name: 'et_builder_submit_button',
         class: 'et_pb_contact_submit',
       },
       styleProps: {
-        selector:  '{{selector}}.et_pb_contact_form_container.et_pb_module .et_pb_button',
+        selector: '{{selector}}.et_pb_contact_form_container.et_pb_module .et_pb_button',
         boxShadow: {
-          selector:          '{{selector}} .et_pb_contact_submit',
+          selector: '{{selector}} .et_pb_contact_submit',
           propertySelectors: {
             desktop: {
               value: {
@@ -303,20 +313,21 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
       },
       elementProps: {
         allowEmptyUrl: true,
-        type:          'button',
+        type: 'button',
       },
       settings: {
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            groupSlug:   'contentText',
-            priority:    20,
-            render:      true,
-            attrName:    'button.innerContent',
-            subName:     'text',
-            label:       __('Submit Button', 'et_builder'),
-            description: __('Define the text of the form submit button.', 'et_builder'),
-            features:    {
+          item: {
+            groupSlug: 'contentText',
+            priority: 20,
+            render: true,
+            attrName: 'button.innerContent',
+            subName: 'text',
+            label: __('Submit Button', 'et_builder_5'),
+            description: __('Define the text of the form submit button.', 'et_builder_5'),
+            category: 'basic_option',
+            features: {
               dynamicContent: {
                 type: 'text',
               },
@@ -331,32 +342,36 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
         },
         decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          button:     {},
-          font:       {},
-          spacing:    {},
+          border: {},
+          boxShadow: {},
+          button: {},
+          font: {},
+          spacing: {},
         },
       },
     },
     email: {
-      type:     'object',
+      type: 'object',
       settings: {
         advanced: {
           receiver: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentEmail',
-              priority:    5,
-              render:      true,
-              attrName:    'email.advanced.receiver',
-              label:       __('Email Address', 'et_builder'),
-              description: __('Input the email address where messages should be sent.<br /><br /> Note: email delivery and spam prevention are complex processes. We recommend using a delivery service such as <a href="http://mandrill.com/">Mandrill</a>, <a href="https://sendgrid.com/">SendGrid</a>, or other similar service to ensure the deliverability of messages that are submitted through this form', 'et_builder'),
-              features:    {
-                responsive:     false,
-                hover:          false,
-                sticky:         false,
-                preset:         'content',
+            item: {
+              groupSlug: 'contentEmail',
+              priority: 5,
+              render: true,
+              attrName: 'email.advanced.receiver',
+              label: __('Email Address', 'et_builder_5'),
+              description: __(
+                'Input the email address where messages should be sent.<br /><br /> Note: email delivery and spam prevention are complex processes. We recommend using a delivery service such as <a href="http://mandrill.com/">Mandrill</a>, <a href="https://sendgrid.com/">SendGrid</a>, or other similar service to ensure the deliverability of messages that are submitted through this form',
+                'et_builder_5',
+              ),
+              category: 'basic_option',
+              features: {
+                responsive: false,
+                hover: false,
+                sticky: false,
+                preset: 'content',
                 dynamicContent: {
                   type: 'text',
                 },
@@ -370,25 +385,29 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
         },
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            groupSlug:   'contentEmail',
-            priority:    10,
-            render:      true,
-            attrName:    'email.innerContent',
-            label:       __('Message Pattern', 'et_builder'),
-            description: __('Here you can define the custom pattern for the email Message. Fields should be included in following format - <strong>%%field_id%%</strong>. For example if you want to include the field with id = <strong>phone</strong> and field with id = <strong>message</strong>, then you can use the following pattern: <strong>My message is %%message%% and phone number is %%phone%%</strong>. Leave blank for default.', 'et_builder'),
-            features:    {
-              responsive:     false,
-              hover:          false,
-              sticky:         false,
-              preset:         'content',
+          item: {
+            groupSlug: 'contentEmail',
+            priority: 10,
+            render: true,
+            attrName: 'email.innerContent',
+            label: __('Message Pattern', 'et_builder_5'),
+            description: __(
+              'Here you can define the custom pattern for the email Message. Fields should be included in following format - <strong>%%field_id%%</strong>. For example if you want to include the field with id = <strong>phone</strong> and field with id = <strong>message</strong>, then you can use the following pattern: <strong>My message is %%message%% and phone number is %%phone%%</strong>. Leave blank for default.',
+              'et_builder_5',
+            ),
+            category: 'configuration',
+            features: {
+              responsive: false,
+              hover: false,
+              sticky: false,
+              preset: 'content',
               dynamicContent: {
                 type: 'text',
               },
             },
             component: {
-              name:  'divi/textarea',
-              type:  'field',
+              name: 'divi/textarea',
+              type: 'field',
               props: {
                 processing: 'custom_message',
               },
@@ -398,23 +417,24 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
       },
     },
     redirect: {
-      type:     'object',
+      type: 'object',
       settings: {
         advanced: {
           useRedirect: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:   'contentRedirect',
-              priority:    5,
-              render:      true,
-              attrName:    'redirect.advanced.useRedirect',
-              label:       __('Enable Redirect URL', 'et_builder'),
-              description: __('Redirect users after successful form submission.', 'et_builder'),
-              features:    {
+            item: {
+              groupSlug: 'contentRedirect',
+              priority: 5,
+              render: true,
+              attrName: 'redirect.advanced.useRedirect',
+              label: __('Enable Redirect URL', 'et_builder_5'),
+              description: __('Redirect users after successful form submission.', 'et_builder_5'),
+              category: 'configuration',
+              features: {
                 responsive: false,
-                hover:      false,
-                sticky:     false,
-                preset:     'content',
+                hover: false,
+                sticky: false,
+                preset: 'content',
               },
               component: {
                 name: 'divi/toggle',
@@ -425,18 +445,19 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
         },
         innerContent: {
           groupType: 'group-item',
-          item:      {
-            groupSlug:   'contentRedirect',
-            priority:    10,
-            render:      true,
-            attrName:    'redirect.innerContent',
-            label:       __('Redirect URL', 'et_builder'),
-            description: __('Type the Redirect URL', 'et_builder'),
-            features:    {
-              responsive:     false,
-              hover:          false,
-              sticky:         false,
-              preset:         'content',
+          item: {
+            groupSlug: 'contentRedirect',
+            priority: 10,
+            render: true,
+            attrName: 'redirect.innerContent',
+            label: __('Redirect URL', 'et_builder_5'),
+            description: __('Type the Redirect URL', 'et_builder_5'),
+            category: 'configuration',
+            features: {
+              responsive: false,
+              hover: false,
+              sticky: false,
+              preset: 'content',
               dynamicContent: {
                 type: 'url',
               },
@@ -452,124 +473,123 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
   },
   customCssFields: {
     contactTitle: {
-      label:          __('Contact Title', 'et_builder'),
-      subName:        'contactTitle',
+      label: __('Contact Title', 'et_builder_5'),
+      subName: 'contactTitle',
       selectorSuffix: ' .et_pb_contact_main_title',
     },
     contactButton: {
-      label:          __('Contact Button', 'et_builder'),
-      subName:        'contactButton',
+      label: __('Contact Button', 'et_builder_5'),
+      subName: 'contactButton',
       selectorSuffix: '.et_pb_contact_form_container .et_contact_bottom_container .et_pb_contact_submit.et_pb_button',
     },
     contactFields: {
-      label:          __('Form Fields', 'et_builder'),
-      subName:        'contactFields',
+      label: __('Form Fields', 'et_builder_5'),
+      subName: 'contactFields',
       selectorSuffix: ' input',
     },
     textField: {
-      label:          __('Message Field', 'et_builder'),
-      subName:        'textField',
+      label: __('Message Field', 'et_builder_5'),
+      subName: 'textField',
       selectorSuffix: ' textarea.et_pb_contact_message',
     },
     captchaField: {
-      label:          __('Captcha Field', 'et_builder'),
-      subName:        'captchaField',
+      label: __('Captcha Field', 'et_builder_5'),
+      subName: 'captchaField',
       selectorSuffix: ' input.et_pb_contact_captcha',
     },
     captchaLabel: {
-      label:          __('Captcha Text', 'et_builder'),
-      subName:        'captchaLabel',
+      label: __('Captcha Text', 'et_builder_5'),
+      subName: 'captchaLabel',
       selectorSuffix: ' .et_pb_contact_right p',
     },
   },
-  script: [
-    'divi-module-library-script-contact-form',
-  ],
+  script: ['divi-module-library-script-contact-form'],
   settings: {
     content: 'auto',
 
     groups: {
       // Content > Elements
       contentElements: {
-        panel:         'content',
-        priority:      5,
-        groupName:     'contentElements',
+        panel: 'content',
+        priority: 5,
+        groupName: 'contentElements',
         multiElements: true,
 
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Elements',
+            groupLabel: __('Elements', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Content > Text.
       contentText: {
-        panel:         'content',
-        priority:      10,
-        groupName:     'text',
+        panel: 'content',
+        priority: 10,
+        groupName: 'text',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Text',
+            groupLabel: __('Text', 'et_builder_5'),
           },
         },
       },
 
       // Content > Email.
       contentEmail: {
-        panel:         'content',
-        priority:      15,
-        groupName:     'contentEmail',
+        panel: 'content',
+        priority: 15,
+        groupName: 'contentEmail',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Email',
+            groupLabel: __('Email', 'et_builder_5'),
           },
         },
       },
 
       // Content > Redirect.
       contentRedirect: {
-        panel:         'content',
-        priority:      20,
-        groupName:     'contentRedirect',
+        panel: 'content',
+        priority: 20,
+        groupName: 'contentRedirect',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Redirect',
+            groupLabel: __('Redirect', 'et_builder_5'),
           },
         },
       },
 
       // Content > Spam Protection.
       contentSpamProtection: {
-        panel:         'content',
-        priority:      25,
-        groupName:     'contentSpamProtection',
+        panel: 'content',
+        priority: 25,
+        groupName: 'contentSpamProtection',
         multiElements: true,
-        component:     {
-          name:  'divi/spam-protection',
+        component: {
+          name: 'divi/spam-protection',
           props: {
-            groupLabel: 'Spam Protection',
+            groupLabel: __('Spam Protection', 'et_builder_5'),
           },
         },
       },
 
       // Design > Fields.
       designFieldField: {
-        panel:         'design',
-        priority:      10,
-        groupName:     'field',
+        panel: 'design',
+        priority: 10,
+        groupName: 'field',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel:        'Fields',
+            groupLabel: __('Fields', 'et_builder_5'),
             clipboardCategory: 'style',
           },
         },
@@ -578,7 +598,6 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
   },
   mousetrap: {
     inner: {
-
       // Contact Form has content wrapper which covers the entire parent module surface area. Thus,
       // inner mousetrap needs to be added inside content wrapper.
       edited: true,
@@ -586,6 +605,4 @@ const contactFormModuleMetaData: Metadata.Values<ContactFormAttrs> = {
   },
 };
 
-export {
-  contactFormModuleMetaData,
-};
+export { contactFormModuleMetaData };

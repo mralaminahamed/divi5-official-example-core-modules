@@ -1,3 +1,5 @@
+import { __ } from '@wordpress/i18n';
+
 import { type ButtonAttrs, type Metadata } from '@divi/types';
 
 /**
@@ -7,35 +9,36 @@ import { type ButtonAttrs, type Metadata } from '@divi/types';
  * Variable name must end with `ModuleMetaData` to be picked up by the build script.
  */
 const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
-  name:                 'divi/button',
-  d4Shortcode:          'et_pb_button',
-  moduleClassName:      'et_pb_button',
+  name: 'divi/button',
+  d4Shortcode: 'et_pb_button',
+  moduleClassName: 'et_pb_button',
   moduleOrderClassName: 'et_pb_button',
-  title:                'Button',
-  titles:               'Buttons',
-  moduleIcon:           'divi/module-button',
-  category:             'module',
-  videos:               [
+  title: __('Button', 'et_builder_5'),
+  titles: __('Buttons', 'et_builder_5'),
+  moduleIcon: 'divi/module-button',
+  category: 'module',
+  childrenName: [], // Supports any module type as child elements
+  videos: [
     {
-      id:   'xDJFksZljlc',
+      id: 'xDJFksZljlc',
       name: 'An introduction to the Button module',
     },
     {
-      id:   '1iqjhnHVA9Y',
+      id: '1iqjhnHVA9Y',
       name: 'Design Settings and Advanced Module Settings',
     },
     {
-      id:   'boNZZ0MYU0E',
+      id: 'boNZZ0MYU0E',
       name: 'Saving and loading from the library',
     },
   ],
   attributes: {
     module: {
-      type:       'object',
-      selector:   '{{selector}}',
+      type: 'object',
+      selector: '{{selector}}',
       styleProps: {
         spacing: {
-          selector:          '{{wrapperSelector}}',
+          selector: '{{wrapperSelector}}',
           propertySelectors: {
             desktop: {
               value: {
@@ -51,14 +54,19 @@ const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
         position: {
           selector: '{{wrapperSelector}}',
         },
+        order: {
+          selector: '{{wrapperSelector}}',
+        },
       },
       settings: {
         meta: {
-          adminLabel: {},
+          meta: {},
         },
         advanced: {
-          htmlAttributes: {},
-          text:           {
+          elements: {},
+          html: {},
+          loop: {},
+          text: {
             component: {
               props: {
                 fields: {
@@ -74,22 +82,23 @@ const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
           },
           alignment: {
             groupType: 'group-item',
-            item:      {
-              groupSlug:       'designAlignment',
-              priority:        5,
-              render:          true,
-              attrName:        'module.advanced.alignment',
-              label:           'Button Alignment',
-              description:     'Here you can define the alignment of Button.',
+            item: {
+              groupSlug: 'designAlignment',
+              priority: 5,
+              render: true,
+              attrName: 'module.advanced.alignment',
+              label: __('Button Alignment', 'et_builder_5'),
+              description: __('Here you can define the alignment of Button.', 'et_builder_5'),
+              category: 'configuration',
               multipleChoices: false,
-              features:        {
-                hover:  false,
+              features: {
+                hover: false,
                 sticky: false,
                 preset: ['html'],
               },
               component: {
-                type:  'field',
-                name:  'divi/button-options',
+                type: 'field',
+                name: 'divi/button-options',
                 props: {
                   options: {
                     left: {
@@ -109,37 +118,41 @@ const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
           },
         },
         decoration: {
-          animation:  {},
-          boxShadow:  {},
+          layout: {},
+          animation: {},
+          attributes: {},
+          boxShadow: {},
           conditions: {},
           disabledOn: {},
-          filters:    {},
-          overflow:   {},
-          position:   {},
-          scroll:     {},
-          spacing:    {},
-          sticky:     {},
-          transform:  {},
+          filters: {},
+          interactions: {},
+          overflow: {},
+          order: {},
+          position: {},
+          scroll: {},
+          spacing: {},
+          sticky: {},
+          transform: {},
           transition: {},
-          zIndex:     {},
+          zIndex: {},
         },
       },
     },
     button: {
-      type:                   'object',
+      type: 'object',
       customPostTypeSelector: 'body.et-db #page-container #et-boc .et-l {{baseSelector}}',
-      selector:               'body #page-container .et_pb_section {{baseSelector}}',
-      elementType:            'button',
-      styleProps:             {
+      selector: 'body #page-container .et_pb_section {{baseSelector}}',
+      elementType: 'button',
+      styleProps: {
         font: {
           important: {
             font: {
               desktop: {
                 value: {
-                  color:            true,
-                  'font-size':      true,
+                  color: true,
+                  'font-size': true,
                   'letter-spacing': true,
-                  'line-height':    true,
+                  'line-height': true,
                 },
               },
             },
@@ -150,12 +163,62 @@ const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
         },
       },
       settings: {
-        innerContent: {},
-        decoration:   {
+        innerContent: {
+          groupType: 'into-multiple-groups',
+          groups: {
+            text: {
+              groupType: 'group-item',
+              item: {
+                description: __('Input your desired button text.', 'et_builder_5'),
+                groupSlug: 'contentText',
+                label: __('Button Text', 'et_builder_5'),
+                priority: 10,
+                render: true,
+                subName: 'text',
+                category: 'basic_option',
+                features: {
+                  dynamicContent: {
+                    type: 'text',
+                  },
+                  sticky: false,
+                  preset: 'content',
+                },
+
+                // Built-in component.
+                component: {
+                  name: 'divi/text',
+                  type: 'field',
+                },
+              },
+            },
+            link: {
+              groupType: 'group-item',
+              item: {
+                groupSlug: 'contentLink',
+                attrName: 'button.innerContent',
+                priority: 20,
+                render: true,
+
+                // Built-in group component
+                component: {
+                  type: 'group',
+                  name: 'divi/button-link',
+
+                  props: {
+                    grouped: false,
+                    attrName: 'button.innerContent',
+                    fieldLabel: __('Button', 'et_builder_5'),
+                  },
+                },
+              },
+            },
+          },
+        },
+        decoration: {
           background: {},
-          border:     {},
-          boxShadow:  {},
-          button:     {
+          border: {},
+          boxShadow: {},
+          button: {
             component: {
               props: {
                 fields: {
@@ -204,7 +267,7 @@ const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
               },
             },
           },
-          font:    {},
+          font: {},
           spacing: {
             component: {
               props: {
@@ -224,50 +287,50 @@ const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
     },
   },
   customCssFields: {},
-  settings:        {
-    content:  'auto',
-    design:   'auto',
+  settings: {
+    content: 'auto',
+    design: 'auto',
     advanced: 'auto',
 
     groups: {
-      // Content > Link.
-      contentLink: {
-        panel:     'content',
-        priority:  20,
-        groupName: 'link',
+      // Content > Text.
+      contentText: {
+        panel: 'content',
+        priority: 10,
+        groupName: 'text',
+        multiElements: true,
         component: {
-          name:  'divi/composite',
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Link',
-            preset:     'content',
+            groupLabel: __('Text', 'et_builder_5'),
           },
         },
       },
 
-      // Content > Text.
-      contentText: {
-        panel:         'content',
-        priority:      10,
-        groupName:     'text',
-        multiElements: true,
-        component:     {
-          name:  'divi/composite',
+      // Content > Link.
+      contentLink: {
+        panel: 'content',
+        priority: 20,
+        groupName: 'link',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel: 'Text',
+            groupLabel: __('Link', 'et_builder_5'),
+            preset: 'content',
           },
         },
       },
 
       // Design > Alignment.
       designAlignment: {
-        panel:         'design',
-        priority:      5,
-        groupName:     'alignment',
+        panel: 'design',
+        priority: 10,
+        groupName: 'alignment',
         multiElements: true,
-        component:     {
-          name:  'divi/composite',
+        component: {
+          name: 'divi/composite',
           props: {
-            groupLabel:        'Alignment',
+            groupLabel: __('Alignment', 'et_builder_5'),
             clipboardCategory: 'style',
           },
         },
@@ -276,10 +339,8 @@ const buttonModuleMetaData: Metadata.Values<ButtonAttrs> = {
   },
   wrapper: {
     status: true,
-    tag:    'div',
+    tag: 'div',
   },
 };
 
-export {
-  buttonModuleMetaData,
-};
+export { buttonModuleMetaData };

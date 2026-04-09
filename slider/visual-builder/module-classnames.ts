@@ -1,12 +1,7 @@
 import { isArray } from 'lodash';
 
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-} from '@divi/module';
-import {
-  getAttrValue,
-} from '@divi/module-utils';
+import { elementClassnames, type ModuleClassnamesParams } from '@divi/module';
+import { getAttrValue } from '@divi/module-utils';
 import { type SliderAttrs } from '@divi/types';
 
 /**
@@ -44,9 +39,9 @@ export const moduleClassnames = ({
     state,
   });
 
-  const auto                 = attrs?.module?.advanced?.auto?.desktop?.value;
-  const autoSpeed            = attrs?.module?.advanced?.autoSpeed?.desktop?.value;
-  const autoIgnoreHover      = attrs?.module?.advanced?.autoIgnoreHover?.desktop?.value;
+  const auto = attrs?.module?.advanced?.auto?.desktop?.value;
+  const autoSpeed = attrs?.module?.advanced?.autoSpeed?.desktop?.value;
+  const autoIgnoreHover = attrs?.module?.advanced?.autoIgnoreHover?.desktop?.value;
   const showImageVideoMobile = attrs?.image?.advanced?.showOnMobile?.desktop?.value;
 
   classnamesInstance.add('et_pb_slider_fullwidth_off');
@@ -62,7 +57,7 @@ export const moduleClassnames = ({
   classnamesInstance.add(
     elementClassnames({
       attrs: {
-        ...attrs?.module?.decoration ?? {},
+        ...(attrs?.module?.decoration ?? {}),
         background: attrs?.children?.module?.decoration?.background,
       },
       breakpoint,

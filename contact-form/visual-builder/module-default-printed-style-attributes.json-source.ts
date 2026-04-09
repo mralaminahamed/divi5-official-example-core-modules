@@ -1,8 +1,4 @@
-import {
-  type ContactFormAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type ContactFormAttrs, type Metadata } from '@divi/types';
 
 /**
  * Contact Form Module Default Printed Style Attributes.
@@ -16,10 +12,10 @@ const contactFormModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes
       layout: {
         desktop: {
           value: {
-            columnGap:     '15px',
+            columnGap: '15px',
             flexDirection: 'row',
-            flexWrap:      'wrap',
-            rowGap:        '15px',
+            flexWrap: 'wrap',
+            rowGap: '15px',
           },
         },
       },
@@ -31,7 +27,7 @@ const contactFormModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes
         font: {
           desktop: {
             value: {
-              size:       '26px',
+              size: '26px',
               lineHeight: '1em',
             },
           },
@@ -54,6 +50,4 @@ const contactFormModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes
   },
 };
 
-export {
-  contactFormModuleDefaultPrintedStyleAttributes,
-};
+export { contactFormModuleDefaultPrintedStyleAttributes };

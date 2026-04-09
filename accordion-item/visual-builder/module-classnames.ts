@@ -1,9 +1,5 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams } from '@divi/module';
 import { type AccordionItemAttrs } from '@divi/types';
-
 
 /**
  * Module classnames function for accordion item module.
@@ -23,7 +19,7 @@ export const moduleClassnames = ({
 
   classnamesInstance.add('et_pb_toggle');
   classnamesInstance.add('et_pb_toggle_open', isToggleOpen);
-  classnamesInstance.add('et_pb_toggle_close', ! isToggleOpen);
+  classnamesInstance.add('et_pb_toggle_close', !isToggleOpen);
   classnamesInstance.add('et-last-child', true === isLast);
 
   // Add element classnames.

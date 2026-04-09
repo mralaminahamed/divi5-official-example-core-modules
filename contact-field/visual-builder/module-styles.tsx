@@ -1,16 +1,7 @@
 import React, { type ReactElement } from 'react';
 
-import {
-  CssStyle,
-  ElementStyle,
-  FormFieldStyle,
-  StyleContainer,
-  type StylesProps,
-} from '@divi/module';
-import {
-  type ContactFieldAttrs,
-} from '@divi/types';
-
+import { CssStyle, ElementStyle, FormFieldStyle, StyleContainer, type StylesProps } from '@divi/module';
+import { type ContactFieldAttrs } from '@divi/types';
 
 /**
  * Set CSS styles to the module.
@@ -28,22 +19,30 @@ export const ModuleStyles = ({
   state,
   noStyleTag,
   settings,
+  isInsideStickyModule,
+  stickyParentOrderClass,
 }: StylesProps<ContactFieldAttrs>): ReactElement => (
-  <StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>
+  <StyleContainer
+    mode={mode}
+    state={state}
+    noStyleTag={noStyleTag}
+    isInsideStickyModule={isInsideStickyModule}
+    stickyParentOrderClass={stickyParentOrderClass}
+  >
     {/* module */}
     {elements.style({
-      attrName:   'module',
+      attrName: 'module',
       styleProps: {
         defaultPrintedStyleAttrs: defaultPrintedStyleAttrs?.module?.decoration,
-        disabledOn:               {
+        disabledOn: {
           disabledModuleVisibility: settings?.disabledModuleVisibility,
         },
         advancedStyles: [
           {
             componentName: 'divi/text',
-            props:         {
-              attr:              attrs?.module?.advanced?.text,
-              selector:          `.et_pb_contact_form_container ${orderClass}.et_pb_contact_field`,
+            props: {
+              attr: attrs?.module?.advanced?.text,
+              selector: `.et_pb_contact_form_container ${orderClass}.et_pb_contact_field`,
               propertySelectors: {
                 text: {
                   desktop: {
@@ -57,6 +56,10 @@ export const ModuleStyles = ({
           },
         ],
       },
+    })}
+    {/* Field Title */}
+    {elements.style({
+      attrName: 'fieldTitle',
     })}
     {/* Contact form field */}
     {/* TODO feat(D5, Transition Styles) Convert FormFieldStyle into advanced styles */}
@@ -127,9 +130,7 @@ export const ModuleStyles = ({
             font: {
               desktop: {
                 value: {
-                  color: [
-                    `${orderClass}.et_pb_contact_field .input`,
-                  ].join(', '),
+                  color: [`${orderClass}.et_pb_contact_field .input`].join(', '),
                 },
               },
             },
@@ -139,9 +140,7 @@ export const ModuleStyles = ({
           background: {
             desktop: {
               value: {
-                'background-color': [
-                  `${orderClass}.et_pb_contact_field .input`,
-                ].join(', '),
+                'background-color': [`${orderClass}.et_pb_contact_field .input`].join(', '),
               },
             },
           },
@@ -149,9 +148,7 @@ export const ModuleStyles = ({
             font: {
               desktop: {
                 value: {
-                  color: [
-                    `${orderClass}.et_pb_contact_field .input`,
-                  ].join(', '),
+                  color: [`${orderClass}.et_pb_contact_field .input`].join(', '),
                 },
               },
             },
@@ -240,10 +237,6 @@ export const ModuleStyles = ({
       }}
       orderClass={orderClass}
     />
-    <CssStyle
-      selector={orderClass}
-      attr={attrs.css}
-      cssFields={elements?.moduleMetadata?.customCssFields}
-    />
+    <CssStyle selector={orderClass} attr={attrs.css} cssFields={elements?.moduleMetadata?.customCssFields} />
   </StyleContainer>
 );

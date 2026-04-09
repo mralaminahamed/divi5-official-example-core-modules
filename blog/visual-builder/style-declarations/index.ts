@@ -1,1 +1,1 @@
-export * from './border';
+export * from './blog-grid-item';

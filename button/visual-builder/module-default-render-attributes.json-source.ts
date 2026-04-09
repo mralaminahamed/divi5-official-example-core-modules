@@ -1,8 +1,4 @@
-import {
-  type ButtonAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type ButtonAttrs, type Metadata } from '@divi/types';
 
 /**
  * Button Module Default Render Attributes.
@@ -20,6 +16,13 @@ const buttonModuleDefaultRenderAttributes: Metadata.DefaultAttributes<ButtonAttr
       },
     },
     advanced: {
+      html: {
+        desktop: {
+          value: {
+            elementType: 'a',
+          },
+        },
+      },
       text: {
         text: {
           desktop: {
@@ -37,7 +40,7 @@ const buttonModuleDefaultRenderAttributes: Metadata.DefaultAttributes<ButtonAttr
         desktop: {
           value: {
             enable: 'off',
-            icon:   {
+            icon: {
               enable: 'on',
             },
           },
@@ -47,6 +50,4 @@ const buttonModuleDefaultRenderAttributes: Metadata.DefaultAttributes<ButtonAttr
   },
 };
 
-export {
-  buttonModuleDefaultRenderAttributes,
-};
+export { buttonModuleDefaultRenderAttributes };

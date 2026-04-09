@@ -1,21 +1,13 @@
-import React, {
-  type ReactElement,
-  useEffect,
-  useRef,
-} from 'react';
-import {
-  isEmpty,
-} from 'lodash';
+import React, { type ReactElement, useEffect, useRef } from 'react';
+import { isEmpty } from 'lodash';
 
-import { InnerMousetrap, ModuleContainer } from '@divi/module';
-import {
-  getAttrByMode,
-} from '@divi/module-utils';
+import { ChildModulesContainer, InnerMousetrap, ModuleContainer } from '@divi/module';
+import { getAttrByMode } from '@divi/module-utils';
 
 import { moduleClassnames } from './module-classnames';
 import { ModuleStyles } from './module-styles';
-import { PricingList } from './pricing-list';
 import { type PricingTableEditProps } from './types';
+import { rawContentProcessor, saveContentProcessor } from './utils';
 
 /**
  * Pricing Table component of visual builder.
@@ -28,24 +20,28 @@ import { type PricingTableEditProps } from './types';
  */
 export const PricingTableEdit = ({
   attrs,
+  childrenIds,
   id,
   name,
   elements,
   parentAttrs,
   defaultPrintedStyleAttrs,
+  isLooped,
+  loopIndex,
+  canvasId,
 }: PricingTableEditProps): ReactElement => {
-  const per                = getAttrByMode(attrs?.currencyFrequency?.innerContent)?.per ?? '';
-  const currency           = getAttrByMode(attrs?.currencyFrequency?.innerContent)?.currency ?? '';
+  const per = getAttrByMode(attrs?.currencyFrequency?.innerContent)?.per ?? '';
+  const currency = getAttrByMode(attrs?.currencyFrequency?.innerContent)?.currency ?? '';
   const parentHeadingLevel = getAttrByMode(parentAttrs?.title?.decoration?.font?.font)?.headingLevel ?? 'h2';
-  let headingLevel         = getAttrByMode(attrs?.title?.decoration?.font?.font)?.headingLevel;
-  headingLevel             = isEmpty(headingLevel) ? parentHeadingLevel : headingLevel;
-  const mountedRef         = useRef(false);
-  const pricingTableRef    = useRef<HTMLDivElement>(null);
+  let headingLevel = getAttrByMode(attrs?.title?.decoration?.font?.font)?.headingLevel;
+  headingLevel = isEmpty(headingLevel) ? parentHeadingLevel : headingLevel;
+  const mountedRef = useRef(false);
+  const pricingTableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const $pricingTable = jQuery<HTMLElement>(pricingTableRef.current);
 
-    if (! mountedRef.current) {
+    if (!mountedRef.current) {
       setTimeout(() => {
         if ('function' === typeof window.et_fix_pricing_currency_position) {
           window.et_fix_pricing_currency_position($pricingTable);
@@ -73,8 +69,10 @@ export const PricingTableEdit = ({
       id={id}
       name={name}
       stylesComponent={ModuleStyles}
-      hasModuleClassName={false}
+      hasModuleClassName
       classnamesFunction={moduleClassnames}
+      isLooped={isLooped}
+      loopIndex={loopIndex}
     >
       <InnerMousetrap type="edited" />
       {elements.styleComponents({
@@ -83,7 +81,7 @@ export const PricingTableEdit = ({
       <div className="et_pb_pricing_heading">
         {elements.render({
           attrName: 'title',
-          tagName:  headingLevel,
+          tagName: headingLevel,
         })}
         {elements.render({
           attrName: 'subtitle',
@@ -93,47 +91,47 @@ export const PricingTableEdit = ({
         <InnerMousetrap type="edited" />
         <span className="et_pb_et_price">
           {elements.render({
-            attrName:              'currencyFrequency',
-            attrSubName:           'currency',
+            attrName: 'currencyFrequency',
+            attrSubName: 'currency',
+            className: 'et_pb_dollar_sign',
             inlineTextEditorProps: {
               className: 'et_pb_dollar_sign',
-              tagName:   'span',
+              tagName: 'span',
             },
           })}
           {elements.render({
             attrName: 'price',
           })}
-          {
-            ! isEmpty(per) && (
-              <React.Fragment>
-                <span className="et_pb_frequency"><span className="et_pb_frequency_slash">/</span></span>
-                {elements.render({
-                  attrName:              'currencyFrequency',
-                  attrSubName:           'per',
-                  inlineTextEditorProps: {
-                    className: 'et_pb_frequency',
-                    tagName:   'span',
-                  },
-                })}
-              </React.Fragment>
-            )
-          }
+          {!isEmpty(per) && (
+            <span className="et_pb_frequency">
+              <span className="et_pb_frequency_slash">/</span>
+              {elements.render({
+                attrName: 'currencyFrequency',
+                attrSubName: 'per',
+                inlineTextEditorProps: {
+                  tagName: 'span',
+                },
+              })}
+            </span>
+          )}
         </span>
       </div>
-      <div className="et_pb_pricing_content">
-        <InnerMousetrap type="edited" />
-        {elements.render({
-          attrName:              'content',
-          inlineEditor:          'plainText',
-          allowHtml:             true,
-          inlineTextEditorProps: {
-            contentRenderer: value => <PricingList content={value} />,
-          },
-        })}
-      </div>
+      {elements.render({
+        attrName: 'content',
+        inlineEditor: 'richText',
+        className: 'et_pb_pricing_content',
+        inlineRichTextEditorProps: {
+          rawContentProcessor,
+          saveContentProcessor,
+          innerMousetrap: true,
+        },
+      })}
       {elements.render({
         attrName: 'button',
       })}
+      {childrenIds && childrenIds.length > 0 && (
+        <ChildModulesContainer ids={childrenIds} isLooped={isLooped} loopIndex={loopIndex} canvasId={canvasId} />
+      )}
     </ModuleContainer>
   );
 };

@@ -1,5 +1,16 @@
 {
   "_comment": "!!! THIS IS AN AUTOMATICALLY GENERATED FILE - DO NOT EDIT !!!",
+  "module": {
+    "advanced": {
+      "html": {
+        "desktop": {
+          "value": {
+            "elementType": "p"
+          }
+        }
+      }
+    }
+  },
   "fieldItem": {
     "advanced": {
       "fullwidth": {

@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type SignupCustomFieldAttrs,
-} from '@divi/types';
-
+import { type Metadata, type SignupCustomFieldAttrs } from '@divi/types';
 
 /**
  * SignUp Custom Field Module Default Render Attributes.
@@ -11,6 +7,17 @@ import {
  * `module-default-render-attributes.json` upon build.
  */
 const signupCustomFieldModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupCustomFieldAttrs> = {
+  module: {
+    advanced: {
+      html: {
+        desktop: {
+          value: {
+            elementType: 'p',
+          },
+        },
+      },
+    },
+  },
   fieldItem: {
     advanced: {
       fullwidth: {
@@ -42,6 +49,4 @@ const signupCustomFieldModuleDefaultRenderAttributes: Metadata.DefaultAttributes
   },
 };
 
-export {
-  signupCustomFieldModuleDefaultRenderAttributes,
-};
+export { signupCustomFieldModuleDefaultRenderAttributes };

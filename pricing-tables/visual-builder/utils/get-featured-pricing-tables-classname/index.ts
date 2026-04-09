@@ -1,19 +1,16 @@
-import {
-  forEach,
-  get,
-} from 'lodash';
+import { forEach, get } from 'lodash';
 
 import { select } from '@divi/data';
 
 /**
-   * Get featured pricing tables classname based on given childrenIds and its featured status.
-   *
-   * @since ??
-   *
-   * @param {string[]} childrenIds Children ids.
-   *
-   * @returns {string|null} Classname based upon featured status of children.
-   */
+ * Get featured pricing tables classname based on given childrenIds and its featured status.
+ *
+ * @since ??
+ *
+ * @param {string[]} childrenIds Children ids.
+ *
+ * @returns {string|null} Classname based upon featured status of children.
+ */
 export const getFeaturedPricingTablesClassname = (childrenIds: string[]): string | null => {
   if (0 === childrenIds?.length) {
     return '';
@@ -23,7 +20,8 @@ export const getFeaturedPricingTablesClassname = (childrenIds: string[]): string
 
   // If child pricing table module has featured on then add it into featuredPricingTables array.
   forEach(select('divi/edit-post').getModulesByIds(childrenIds), (pricingTable): void => {
-    const featured = get(pricingTable, ['props', 'attrs', 'module', 'advanced', 'featured', 'desktop', 'value']) as string ?? 'off';
+    const featured =
+      (get(pricingTable, ['props', 'attrs', 'module', 'advanced', 'featured', 'desktop', 'value']) as string) ?? 'off';
     featuredPricingTables.push(featured);
   });
 

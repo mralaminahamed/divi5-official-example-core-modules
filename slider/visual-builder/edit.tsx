@@ -1,23 +1,11 @@
-import React, {
-  type ReactElement,
-  useEffect,
-  useRef,
-} from 'react';
-import {
-  isObject,
-  isUndefined,
-} from 'lodash';
+import React, { type ReactElement, useEffect, useRef } from 'react';
+import { isObject, isUndefined } from 'lodash';
 
 import { useDeepEffect } from '@divi/hooks';
-import {
-  ChildModulesContainer,
-  ModuleContainer,
-} from '@divi/module';
-import {
-  getAttrByMode,
-} from '@divi/module-utils';
+import { ChildModulesContainer, ModuleContainer } from '@divi/module';
+import { getAttrByMode } from '@divi/module-utils';
 
-import { useCurrentlyEditedSlideIndex } from './hooks';
+import { useChildrenLoopStatus, useCurrentlyEditedSlideIndex } from './hooks';
 import { moduleClassnames } from './module-classnames';
 import { ModuleScriptData } from './module-script-data';
 import { ModuleStyles } from './module-styles';
@@ -42,12 +30,24 @@ const SliderEdit = ({
   isLast,
   name,
   childrenIds,
+  isLooped,
+  loopIndex,
+  canvasId,
 }: SliderEditProps): ReactElement => {
-  const slider                    = useRef();
-  const reInitTimeout             = useRef<NodeJS.Timeout>();
+  const slider = useRef();
+  const reInitTimeout = useRef<NodeJS.Timeout>();
   const currentlyEditedSlideIndex = useCurrentlyEditedSlideIndex(childrenIds);
-  const showArrows                = getAttrByMode(attrs?.arrows?.advanced?.show);
-  const showPagination            = getAttrByMode(attrs?.pagination?.advanced?.show);
+  const showArrows = getAttrByMode(attrs?.arrows?.advanced?.show);
+  const showPagination = getAttrByMode(attrs?.pagination?.advanced?.show);
+
+  // Track loop status and query result count instead of individual loop options.
+  // The count changes whenever any loop setting affects the query results,
+  // ensuring proper slider reinitialization with the correct number of slides.
+  const childrenLoopStatus = useChildrenLoopStatus(childrenIds);
+
+  // Track HTML element type to re-init when wrapper changes
+  // Element Type doesn't support responsive breakpoints, so we only check desktop.value
+  const htmlElementType = attrs?.module?.advanced?.html?.desktop?.value?.elementType ?? null;
 
   // All re-initialization attributes
   // @todo: In D4, there are to attributes called `image_placement` and `show_image`.
@@ -88,11 +88,14 @@ const SliderEdit = ({
     attrs?.children?.slideOverlay?.decoration?.background?.desktop?.value?.color,
     attrs?.children?.contentOverlay?.decoration?.background?.desktop?.value?.color,
     attrs?.children?.contentOverlay?.decoration?.border?.desktop?.value?.radius,
+    attrs?.module?.advanced?.loop?.desktop?.value?.enable,
     childrenIds,
+    childrenLoopStatus, // Add all children's loop status to trigger reinitialization when any slide's loop is toggled
+    htmlElementType,
   ];
 
   const initSlider = () => {
-    if (! slider.current || isUndefined(window.et_pb_slider_init)) {
+    if (!slider.current || isUndefined(window.et_pb_slider_init)) {
       return;
     }
 
@@ -105,7 +108,6 @@ const SliderEdit = ({
     const $slider = jQuery(slider.current);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const api = $slider.data('et_pb_simple_slider');
-
 
     if (isObject(api)) {
       // TODO (D5, FE Script) : it will be solved at https://github.com/elegantthemes/Divi/issues/31401
@@ -152,16 +154,15 @@ const SliderEdit = ({
   }, reInitAttrs);
 
   useEffect(() => {
-    if (- 1 !== currentlyEditedSlideIndex) {
+    if (-1 !== currentlyEditedSlideIndex) {
       const $slider = jQuery(slider.current);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const api = $slider.data('et_pb_simple_slider');
 
-
       if (isObject(api)) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore: the method is available
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore: the method is available
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         api.et_slider_move_to(currentlyEditedSlideIndex);
       }
     }
@@ -184,26 +185,31 @@ const SliderEdit = ({
       htmlAttrs={{
         'data-address': id,
       }}
+      isLooped={isLooped}
+      loopIndex={loopIndex}
     >
       {elements.styleComponents({
-        attrName:             'module',
+        attrName: 'module',
         styleComponentsProps: {
           attrs: {
-            ...attrs?.module?.decoration ?? {},
+            ...(attrs?.module?.decoration ?? {}),
             background: attrs?.children?.module?.decoration?.background,
           },
         },
       })}
       <div className="et_pb_slides">
-        <ChildModulesContainer
-          ids={childrenIds}
-          parentCallback={reInitSlider}
-        />
+        {childrenIds && childrenIds.length > 0 && (
+          <ChildModulesContainer
+            ids={childrenIds}
+            parentCallback={reInitSlider}
+            isLooped={isLooped}
+            loopIndex={loopIndex}
+            canvasId={canvasId}
+          />
+        )}
       </div>
     </ModuleContainer>
   );
 };
 
-export {
-  SliderEdit,
-};
+export { SliderEdit };

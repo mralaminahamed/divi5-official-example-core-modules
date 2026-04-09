@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\HTMLUtility;
@@ -51,7 +51,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 	 *
 	 * @return array The array of custom CSS fields.
 	 */
-	public static function custom_css():array {
+	public static function custom_css(): array {
 		return WP_Block_Type_Registry::get_instance()->get_registered( 'divi/signup-custom-field' )->customCssFields;
 	}
 
@@ -93,7 +93,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 
 		// count fields to add the et_pb_contact_field_last properly.
 		if ( 'off' === $fullwidth ) {
-			$half_width_counter++;
+			++$half_width_counter;
 		} else {
 			$half_width_counter = 0;
 		}
@@ -327,7 +327,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 										'font' => [
 											'desktop' => [
 												'value' => [
-													'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input",
+													'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input.input",
 												],
 											],
 										],
@@ -371,6 +371,55 @@ class SignupCustomFieldModule implements DependencyInterface {
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
 							'orderClass' => $order_class,
+						]
+					),
+					// Focus placeholder styles with !important.
+					ElementStyle::style(
+						[
+							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::placeholder",
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::-webkit-input-placeholder",
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::-moz-placeholder",
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::-ms-input-placeholder",
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
 						]
 					),
 					// Module - Only for Custom CSS.
@@ -448,7 +497,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 		$symbols_pattern = '.';
 		$length_pattern  = '*';
 
-		if ( in_array( $allowed_symbols, array( 'letters', 'numbers', 'alphanumeric' ), true ) ) {
+		if ( in_array( $allowed_symbols, [ 'letters', 'numbers', 'alphanumeric' ], true ) ) {
 			switch ( $allowed_symbols ) {
 				case 'letters':
 					$symbols_pattern = '[A-Za-z\s\-]';
@@ -514,7 +563,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 							'data-original_id'   => $field_id,
 							'placeholder'        => $field_title,
 						],
-						'children'   => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( $_POST[ $field_unique_id ] ) ) : '' ),
+						'children'   => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( wp_unslash( $_POST[ $field_unique_id ] ) ) ) : '' ),
 					]
 				);
 				break;
@@ -531,7 +580,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 							'type'               => 'text',
 							'id'                 => $field_unique_id,
 							'class'              => 'input',
-							'value'              => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( $_POST[ $field_unique_id ] ) ) : '' ),
+							'value'              => ( isset( $_POST[ $field_unique_id ] ) ? esc_html( sanitize_textarea_field( wp_unslash( $_POST[ $field_unique_id ] ) ) ) : '' ),
 							'name'               => $field_unique_id,
 							'data-required_mark' => $required,
 							'data-field_type'    => $field_type,
@@ -843,16 +892,16 @@ class SignupCustomFieldModule implements DependencyInterface {
 		$conditional_logic_rules_value    = '';
 		$conditional_logic_relation_value = '';
 		if ( 'on' === $use_conditional_logic && ! empty( $conditional_logic_rules ) ) {
-			$ruleset = array();
+			$ruleset = [];
 			foreach ( $conditional_logic_rules as $condition_row ) {
 				$condition_value = isset( $condition_row['value'] ) ? $condition_row['value'] : '';
 				$condition_value = trim( $condition_value );
 
-				$ruleset[] = array(
+				$ruleset[] = [
 					strtolower( $condition_row['field'] ),
 					$condition_row['condition'],
 					$condition_value,
-				);
+				];
 			}
 
 			if ( ! empty( $ruleset ) ) {
@@ -910,11 +959,11 @@ class SignupCustomFieldModule implements DependencyInterface {
 	 *
 	 * @return string Field unique id.
 	 */
-	public static function get_field_unique_id( string $module_id, int $store_instance ):string {
+	public static function get_field_unique_id( string $module_id, int $store_instance ): string {
 		$parent             = BlockParserStore::get_parent( $module_id, $store_instance );
 		$current            = BlockParserStore::get( $module_id, $store_instance );
-		$parent_order_index = $parent->orderIndex ?? 0; // phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
-		$order_index        = $current->orderIndex ?? 0;// phpcs:ignore ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+		$parent_order_index = $parent->orderIndex ?? 0; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
+		$order_index        = $current->orderIndex ?? 0;// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- This is a property of the WP Core class.
 		$field_id           = strtolower( $current->attrs['fieldItem']['advanced']['id']['desktop']['value'] ?? '' );
 
 		return "et_pb_contact_{$parent_order_index}_{$field_id}_{$order_index}";
@@ -931,7 +980,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 		// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.dirname_levelsFound -- We have PHP 7 support now, This can be deleted once PHPCS config is updated.
 		$module_json_folder_path = dirname( __DIR__, 4 ) . '/visual-builder/packages/module-library/src/components/signup-custom-field/';
 
-		add_filter( 'divi_conversion_presets_attrs_map', array( SignupCustomFieldPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ SignupCustomFieldPresetAttrsMap::class, 'get_map' ], 10, 2 );
 
 		// Ensure that all filters and actions applied during module registration are registered before calling `ModuleRegistration::register_module()`.
 		// However, for consistency, register all module-specific filters and actions prior to invoking `ModuleRegistration::register_module()`.

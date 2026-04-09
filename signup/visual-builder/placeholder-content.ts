@@ -1,9 +1,5 @@
-import {
-  placeholderContent as placeholder,
-} from '@divi/module-utils';
-import {
-  type SignupAttrs,
-} from '@divi/types';
+import { placeholderContent as placeholder } from '@divi/module-utils';
+import { type SignupAttrs } from '@divi/types';
 
 /**
  * Placeholder content for a newly added Email Optin module.

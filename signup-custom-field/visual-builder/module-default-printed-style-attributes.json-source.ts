@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type SignupCustomFieldAttrs,
-} from '@divi/types';
-
+import { type Metadata, type SignupCustomFieldAttrs } from '@divi/types';
 
 /**
  * Sign Up Custom Field Module Default Printed Style Attributes.
@@ -17,10 +13,10 @@ const signupCustomFieldModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttr
         desktop: {
           value: {
             radius: {
-              sync:        'on',
-              topLeft:     '3px',
-              topRight:    '3px',
-              bottomLeft:  '3px',
+              sync: 'on',
+              topLeft: '3px',
+              topRight: '3px',
+              bottomLeft: '3px',
               bottomRight: '3px',
             },
             styles: {
@@ -66,10 +62,10 @@ const signupCustomFieldModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttr
           desktop: {
             value: {
               radius: {
-                sync:        'on',
-                topLeft:     '3px',
-                topRight:    '3px',
-                bottomLeft:  '3px',
+                sync: 'on',
+                topLeft: '3px',
+                topRight: '3px',
+                bottomLeft: '3px',
                 bottomRight: '3px',
               },
               styles: {
@@ -87,6 +83,4 @@ const signupCustomFieldModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttr
   },
 };
 
-export {
-  signupCustomFieldModuleDefaultPrintedStyleAttributes,
-};
+export { signupCustomFieldModuleDefaultPrintedStyleAttributes };

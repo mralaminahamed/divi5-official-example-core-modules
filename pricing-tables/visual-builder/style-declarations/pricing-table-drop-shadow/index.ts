@@ -8,12 +8,10 @@ import { StyleDeclarations } from '@divi/style-library';
  *
  * @returns {string}
  */
-export const pricingTableDropShadowStyleDeclaration = ({
-  attrValue,
-}: DeclarationFunctionProps<string>): string => {
+export const pricingTableDropShadowStyleDeclaration = ({ attrValue }: DeclarationFunctionProps<string>): string => {
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  false,
+    important: false,
   });
 
   if ('off' === attrValue) {

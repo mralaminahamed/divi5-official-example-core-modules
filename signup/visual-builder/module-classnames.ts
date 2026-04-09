@@ -1,13 +1,6 @@
-import {
-  elementClassnames,
-  type ModuleClassnamesParams,
-  textOptionsClassnames,
-} from '@divi/module';
+import { elementClassnames, type ModuleClassnamesParams, textOptionsClassnames } from '@divi/module';
 import { getAttrValue } from '@divi/module-utils';
-import {
-  type SignupAttrs,
-} from '@divi/types';
-
+import { type SignupAttrs } from '@divi/types';
 
 /**
  * Set CSS class names to the module.
@@ -37,7 +30,7 @@ export const moduleClassnames = ({
   });
 
   // If background is not set then add class.
-  if (! background) {
+  if (!background) {
     classnamesInstance.add('et_pb_no_bg');
   }
 
@@ -51,7 +44,7 @@ export const moduleClassnames = ({
   });
 
   // Add classname if there is no any title is set.
-  if (! title) {
+  if (!title) {
     classnamesInstance.add('et_pb_newsletter_description_no_title');
   }
 
@@ -65,15 +58,17 @@ export const moduleClassnames = ({
   });
 
   // Add classname if there is no any description is set.
-  if (! content) {
+  if (!content) {
     classnamesInstance.add('et_pb_newsletter_description_no_content');
   }
 
   // Text Options.
-  classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text, {
-    color:       true,
-    orientation: true,
-  }));
+  classnamesInstance.add(
+    textOptionsClassnames(attrs?.module?.advanced?.text, {
+      color: true,
+      orientation: true,
+    }),
+  );
 
   // Add element classnames.
   classnamesInstance.add(

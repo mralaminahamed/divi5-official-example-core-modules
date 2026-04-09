@@ -73,7 +73,8 @@
     "sum": "price.innerContent.*",
     "title": "title.innerContent.*",
     "header_level": "title.decoration.font.font.*.headingLevel",
-    "inline_fonts": "content.decoration.inlineFont.*.families"
+    "inline_fonts": "content.decoration.inlineFont.*.families",
+    "layout_grid_type": "module.decoration.sizing.*.flexType"
   },
   "valueExpansionFunctionMap": {
     "inline_fonts": "convertInlineFont"

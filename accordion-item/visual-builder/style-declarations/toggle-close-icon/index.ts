@@ -1,12 +1,7 @@
-import {
-  escapeFontIcon,
-  isFaIcon,
-  processFontIcon,
-} from '@divi/icon-library';
+import { escapeFontIcon, isFaIcon, processFontIcon } from '@divi/icon-library';
 import { type DeclarationFunctionProps } from '@divi/module';
 import { StyleDeclarations } from '@divi/style-library';
 import { type Module } from '@divi/types';
-
 
 /**
  * Style declaration for toggle close icon.
@@ -22,17 +17,14 @@ export const toggleCloseIconStyleDeclaration = ({
 }: DeclarationFunctionProps<Module.Element.Decoration.Icon.AttributeValue>): string => {
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  {
+    important: {
       'font-family': true,
       'font-weight': true,
-      content:       true,
+      content: true,
     },
   });
 
-  const {
-    color,
-    weight,
-  } = attrValue;
+  const { color, weight } = attrValue;
 
   if (color) {
     declarations.add('color', color);

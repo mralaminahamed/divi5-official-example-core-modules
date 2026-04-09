@@ -1,11 +1,6 @@
-import {
-  type ContactFieldAttrs,
-  type ModuleFlatObject,
-} from '@divi/types';
+import { type ContactFieldAttrs, type ModuleFlatObject } from '@divi/types';
 
-import {
-  contactFieldModuleMetaData,
-} from '../../module.json-source';
+import { contactFieldModuleMetaData } from '../../module.json-source';
 
 /**
  * Add filter to `divi.addModule.attrs` hook.
@@ -18,9 +13,9 @@ import {
 export const generateNewFieldId = (
   attrs: ContactFieldAttrs,
   info: {
-    name: string,
-    parentId: string,
-    state: Record<string, ModuleFlatObject<ContactFieldAttrs>>
+    name: string;
+    parentId: string;
+    state: Record<string, ModuleFlatObject<ContactFieldAttrs>>;
   },
 ) => {
   const { name, state, parentId } = info;
@@ -35,22 +30,22 @@ export const generateNewFieldId = (
   }
 
   const fieldUniqueBase = 'Field';
-  const siblings        = Object.keys(state).filter(key => state[key]?.parent === parentId);
-  const countStart      = (siblings.length + 1);
+  const siblings = Object.keys(state).filter(key => state[key]?.parent === parentId);
+  const countStart = siblings.length + 1;
 
-  const findByAttrsId = (uniqueId: string):boolean => {
+  const findByAttrsId = (uniqueId: string): boolean => {
     const found = siblings.some(key => state[key]?.props?.attrs?.fieldItem?.advanced?.id?.desktop?.value === uniqueId);
 
     return found;
   };
 
-  let fieldUnique    = `${fieldUniqueBase}_${countStart}`;
+  let fieldUnique = `${fieldUniqueBase}_${countStart}`;
   let checkIncrement = 0;
 
   // Re-generate unique value for field ID if it's already exist
   while (findByAttrsId(fieldUnique)) {
     checkIncrement++;
-    fieldUnique = `${fieldUniqueBase}_${(checkIncrement + countStart)}`;
+    fieldUnique = `${fieldUniqueBase}_${checkIncrement + countStart}`;
   }
 
   return {

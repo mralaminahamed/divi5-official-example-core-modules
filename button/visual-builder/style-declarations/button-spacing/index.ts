@@ -1,8 +1,4 @@
-import {
-  type ButtonIconStyleDeclarationParams,
-  StyleDeclarations,
-} from '@divi/style-library';
-
+import { type ButtonIconStyleDeclarationParams, StyleDeclarations } from '@divi/style-library';
 
 /**
  * Generate a style declaration for a button's spacing.
@@ -14,14 +10,12 @@ import {
  *
  * @returns {string} The generated style declaration for the button's spacing.
  */
-export const buttonSpacingDeclaration = ({
-  attrValue,
-}: ButtonIconStyleDeclarationParams): string => {
-  const iconShowOnHover =  'on' === attrValue?.icon?.onHover;
+export const buttonSpacingDeclaration = ({ attrValue }: ButtonIconStyleDeclarationParams): string => {
+  const iconShowOnHover = 'on' === attrValue?.icon?.onHover;
 
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  false,
+    important: false,
   });
 
   if (iconShowOnHover) {

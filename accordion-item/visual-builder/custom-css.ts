@@ -4,21 +4,20 @@ import { type Module } from '@divi/types';
 
 import metadata from './module.json';
 
-
 const { customCssFields } = metadata;
 
 const cssFields = {
-  ...customCssFields as unknown as Record<string, Module.Css.Field>,
+  ...(customCssFields as unknown as Record<string, Module.Css.Field>),
 };
 
 const labels = {
-  openToggle:    __('Open Toggle', 'et_builder'),
-  toggleTitle:   __('Toggle Title', 'et_builder'),
-  toggleIcon:    __('Toggle Icon', 'et_builder'),
-  toggleContent: __('Toggle Content', 'et_builder'),
+  openToggle: __('Open Toggle', 'et_builder_5'),
+  toggleTitle: __('Toggle Title', 'et_builder_5'),
+  toggleIcon: __('Toggle Icon', 'et_builder_5'),
+  toggleContent: __('Toggle Content', 'et_builder_5'),
 };
 
-Object.keys(labels).forEach((key:keyof typeof labels) => {
+Object.keys(labels).forEach((key: keyof typeof labels) => {
   if (Object.prototype.hasOwnProperty.call(cssFields, key)) {
     cssFields[key].label = labels[key];
   }

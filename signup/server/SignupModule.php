@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
-// phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WordPress uses snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
 use ET\Builder\Framework\Utility\Conditions;
@@ -34,11 +34,13 @@ use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\ModuleLibrary\Signup\SignupHandler;
 use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
+use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Packages\GlobalData\GlobalData;
 use ET\Builder\Services\EmailAccountService\EmailAccountService;
 use WP_Block_Type_Registry;
 use WP_Block;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 
 
 // phpcs:disable Squiz.Commenting.InlineComment -- Temporarily disabled to get the PR CI pass for now. TODO: Fix this later.
@@ -238,70 +240,7 @@ class SignupModule implements DependencyInterface {
 		);
 	}
 
-	/**
-	 * Email Optin Module with border style declaration.
-	 *
-	 * This function will declare input field with border style for Email Optin module.
-	 *
-	 * This function is the equivalent of the `fieldBorderStyleDeclaration` JS function located in
-	 * visual-builder/packages/module-library/src/components/signup/style-declarations/field-border/index.ts.
-	 *
-	 * @param array $params {
-	 *     An array of arguments.
-	 *
-	 *     @type array      $attrValue  The value (breakpoint > state > value) of module attribute.
-	 *     @type bool|array $important  If set to true, the CSS will be added with !important.
-	 *     @type string     $returnType This is the type of value that the function will return. Can be either string or key_value_pair.
-	 * }
-	 *
-	 * @since ??
-	 */
-	public static function field_overflow_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
 
-		$style_declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! $radius ) {
-			return $style_declarations->value();
-		}
-
-		$all_corners_zero = true;
-
-		// Check whether all corners are zero.
-		// If any corner is not zero, update the variable and break the loop.
-		foreach ( $radius as $corner => $value ) {
-			if ( 'sync' === $corner ) {
-				continue;
-			}
-
-			// If value contains global variable, apply overflow:hidden.
-			// Global variables can contain complex CSS (clamp, calc, vw, rem, etc.) that can't be parsed numerically.
-			if ( GlobalData::is_global_variable_value( $value ?? '' ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
-				$all_corners_zero = false;
-				break;
-			}
-		}
-
-		if ( $all_corners_zero ) {
-			return $style_declarations->value();
-		}
-
-		// Add overflow hidden when any corner's border radius is not zero.
-		$style_declarations->add( 'overflow', 'hidden' );
-
-		return $style_declarations->value();
-	}
 
 	/**
 	 * Set CSS styles to the module.
@@ -342,6 +281,8 @@ class SignupModule implements DependencyInterface {
 		$order_class = $args['orderClass'] ?? '';
 
 		$default_printed_style_attrs = $args['defaultPrintedStyleAttrs'] ?? [];
+		$is_inside_sticky_module     = $elements->get_is_inside_sticky_module();
+		$sticky_parent_order_class   = $elements->get_sticky_parent_order_class();
 
 		Style::add(
 			[
@@ -379,9 +320,22 @@ class SignupModule implements DependencyInterface {
 									[
 										'componentName' => 'divi/common',
 										'props'         => [
+											'attr' => $attrs['module']['decoration']['border'] ?? [],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['module']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
+										],
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
 											'selector' => "{$order_class}.et_pb_subscribe",
 											'attr'     => $attrs['module']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'field_overflow_style_declaration' ],
+											'declarationFunction' => function ( $params ) use ( $attrs ) {
+												$overflow_attr = $attrs['field']['decoration']['overflow'] ?? [];
+												return Declarations::overflow_for_border_radius_style_declaration( $params, $overflow_attr );
+											},
 										],
 									],
 									[
@@ -398,7 +352,7 @@ class SignupModule implements DependencyInterface {
 												]
 											),
 											'attr'     => $attrs['field']['decoration']['border'] ?? [],
-											'declarationFunction' => [ self::class, 'field_overflow_style_declaration' ],
+											'declarationFunction' => [ Declarations::class, 'overflow_for_border_radius_style_declaration' ],
 										],
 									],
 								],
@@ -626,7 +580,7 @@ class SignupModule implements DependencyInterface {
 					// ::*placeholder style can't handle multiple selectors used the same statements.
 					ElementStyle::style(
 						[
-							'selector'   => implode(
+							'selector'               => implode(
 								', ',
 								[
 									"{$order_class} .et_pb_newsletter_form p .input::placeholder",
@@ -635,15 +589,17 @@ class SignupModule implements DependencyInterface {
 									"{$order_class} .et_pb_newsletter_form p textarea:focus::placeholder",
 								]
 							),
-							'attrs'      => [
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => implode(
+							'selector'               => implode(
 								', ',
 								[
 									"{$order_class} .et_pb_newsletter_form p .input::-webkit-input-placeholder",
@@ -652,15 +608,17 @@ class SignupModule implements DependencyInterface {
 									"{$order_class} .et_pb_newsletter_form p textarea:focus::-webkit-input-placeholder",
 								]
 							),
-							'attrs'      => [
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => implode(
+							'selector'               => implode(
 								', ',
 								[
 									"{$order_class} .et_pb_newsletter_form p .input::-moz-placeholder",
@@ -669,15 +627,17 @@ class SignupModule implements DependencyInterface {
 									"{$order_class} .et_pb_newsletter_form p textarea:focus::-moz-placeholder",
 								]
 							),
-							'attrs'      => [
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
-							'orderClass' => $order_class,
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'   => implode(
+							'selector'               => implode(
 								', ',
 								[
 									"{$order_class} .et_pb_newsletter_form p .input::-ms-input-placeholder",
@@ -686,16 +646,119 @@ class SignupModule implements DependencyInterface {
 									"{$order_class} .et_pb_newsletter_form p textarea:focus::-ms-input-placeholder",
 								]
 							),
-							'attrs'      => [
+							'attrs'                  => [
 								'font' => $attrs['field']['decoration']['font'] ?? [],
 							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+						]
+					),
+					// Focus text color for actual input elements.
+					ElementStyle::style(
+						[
+							'selector'   => implode(
+								', ',
+								[
+									"{$order_class} .et_pb_newsletter_form p input.input:focus",
+									"{$order_class} .et_pb_newsletter_form p textarea:focus",
+									"{$order_class} .et_pb_newsletter_form p select:focus",
+								]
+							),
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
 							'orderClass' => $order_class,
+							'font'       => [
+								'important' => [
+									'font' => [
+										'desktop' => [
+											'value' => [
+												'color' => true,
+											],
+										],
+									],
+								],
+							],
+						]
+					),
+					// Focus placeholder styles with !important.
+					ElementStyle::style(
+						[
+							'selector'   => implode(
+								', ',
+								[
+									"{$order_class} .et_pb_newsletter_form p .input:focus::placeholder",
+									"{$order_class} .et_pb_newsletter_form p textarea:focus::placeholder",
+								]
+							),
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => implode(
+								', ',
+								[
+									"{$order_class} .et_pb_newsletter_form p .input:focus::-webkit-input-placeholder",
+									"{$order_class} .et_pb_newsletter_form p textarea:focus::-webkit-input-placeholder",
+								]
+							),
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => implode(
+								', ',
+								[
+									"{$order_class} .et_pb_newsletter_form p .input:focus::-moz-placeholder",
+									"{$order_class} .et_pb_newsletter_form p textarea:focus::-moz-placeholder",
+								]
+							),
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => implode(
+								', ',
+								[
+									"{$order_class} .et_pb_newsletter_form p .input:focus::-ms-input-placeholder",
+									"{$order_class} .et_pb_newsletter_form p textarea:focus::-ms-input-placeholder",
+								]
+							),
+							'attrs'      => [
+								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+							],
+							'orderClass' => $order_class,
+							'font'       => [
+								'important' => true,
+							],
 						]
 					),
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
-							'selector'  => $args['orderClass'],
+							'selector'  => $args['orderClass'] . '.et_pb_subscribe',
 							'attr'      => $attrs['css'] ?? [],
 							'cssFields' => self::custom_css(),
 						]
@@ -864,11 +927,15 @@ class SignupModule implements DependencyInterface {
 		);
 
 		// Element div.et_pb_newsletter_fields.
-		// Add layout classes based on module display mode.
 		$layout_display          = $attrs['module']['decoration']['layout']['desktop']['value']['display'] ?? 'flex';
 		$is_flex_layout_display  = 'flex' === $layout_display;
 		$is_grid_layout_display  = 'grid' === $layout_display;
 		$is_block_layout_display = ! $is_flex_layout_display && ! $is_grid_layout_display;
+		$fullwidth_name          = $attrs['field']['advanced']['nameFullwidth']['desktop']['value'] ?? 'on';
+		$fullwidth_first_name    = $attrs['field']['advanced']['firstNameFullwidth']['desktop']['value'] ?? 'on';
+		$fullwidth_last_name     = $attrs['field']['advanced']['lastNameFullwidth']['desktop']['value'] ?? 'on';
+		$fullwidth_email         = $attrs['field']['advanced']['emailFullwidth']['desktop']['value'] ?? 'on';
+		$has_non_fullwidth_field = 'on' !== $fullwidth_name || 'on' !== $fullwidth_first_name || 'on' !== $fullwidth_last_name || 'on' !== $fullwidth_email;
 
 		$form_fields_wrapper = HTMLUtility::render(
 			[
@@ -883,6 +950,7 @@ class SignupModule implements DependencyInterface {
 							'et_block_module'         => $is_block_layout_display,
 						]
 					),
+					'style' => $is_flex_layout_display && $has_non_fullwidth_field ? '--flex-direction: row;' : null,
 				],
 				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => [
@@ -952,7 +1020,7 @@ class SignupModule implements DependencyInterface {
 				$success_redirect_query = implode( '|', $success_redirect_query );
 
 				// If ip_address is present then get ip address and set as data attribute.
-				if ( false !== strpos( $success_redirect_query, 'ip_address' ) ) {
+				if ( str_contains( $success_redirect_query, 'ip_address' ) ) {
 					$ip_address = et_core_get_ip_address();
 				}
 			} else {
@@ -1010,7 +1078,7 @@ class SignupModule implements DependencyInterface {
 	 *
 	 * @return string Checksum.
 	 */
-	public static function generate_checksum( array $attrs ) : string {
+	public static function generate_checksum( array $attrs ): string {
 		$checksum = md5( serialize( $attrs ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize -- Intentional.
 
 		// Spam protection state.
@@ -1373,6 +1441,68 @@ class SignupModule implements DependencyInterface {
 
 
 	/**
+	 * Migrate Signup module layout properties during D4 to D5 conversion.
+	 *
+	 * This filter callback migrates the D4 layout attribute to D5 flex layout properties:
+	 * - Sets `flexDirection` for all layout types to match D4 layout behavior
+	 * - Sets `alignItems: 'center'` for horizontal layouts (`left_right`, `right_left`) to ensure
+	 *   vertical centering matches D4 behavior
+	 *
+	 * Layout mappings:
+	 * - `left_right`: Sets `alignItems: 'center'` (flexDirection defaults to 'row')
+	 * - `right_left`: Sets `flexDirection: 'row-reverse'` and `alignItems: 'center'`
+	 * - `top_bottom`: Sets `flexDirection: 'column'`
+	 * - `bottom_top`: Sets `flexDirection: 'column-reverse'`
+	 *
+	 * @since ??
+	 *
+	 * @param array  $converted_attrs      The converted attributes array.
+	 * @param string $module_name          The module name (e.g., 'divi/signup').
+	 * @param array  $original_attrs       The original D4 attributes.
+	 * @param bool   $is_preset_conversion Whether this is a preset conversion.
+	 *
+	 * @return array Modified converted attributes.
+	 */
+	public static function add_migration_align_items( array $converted_attrs, string $module_name, array $original_attrs, bool $is_preset_conversion ): array {
+		if ( 'divi/signup' !== $module_name ) {
+			return $converted_attrs;
+		}
+
+		$d4_layout = $original_attrs['layout'] ?? 'left_right';
+
+		switch ( $d4_layout ) {
+			// top_bottom (Body On Top, Form On Bottom).
+			// flexDirection: column.
+			case 'top_bottom':
+				$converted_attrs['module']['decoration']['layout']['desktop']['value']['flexDirection'] = 'column';
+				break;
+
+			// bottom_top (Form On Top, Body On Bottom).
+			// flexDirection: column-reverse.
+			case 'bottom_top':
+				$converted_attrs['module']['decoration']['layout']['desktop']['value']['flexDirection'] = 'column-reverse';
+				break;
+
+			// right_left (Body On Right, Form On Left).
+			// flexDirection: row-reverse.
+			// alignItems: center.
+			case 'right_left':
+				$converted_attrs['module']['decoration']['layout']['desktop']['value']['flexDirection'] = 'row-reverse';
+				$converted_attrs['module']['decoration']['layout']['desktop']['value']['alignItems']    = 'center';
+				break;
+
+			// left_right (Body On Left, Form On Right).
+			// flexDirection: No flex direction set (row is the CSS default).
+			// alignItems: center.
+			default:
+				$converted_attrs['module']['decoration']['layout']['desktop']['value']['alignItems'] = 'center';
+				break;
+		}
+
+		return $converted_attrs;
+	}
+
+	/**
 	 * Loads `SignupModule` and registers Front-End render callback and REST API Endpoints.
 	 *
 	 * @since ??
@@ -1380,7 +1510,8 @@ class SignupModule implements DependencyInterface {
 	 * @return void
 	 */
 	public function load() {
-		add_filter( 'divi_conversion_presets_attrs_map', array( SignupPresetAttrsMap::class, 'get_map' ), 10, 2 );
+		add_filter( 'divi_conversion_presets_attrs_map', [ SignupPresetAttrsMap::class, 'get_map' ], 10, 2 );
+		add_filter( 'divi.conversion.postConvertAttrs', [ self::class, 'add_migration_align_items' ], 10, 4 );
 
 		// Remove default handler in D4.
 		remove_action( 'wp_ajax_et_pb_submit_subscribe_form', 'et_pb_submit_subscribe_form' );

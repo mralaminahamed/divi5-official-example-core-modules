@@ -1,8 +1,4 @@
-import {
-  type LoginAttrs,
-  type Metadata,
-} from '@divi/types';
-
+import { type LoginAttrs, type Metadata } from '@divi/types';
 
 /**
  * Login Module Default Printed Style Attributes.
@@ -17,7 +13,7 @@ const loginModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Login
         desktop: {
           value: {
             flexDirection: 'column',
-            rowGap:        '20px',
+            rowGap: '20px',
           },
         },
       },
@@ -49,6 +45,4 @@ const loginModuleDefaultPrintedStyleAttributes: Metadata.DefaultAttributes<Login
   },
 };
 
-export {
-  loginModuleDefaultPrintedStyleAttributes,
-};
+export { loginModuleDefaultPrintedStyleAttributes };

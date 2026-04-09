@@ -1,34 +1,17 @@
-import React, {
-  type ReactElement,
-  useRef,
-} from 'react';
+import React, { type CSSProperties, type ReactElement, useRef } from 'react';
 import classNames from 'classnames';
 import { get } from 'lodash';
 
-import {
-  __,
-} from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 import { useSelect } from '@divi/data';
-import {
-  ChildModulesContainer,
-  ModuleContainer,
-  useAppState,
-} from '@divi/module';
+import { ChildModulesContainer, ModuleContainer, useAppState } from '@divi/module';
 import { getAttrByMode } from '@divi/module-utils';
 
-import {
-  moduleClassnames,
-} from './module-classnames';
-import {
-  ModuleScriptData,
-} from './module-script-data';
-import {
-  ModuleStyles,
-} from './module-styles';
-import {
-  type SignupEditProps,
-} from './types';
+import { moduleClassnames } from './module-classnames';
+import { ModuleScriptData } from './module-script-data';
+import { ModuleStyles } from './module-styles';
+import { type SignupEditProps } from './types';
 
 /**
  * Edit component of visual builder of Email Opt In Module.
@@ -51,52 +34,55 @@ const SignupEdit = ({
   isLooped,
   loopIndex,
 }: SignupEditProps): ReactElement => {
-  const {
-    breakpoint,
-  } = useAppState();
+  const { breakpoint } = useAppState();
 
-  const signupRef            = useRef(null);
-  const title                = getAttrByMode(attrs?.title?.innerContent) ?? '';
-  const description          = getAttrByMode(attrs?.content?.innerContent) ?? '';
+  const signupRef = useRef(null);
+  const title = getAttrByMode(attrs?.title?.innerContent) ?? '';
+  const description = getAttrByMode(attrs?.content?.innerContent) ?? '';
   const hasSignUpDescription = '' !== title || '' !== description;
-  const nameFieldOnly        = getAttrByMode(attrs?.field?.advanced?.nameFieldOnly) ?? 'on';
-  const nameField            = getAttrByMode(attrs?.field?.advanced?.nameField) ?? 'off';
-  const firstNameField       = getAttrByMode(attrs?.field?.advanced?.firstNameField) ?? 'on';
-  const lastNameField        = getAttrByMode(attrs?.field?.advanced?.lastNameField) ?? 'on';
-  const fullwidthName        = getAttrByMode(attrs?.field?.advanced?.nameFullwidth) ?? 'on';
-  const fullwidthFirstName   = getAttrByMode(attrs?.field?.advanced?.firstNameFullwidth) ?? 'on';
-  const fullwidthLastName    = getAttrByMode(attrs?.field?.advanced?.lastNameFullwidth) ?? 'on';
-  const fullwidthEmail       = getAttrByMode(attrs?.field?.advanced?.emailFullwidth) ?? 'on';
-  const enableCustomFields   = getAttrByMode(attrs?.customFields?.advanced?.enable) ?? 'off';
+  const nameFieldOnly = getAttrByMode(attrs?.field?.advanced?.nameFieldOnly) ?? 'on';
+  const nameField = getAttrByMode(attrs?.field?.advanced?.nameField) ?? 'off';
+  const firstNameField = getAttrByMode(attrs?.field?.advanced?.firstNameField) ?? 'on';
+  const lastNameField = getAttrByMode(attrs?.field?.advanced?.lastNameField) ?? 'on';
+  const fullwidthName = getAttrByMode(attrs?.field?.advanced?.nameFullwidth) ?? 'on';
+  const fullwidthFirstName = getAttrByMode(attrs?.field?.advanced?.firstNameFullwidth) ?? 'on';
+  const fullwidthLastName = getAttrByMode(attrs?.field?.advanced?.lastNameFullwidth) ?? 'on';
+  const fullwidthEmail = getAttrByMode(attrs?.field?.advanced?.emailFullwidth) ?? 'on';
+  const enableCustomFields = getAttrByMode(attrs?.customFields?.advanced?.enable) ?? 'off';
 
   /**
-   * Layout classes for fields element.
-   * These classes are merged with the existing 'et_pb_newsletter_fields' class.
+   * Keep layout classes for compatibility with module layout modes,
+   * but avoid forced column stacking on newsletter fields when fullwidth
+   * options are disabled.
    */
   const layoutDisplayValue = get(attrs, 'module.decoration.layout.desktop.value.display', 'flex') as string;
-  const isFlexLayout       = 'flex' === layoutDisplayValue;
-  const isGridLayout       = 'grid' === layoutDisplayValue;
-  const isBlockLayout      = ! isFlexLayout && ! isGridLayout;
+  const isFlexLayout = 'flex' === layoutDisplayValue;
+  const isGridLayout = 'grid' === layoutDisplayValue;
+  const isBlockLayout = !isFlexLayout && !isGridLayout;
+  const hasNonFullwidthField =
+    'on' !== fullwidthName || 'on' !== fullwidthFirstName || 'on' !== fullwidthLastName || 'on' !== fullwidthEmail;
 
   const fieldsLayoutClasses = classNames({
     et_pb_newsletter_fields: true,
-    et_flex_module:          isFlexLayout,
-    et_grid_module:          isGridLayout,
-    et_block_module:         isBlockLayout,
+    et_flex_module: isFlexLayout,
+    et_grid_module: isGridLayout,
+    et_block_module: isBlockLayout,
   });
+  const fieldsLayoutStyle =
+    isFlexLayout && hasNonFullwidthField ? ({ '--flex-direction': 'row' } as CSSProperties) : null;
 
   // Get Email Service Provider and its name fields.
-  const selectedProvider           = getAttrByMode(attrs?.module?.advanced?.emailService)?.provider ?? 'mailchimp';
-  const emailService               = useSelect(selectData => selectData('divi/email-marketing').getService(selectedProvider));
-  const isCustomFieldsEnable       = !! emailService?.getIn(['customFields', 'enable']);
-  const providerNameFields         = emailService?.getIn(['nameFields']);
-  const showProviderNameFieldOnly  = providerNameFields?.name;
-  const showProviderNameField      = providerNameFields?.useSingleNameField;
+  const selectedProvider = getAttrByMode(attrs?.module?.advanced?.emailService)?.provider ?? 'mailchimp';
+  const emailService = useSelect(selectData => selectData('divi/email-marketing').getService(selectedProvider));
+  const isCustomFieldsEnable = !!emailService?.getIn(['customFields', 'enable']);
+  const providerNameFields = emailService?.getIn(['nameFields']);
+  const showProviderNameFieldOnly = providerNameFields?.name;
+  const showProviderNameField = providerNameFields?.useSingleNameField;
   const showProviderFirstNameField = providerNameFields?.showFirstNameField;
-  const showProviderLastNameField  = providerNameFields?.showLastNameField;
-  const showNameFieldOnly          = showProviderNameFieldOnly ? 'on' === nameFieldOnly : 'on' === nameField;
-  const showFirstNameField         = 'on' === firstNameField && 'on' !== nameField && ! showProviderNameFieldOnly;
-  let fieldCount                   = 0;
+  const showProviderLastNameField = providerNameFields?.showLastNameField;
+  const showNameFieldOnly = showProviderNameFieldOnly ? 'on' === nameFieldOnly : 'on' === nameField;
+  const showFirstNameField = 'on' === firstNameField && 'on' !== nameField && !showProviderNameFieldOnly;
+  let fieldCount = 0;
 
   /**
    * Renders Name Field.
@@ -105,59 +91,51 @@ const SignupEdit = ({
    */
   const renderNameField = (): ReactElement => {
     // If name field and first name field from provider is not set then return null.
-    if (! showProviderNameField && ! showProviderFirstNameField && ! showProviderNameFieldOnly) {
+    if (!showProviderNameField && !showProviderFirstNameField && !showProviderNameFieldOnly) {
       return null;
     }
 
-    const fullwidthNameField         = showFirstNameField ? fullwidthFirstName : fullwidthName;
+    const fullwidthNameField = showFirstNameField ? fullwidthFirstName : fullwidthName;
     const showNameFieldInDesktopMode = fullwidthNameField && 'on' !== fullwidthNameField;
-    const nameFieldClassnames        = {
+    const nameFieldClassnames = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_newsletter_field:          true,
+      et_pb_newsletter_field: true,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_half:        showNameFieldInDesktopMode,
+      et_pb_contact_field_half: showNameFieldInDesktopMode,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_last:        ! showNameFieldInDesktopMode,
+      et_pb_contact_field_last: !showNameFieldInDesktopMode,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       et_pb_contact_field_half_tablet: 'tablet' === breakpoint && 'on' !== fullwidthNameField,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       et_pb_contact_field_last_tablet: 'tablet' === breakpoint && 'on' === fullwidthNameField,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_half_phone:  'phone' === breakpoint && 'on' !== fullwidthNameField,
+      et_pb_contact_field_half_phone: 'phone' === breakpoint && 'on' !== fullwidthNameField,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_last_phone:  'phone' === breakpoint && 'on' === fullwidthNameField,
+      et_pb_contact_field_last_phone: 'phone' === breakpoint && 'on' === fullwidthNameField,
     };
-    const nameFieldLabel             = showNameFieldOnly ? __('Name', 'et_builder') : __('First Name', 'et_builder');
+    const nameFieldLabel = showNameFieldOnly ? __('Name', 'et_builder_5') : __('First Name', 'et_builder_5');
 
     fieldCount++;
 
     // If name field and first name field is not set then return null.
-    if (! showNameFieldOnly && ! showFirstNameField) {
+    if (!showNameFieldOnly && !showFirstNameField) {
       return null;
     }
 
     return (
-      <p
-        className={classNames(nameFieldClassnames)}
-        data-quickaccess-id="form_field"
-        data-quickaccess-order="1"
-      >
-        <label
-          className="et_pb_contact_form_label"
-          htmlFor="et_pb_signup_firstname"
-          style={{ display: 'none' }}
-        >
+      <p className={classNames(nameFieldClassnames)} data-quickaccess-id="form_field" data-quickaccess-order="1">
+        <label className="et_pb_contact_form_label" htmlFor="et_pb_signup_firstname" style={{ display: 'none' }}>
           {nameFieldLabel}
         </label>
         {elements.render({
-          attrName:       'field',
-          tagName:        'input',
-          skipChildren:   true,
+          attrName: 'field',
+          tagName: 'input',
+          skipChildren: true,
           htmlAttributes: {
-            id:          'et_pb_signup_firstname',
-            type:        'text',
+            id: 'et_pb_signup_firstname',
+            type: 'text',
             placeholder: nameFieldLabel,
-            name:        'et_pb_signup_firstname',
+            name: 'et_pb_signup_firstname',
           },
         })}
       </p>
@@ -171,59 +149,51 @@ const SignupEdit = ({
    */
   const renderLastNameField = (): ReactElement => {
     // If last name field from provider is not set then return null.
-    if (! showProviderLastNameField) {
+    if (!showProviderLastNameField) {
       return null;
     }
 
-    const showLastNameField = 'on' === lastNameField && ! showProviderNameFieldOnly;
+    const showLastNameField = 'on' === lastNameField && !showProviderNameFieldOnly;
 
     // If name field and first name field is not set then return null.
-    if (showNameFieldOnly || ! showLastNameField) {
+    if (showNameFieldOnly || !showLastNameField) {
       return null;
     }
 
     const showLastNameFieldInDesktopMode = fullwidthLastName && 'on' !== fullwidthLastName;
-    const lastNameFieldClassnames        = {
+    const lastNameFieldClassnames = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_newsletter_field:          true,
+      et_pb_newsletter_field: true,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_half:        showLastNameFieldInDesktopMode,
+      et_pb_contact_field_half: showLastNameFieldInDesktopMode,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_last:        ! showLastNameFieldInDesktopMode || 0 === fieldCount % 2,
+      et_pb_contact_field_last: !showLastNameFieldInDesktopMode || 0 === fieldCount % 2,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       et_pb_contact_field_half_tablet: 'tablet' === breakpoint && 'on' !== fullwidthLastName,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       et_pb_contact_field_last_tablet: ('tablet' === breakpoint && 'on' === fullwidthLastName) || 0 === fieldCount % 2,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_half_phone:  'phone' === breakpoint && 'on' !== fullwidthLastName,
+      et_pb_contact_field_half_phone: 'phone' === breakpoint && 'on' !== fullwidthLastName,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_last_phone:  ('phone' === breakpoint && 'on' === fullwidthLastName) || 0 === fieldCount % 2,
+      et_pb_contact_field_last_phone: ('phone' === breakpoint && 'on' === fullwidthLastName) || 0 === fieldCount % 2,
     };
 
     fieldCount++;
 
     return (
-      <p
-        className={classNames(lastNameFieldClassnames)}
-        data-quickaccess-id="form_field"
-        data-quickaccess-order="2"
-      >
-        <label
-          className="et_pb_contact_form_label"
-          htmlFor="et_pb_signup_lastname"
-          style={{ display: 'none' }}
-        >
-          {__('Last Name', 'et_builder')}
+      <p className={classNames(lastNameFieldClassnames)} data-quickaccess-id="form_field" data-quickaccess-order="2">
+        <label className="et_pb_contact_form_label" htmlFor="et_pb_signup_lastname" style={{ display: 'none' }}>
+          {__('Last Name', 'et_builder_5')}
         </label>
         {elements.render({
-          attrName:       'field',
-          tagName:        'input',
-          skipChildren:   true,
+          attrName: 'field',
+          tagName: 'input',
+          skipChildren: true,
           htmlAttributes: {
-            id:          'et_pb_signup_lastname',
-            type:        'text',
-            placeholder: __('Last Name', 'et_builder'),
-            name:        'et_pb_signup_lastname',
+            id: 'et_pb_signup_lastname',
+            type: 'text',
+            placeholder: __('Last Name', 'et_builder_5'),
+            name: 'et_pb_signup_lastname',
           },
         })}
       </p>
@@ -237,47 +207,39 @@ const SignupEdit = ({
    */
   const renderEmailField = (): ReactElement => {
     const showEmailFieldInDesktopMode = fullwidthEmail && 'on' !== fullwidthEmail;
-    const emailFieldClassnames        = {
+    const emailFieldClassnames = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_newsletter_field:          true,
+      et_pb_newsletter_field: true,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_half:        showEmailFieldInDesktopMode,
+      et_pb_contact_field_half: showEmailFieldInDesktopMode,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_last:        ! showEmailFieldInDesktopMode || 0 === fieldCount % 2,
+      et_pb_contact_field_last: !showEmailFieldInDesktopMode || 0 === fieldCount % 2,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       et_pb_contact_field_half_tablet: 'tablet' === breakpoint && 'on' !== fullwidthEmail,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       et_pb_contact_field_last_tablet: ('tablet' === breakpoint && 'on' === fullwidthEmail) || 0 === fieldCount % 2,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_half_phone:  'phone' === breakpoint && 'on' !== fullwidthEmail,
+      et_pb_contact_field_half_phone: 'phone' === breakpoint && 'on' !== fullwidthEmail,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      et_pb_contact_field_last_phone:  ('phone' === breakpoint && 'on' === fullwidthEmail) || 0 === fieldCount % 2,
+      et_pb_contact_field_last_phone: ('phone' === breakpoint && 'on' === fullwidthEmail) || 0 === fieldCount % 2,
     };
 
     fieldCount++;
 
     return (
-      <p
-        className={classNames(emailFieldClassnames)}
-        data-quickaccess-id="form_field"
-        data-quickaccess-order="3"
-      >
-        <label
-          className="et_pb_contact_form_label"
-          htmlFor="et_pb_signup_email"
-          style={{ display: 'none' }}
-        >
-          {__('Email', 'et_builder')}
+      <p className={classNames(emailFieldClassnames)} data-quickaccess-id="form_field" data-quickaccess-order="3">
+        <label className="et_pb_contact_form_label" htmlFor="et_pb_signup_email" style={{ display: 'none' }}>
+          {__('Email', 'et_builder_5')}
         </label>
         {elements.render({
-          attrName:       'field',
-          tagName:        'input',
-          skipChildren:   true,
+          attrName: 'field',
+          tagName: 'input',
+          skipChildren: true,
           htmlAttributes: {
-            id:          'et_pb_signup_email',
-            type:        'text',
-            placeholder: __('Email', 'et_builder'),
-            name:        'et_pb_signup_email',
+            id: 'et_pb_signup_email',
+            type: 'text',
+            placeholder: __('Email', 'et_builder_5'),
+            name: 'et_pb_signup_email',
           },
         })}
       </p>
@@ -292,11 +254,11 @@ const SignupEdit = ({
   const renderSubmitButton = (): ReactElement => (
     <p className="et_pb_newsletter_button_wrap" data-quickaccess-id="button">
       {elements.render({
-        attrName:     'button',
+        attrName: 'button',
         elementProps: {
-          hasPreloader:   true,
+          hasPreloader: true,
           hasTextWrapper: true,
-          hasWrapper:     false,
+          hasWrapper: false,
         },
       })}
     </p>
@@ -308,19 +270,13 @@ const SignupEdit = ({
    * @returns {string} JSX representation of all child custom fields.
    */
   const renderCustomFields = (): ReactElement => {
-    if ('on' !== enableCustomFields || ! isCustomFieldsEnable) {
+    if ('on' !== enableCustomFields || !isCustomFieldsEnable) {
       return null;
     }
 
-    return childrenIds && childrenIds.length > 0
-      ? (
-        <ChildModulesContainer
-          ids={childrenIds}
-          isLooped={isLooped}
-          loopIndex={loopIndex}
-        />
-      )
-      : null;
+    return childrenIds && childrenIds.length > 0 ? (
+      <ChildModulesContainer ids={childrenIds} isLooped={isLooped} loopIndex={loopIndex} />
+    ) : null;
   };
 
   /**
@@ -339,8 +295,8 @@ const SignupEdit = ({
       >
         <div className="et_pb_newsletter_result et_pb_newsletter_error" />
         <div className="et_pb_newsletter_result et_pb_newsletter_success" />
-        <div className={fieldsLayoutClasses}>
-
+        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+        <div className={fieldsLayoutClasses} {...(fieldsLayoutStyle ? { style: fieldsLayoutStyle } : {})}>
           {renderNameField()}
           {renderLastNameField()}
           {renderEmailField()}
@@ -377,9 +333,9 @@ const SignupEdit = ({
       })}
       <div
         className={classNames({
-        /* eslint-disable @typescript-eslint/naming-convention */
+          /* eslint-disable @typescript-eslint/naming-convention */
           et_pb_newsletter_description: true,
-          et_multi_view_hidden:         ! hasSignUpDescription,
+          et_multi_view_hidden: !hasSignUpDescription,
         })}
       >
         {/* Title */}
@@ -396,16 +352,10 @@ const SignupEdit = ({
 
       {/* General child modules (separate from custom form fields) */}
       {childrenIds && childrenIds.length > 0 && 'on' !== enableCustomFields && (
-        <ChildModulesContainer
-          ids={childrenIds}
-          isLooped={isLooped}
-          loopIndex={loopIndex}
-        />
+        <ChildModulesContainer ids={childrenIds} isLooped={isLooped} loopIndex={loopIndex} />
       )}
     </ModuleContainer>
   );
 };
 
-export {
-  SignupEdit,
-};
+export { SignupEdit };

@@ -2,24 +2,21 @@
   "_comment": "!!! THIS IS AN AUTOMATICALLY GENERATED FILE - DO NOT EDIT !!!",
   "module": {
     "decoration": {
+      "layout": {
+        "desktop": {
+          "value": {
+            "flexDirection": "column"
+          }
+        }
+      },
       "border": {
         "desktop": {
           "value": {
             "styles": {
               "all": {
-                "width": "1px"
-              },
-              "top": {
-                "width": "1px"
-              },
-              "right": {
-                "width": "1px"
-              },
-              "bottom": {
-                "width": "1px"
-              },
-              "left": {
-                "width": "1px"
+                "width": "1px",
+                "color": "#bebebe",
+                "style": "solid"
               }
             }
           }
@@ -76,6 +73,24 @@
             "value": {
               "size": "80px",
               "lineHeight": "82px"
+            }
+          }
+        }
+      },
+      "border": {
+        "desktop": {
+          "value": {
+            "styles": {
+              "all": {
+                "width": "0px",
+                "color": "#bebebe",
+                "style": "solid"
+              },
+              "bottom": {
+                "width": "1px",
+                "color": "#bebebe",
+                "style": "solid"
+              }
             }
           }
         }

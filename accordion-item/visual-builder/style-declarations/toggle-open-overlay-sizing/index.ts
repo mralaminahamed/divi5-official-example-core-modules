@@ -18,7 +18,7 @@ export const toggleOpenOverlaySizingStyleDeclaration = ({
 
   const declarations = new StyleDeclarations({
     returnType: 'string',
-    important:  false,
+    important: false,
   });
 
   if ('on' === useSize && size) {

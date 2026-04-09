@@ -1,9 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 
-import {
-  type ModuleLibrary,
-  type SliderAttrs,
-} from '@divi/types';
+import { type ModuleLibrary, type SliderAttrs } from '@divi/types';
 
 import { itemTitleCallback } from './callbacks';
 import { conversionOutline } from './conversion-outline';
@@ -18,21 +15,20 @@ import { SettingsDesign } from './settings-design';
 // Register the filter.
 addFilter('divi.optionGroupPresetResolverAttrName', 'divi', optionGroupPresetResolverAttrNameSlider);
 
-
 /**
  * Slider module.
  *
  * @since ??
  */
 export const slider: ModuleLibrary.Module.RegisterDefinition<SliderAttrs> = {
-  metadata:                 sliderModuleMetaData,
-  defaultAttrs:             sliderModuleDefaultRenderAttributes,
+  metadata: sliderModuleMetaData,
+  defaultAttrs: sliderModuleDefaultRenderAttributes,
   defaultPrintedStyleAttrs: sliderModuleDefaultPrintedStyleAttributes,
-  settings:                 {
+  settings: {
     design: SettingsDesign,
   },
   renderers: {
-    edit:   SliderEdit,
+    edit: SliderEdit,
     styles: ModuleStyles,
   },
   callbacks: {

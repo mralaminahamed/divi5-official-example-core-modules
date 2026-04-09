@@ -1,20 +1,8 @@
 import React, { type ReactElement } from 'react';
 
-import {
-  CssStyle,
-  ElementStyle,
-  FormFieldStyle,
-  StyleContainer,
-  type StylesProps,
-} from '@divi/module';
-import {
-  type SignupAttrs,
-} from '@divi/types';
-
-import {
-  fieldBorderStyleDeclaration,
-  overflowStyleDeclaration,
-} from './style-declarations';
+import { CssStyle, ElementStyle, FormFieldStyle, StyleContainer, type StylesProps } from '@divi/module';
+import { overflowForBorderRadiusStyleDeclaration } from '@divi/style-library';
+import { type SignupAttrs } from '@divi/types';
 
 /**
  * Set CSS styles to the module.
@@ -32,22 +20,30 @@ export const ModuleStyles = ({
   noStyleTag,
   settings,
   orderClass,
+  isInsideStickyModule,
+  stickyParentOrderClass,
 }: StylesProps<SignupAttrs>): ReactElement => (
-  <StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>
+  <StyleContainer
+    mode={mode}
+    state={state}
+    noStyleTag={noStyleTag}
+    isInsideStickyModule={isInsideStickyModule}
+    stickyParentOrderClass={stickyParentOrderClass}
+  >
     {/* module */}
     {elements.style({
-      attrName:   'module',
+      attrName: 'module',
       styleProps: {
         defaultPrintedStyleAttrs: defaultPrintedStyleAttrs?.module?.decoration,
-        disabledOn:               {
+        disabledOn: {
           disabledModuleVisibility: settings?.disabledModuleVisibility,
         },
         advancedStyles: [
           {
             componentName: 'divi/text',
-            props:         {
-              attr:              attrs?.module?.advanced?.text,
-              selector:          `${orderClass} .et_pb_newsletter_description p, ${orderClass} .et_pb_newsletter_description .et_pb_module_header`,
+            props: {
+              attr: attrs?.module?.advanced?.text,
+              selector: `${orderClass} .et_pb_newsletter_description p, ${orderClass} .et_pb_newsletter_description .et_pb_module_header`,
               propertySelectors: {
                 textShadow: {
                   desktop: {
@@ -61,22 +57,30 @@ export const ModuleStyles = ({
           },
           {
             componentName: 'divi/common',
-            props:         {
-              attr:                attrs?.module?.decoration?.border,
-              declarationFunction: overflowStyleDeclaration,
+            props: {
+              attr: attrs?.module?.decoration?.border,
+              declarationFunction: params =>
+                overflowForBorderRadiusStyleDeclaration({
+                  ...params,
+                  overflowAttr: attrs?.module?.decoration?.overflow,
+                }),
             },
           },
           {
             componentName: 'divi/common',
-            props:         {
-              selector:            `${orderClass}.et_pb_subscribe`,
-              attr:                attrs?.module?.decoration?.border,
-              declarationFunction: fieldBorderStyleDeclaration,
+            props: {
+              selector: `${orderClass}.et_pb_subscribe`,
+              attr: attrs?.module?.decoration?.border,
+              declarationFunction: params =>
+                overflowForBorderRadiusStyleDeclaration({
+                  ...params,
+                  overflowAttr: attrs?.module?.decoration?.overflow,
+                }),
             },
           },
           {
             componentName: 'divi/common',
-            props:         {
+            props: {
               selector: [
                 `${orderClass} .et_pb_newsletter_form p input[type="text"]`,
                 `${orderClass} .et_pb_newsletter_form p textarea`,
@@ -84,8 +88,8 @@ export const ModuleStyles = ({
                 `${orderClass} .et_pb_newsletter_form p .input[type="checkbox"] + label i`,
                 `${orderClass} .et_pb_newsletter_form p .input[type="radio"] + label i`,
               ].join(', '),
-              attr:                attrs?.field?.decoration?.border,
-              declarationFunction: fieldBorderStyleDeclaration,
+              attr: attrs?.field?.decoration?.border,
+              declarationFunction: overflowForBorderRadiusStyleDeclaration,
             },
           },
         ],
@@ -113,11 +117,11 @@ export const ModuleStyles = ({
       attr={attrs?.field}
       important={{
         spacing: true,
-        font:    {
+        font: {
           font: {
             desktop: {
               value: {
-                color:       true,
+                color: true,
                 'font-size': true,
               },
             },
@@ -155,7 +159,7 @@ export const ModuleStyles = ({
         spacing: {
           desktop: {
             value: {
-              margin:  `${orderClass} .et_pb_newsletter_form p.et_pb_newsletter_field`,
+              margin: `${orderClass} .et_pb_newsletter_form p.et_pb_newsletter_field`,
               padding: [
                 `${orderClass} .et_pb_newsletter_form .input`,
                 `${orderClass} .et_pb_newsletter_form input[type="text"]`,
@@ -258,7 +262,7 @@ export const ModuleStyles = ({
             desktop: {
               value: {
                 'border-radius': `${orderClass} .et_pb_newsletter_form p input[type="text"]`,
-                'border-style':  `${orderClass} .et_pb_newsletter_form p input[type="text"]`,
+                'border-style': `${orderClass} .et_pb_newsletter_form p input[type="text"]`,
               },
             },
           },
@@ -315,19 +319,95 @@ export const ModuleStyles = ({
       }}
       orderClass={orderClass}
     />
+    {/* Focus text color for actual input elements */}
+    <ElementStyle
+      selector={[
+        `${orderClass} .et_pb_newsletter_form p input.input:focus`,
+        `${orderClass} .et_pb_newsletter_form p textarea:focus`,
+        `${orderClass} .et_pb_newsletter_form p select:focus`,
+      ].join(', ')}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: {
+          font: {
+            desktop: {
+              value: {
+                color: true,
+              },
+            },
+          },
+        },
+      }}
+    />
+    {/* Focus placeholder styles with !important */}
+    <ElementStyle
+      selector={[
+        `${orderClass} .et_pb_newsletter_form p .input:focus::placeholder`,
+        `${orderClass} .et_pb_newsletter_form p textarea:focus::placeholder`,
+      ].join(', ')}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
+    <ElementStyle
+      selector={[
+        `${orderClass} .et_pb_newsletter_form p .input:focus::-webkit-input-placeholder`,
+        `${orderClass} .et_pb_newsletter_form p textarea:focus::-webkit-input-placeholder`,
+      ].join(', ')}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
+    <ElementStyle
+      selector={[
+        `${orderClass} .et_pb_newsletter_form p .input:focus::-moz-placeholder`,
+        `${orderClass} .et_pb_newsletter_form p textarea:focus::-moz-placeholder`,
+      ].join(', ')}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
+    <ElementStyle
+      selector={[
+        `${orderClass} .et_pb_newsletter_form p .input:focus::-ms-input-placeholder`,
+        `${orderClass} .et_pb_newsletter_form p textarea:focus::-ms-input-placeholder`,
+      ].join(', ')}
+      attrs={{
+        font: attrs?.field?.advanced?.focus?.font,
+      }}
+      orderClass={orderClass}
+      font={{
+        important: true,
+      }}
+    />
     {/* Module
-      * This is only to output the CSS form Custom CSS from Advanced Tab
-      * at the very end of the DOM, so that it can override the css from
-      * design tab. This is to fix the issue for re-ordering css
-      * https://github.com/elegantthemes/Divi/issues/38331
-      *
-      * This may not be the ideal solution as per the conversation here
-      * https://elegantthemes.slack.com/archives/C01CW343ZJ9/p1724934785470029?
-      * thread_ts=1708688820.993489&cid=C01CW343ZJ9
-      * so might need to re-visit this sometime later.
-    */}
+     * This is only to output the CSS form Custom CSS from Advanced Tab
+     * at the very end of the DOM, so that it can override the css from
+     * design tab. This is to fix the issue for re-ordering css
+     * https://github.com/elegantthemes/Divi/issues/38331
+     *
+     * This may not be the ideal solution as per the conversation here
+     * https://elegantthemes.slack.com/archives/C01CW343ZJ9/p1724934785470029?
+     * thread_ts=1708688820.993489&cid=C01CW343ZJ9
+     * so might need to re-visit this sometime later.
+     */}
     <CssStyle
-      selector={orderClass}
+      selector={`${orderClass}.et_pb_subscribe`}
       attr={attrs.css}
       cssFields={elements?.moduleMetadata?.customCssFields}
     />

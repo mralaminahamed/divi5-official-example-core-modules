@@ -1,8 +1,4 @@
-import {
-  type Metadata,
-  type SignupAttrs,
-} from '@divi/types';
-
+import { type Metadata, type SignupAttrs } from '@divi/types';
 
 /**
  * SignUp Module Default Render Attributes.
@@ -24,8 +20,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
         text: {
           desktop: {
             value: {
-              orientation: 'left',
-              color:       'dark',
+              color: 'dark',
             },
           },
         },
@@ -42,7 +37,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
       background: {
         desktop: {
           value: {
-            color:       '$variable({"type":"color","value":{"name":"gcid-primary-color","settings":{}}})$',
+            color: '$variable({"type":"color","value":{"name":"gcid-primary-color","settings":{}}})$',
             enableColor: 'on',
           },
         },
@@ -70,7 +65,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
             desktop: {
               value: {
                 lineHeight: '1.7em',
-                size:       '14px',
+                size: '14px',
               },
             },
           },
@@ -80,7 +75,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
             desktop: {
               value: {
                 lineHeight: '1em',
-                size:       '14px',
+                size: '14px',
               },
             },
           },
@@ -90,7 +85,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
             desktop: {
               value: {
                 lineHeight: '1em',
-                size:       '14px',
+                size: '14px',
               },
             },
           },
@@ -100,7 +95,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
             desktop: {
               value: {
                 lineHeight: '1em',
-                size:       '14px',
+                size: '14px',
               },
             },
           },
@@ -110,7 +105,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
             desktop: {
               value: {
                 lineHeight: '1em',
-                size:       '14px',
+                size: '14px',
               },
             },
           },
@@ -125,7 +120,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
           desktop: {
             value: {
               lineHeight: '1em',
-              size:       '26px',
+              size: '26px',
             },
           },
         },
@@ -136,7 +131,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
     innerContent: {
       desktop: {
         value: {
-          text:    'Subscribe',
+          text: 'Subscribe',
           linkUrl: '#',
         },
       },
@@ -146,7 +141,7 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
         desktop: {
           value: {
             enable: 'off',
-            icon:   {
+            icon: {
               enable: 'on',
             },
           },
@@ -206,10 +201,10 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
           desktop: {
             value: {
               radius: {
-                sync:        'on',
-                topLeft:     '3px',
-                topRight:    '3px',
-                bottomLeft:  '3px',
+                sync: 'on',
+                topLeft: '3px',
+                topRight: '3px',
+                bottomLeft: '3px',
                 bottomRight: '3px',
               },
             },
@@ -227,10 +222,10 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
         desktop: {
           value: {
             radius: {
-              sync:        'on',
-              topLeft:     '3px',
-              topRight:    '3px',
-              bottomLeft:  '3px',
+              sync: 'on',
+              topLeft: '3px',
+              topRight: '3px',
+              bottomLeft: '3px',
               bottomRight: '3px',
             },
           },
@@ -263,6 +258,4 @@ const signupModuleDefaultRenderAttributes: Metadata.DefaultAttributes<SignupAttr
   },
 };
 
-export {
-  signupModuleDefaultRenderAttributes,
-};
+export { signupModuleDefaultRenderAttributes };

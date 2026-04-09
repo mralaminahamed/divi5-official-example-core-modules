@@ -8,6 +8,8 @@
 
 namespace ET\Builder\Packages\ModuleLibrary\AccordionItem;
 
+use ET\Builder\Packages\Module\Options\Loop\LoopPresetAttrsMap;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
@@ -36,7 +38,7 @@ class AccordionItemPresetAttrsMap {
 			return $map;
 		}
 
-		return [
+		$static_attrs = [
 			'title.innerContent'                           => [
 				'attrName' => 'title.innerContent',
 				'preset'   => 'content',
@@ -54,6 +56,10 @@ class AccordionItemPresetAttrsMap {
 				'attrName' => 'module.advanced.link',
 				'preset'   => 'content',
 				'subName'  => 'target',
+			],
+			'module.advanced.elements.structure'           => [
+				'attrName' => 'module.advanced.elements.structure',
+				'preset'   => 'content',
 			],
 			'module.decoration.background__color'          => [
 				'attrName' => 'module.decoration.background',
@@ -278,6 +284,7 @@ class AccordionItemPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'pattern.transform',
 			],
@@ -357,6 +364,7 @@ class AccordionItemPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'mask.color',
 			],
@@ -364,6 +372,7 @@ class AccordionItemPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'mask.transform',
 			],
@@ -371,6 +380,7 @@ class AccordionItemPresetAttrsMap {
 				'attrName' => 'module.decoration.background',
 				'preset'   => [
 					'style',
+					'html',
 				],
 				'subName'  => 'mask.aspectRatio',
 			],
@@ -1326,6 +1336,20 @@ class AccordionItemPresetAttrsMap {
 				],
 				'subName'  => 'maxWidth',
 			],
+			'module.decoration.sizing__flexType'           => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'html',
+				],
+				'subName'  => 'flexType',
+			],
+			'module.decoration.sizing__alignSelf'          => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'alignSelf',
+			],
 			'module.decoration.sizing__alignment'          => [
 				'attrName' => 'module.decoration.sizing',
 				'preset'   => [
@@ -1333,12 +1357,73 @@ class AccordionItemPresetAttrsMap {
 				],
 				'subName'  => 'alignment',
 			],
+			'module.decoration.sizing__flexGrow'           => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'flexGrow',
+			],
+			'module.decoration.sizing__flexShrink'         => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'flexShrink',
+			],
+			'module.decoration.sizing__gridAlignSelf'      => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAlignSelf',
+			],
+			'module.decoration.sizing__gridColumnEnd'      => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnEnd',
+			],
+			'module.decoration.sizing__gridColumnSpan'     => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnSpan',
+			],
+			'module.decoration.sizing__gridColumnStart'    => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnStart',
+			],
+			'module.decoration.sizing__gridJustifySelf'    => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridJustifySelf',
+			],
+			'module.decoration.sizing__gridRowEnd'         => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowEnd',
+			],
+			'module.decoration.sizing__gridRowSpan'        => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowSpan',
+			],
+			'module.decoration.sizing__gridRowStart'       => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowStart',
+			],
 			'module.decoration.sizing__minHeight'          => [
 				'attrName' => 'module.decoration.sizing',
 				'preset'   => [
 					'style',
 				],
 				'subName'  => 'minHeight',
+			],
+			'module.decoration.sizing__size'               => [
+				'attrName' => 'module.decoration.sizing',
+				'preset'   => [
+					'style',
+				],
+				'subName'  => 'size',
 			],
 			'module.decoration.sizing__height'             => [
 				'attrName' => 'module.decoration.sizing',
@@ -1701,6 +1786,137 @@ class AccordionItemPresetAttrsMap {
 					'html',
 				],
 			],
+			'module.decoration.interactions'               => [
+				'attrName' => 'module.decoration.interactions',
+				'preset'   => [
+					'script',
+				],
+			],
+			'module.decoration.layout__alignContent'       => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'alignContent',
+			],
+			'module.decoration.layout__alignItems'         => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'alignItems',
+			],
+			'module.decoration.layout__collapseEmptyColumns' => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'collapseEmptyColumns',
+			],
+			'module.decoration.layout__columnGap'          => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'columnGap',
+			],
+			'module.decoration.layout__display'            => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style', 'html' ],
+				'subName'  => 'display',
+			],
+			'module.decoration.layout__flexDirection'      => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'flexDirection',
+			],
+			'module.decoration.layout__flexWrap'           => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'flexWrap',
+			],
+			'module.decoration.layout__gridAutoColumns'    => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAutoColumns',
+			],
+			'module.decoration.layout__gridAutoFlow'       => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAutoFlow',
+			],
+			'module.decoration.layout__gridAutoRows'       => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridAutoRows',
+			],
+			'module.decoration.layout__gridColumnCount'    => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnCount',
+			],
+			'module.decoration.layout__gridColumnMinWidth' => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnMinWidth',
+			],
+			'module.decoration.layout__gridColumnWidth'    => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnWidth',
+			],
+			'module.decoration.layout__gridColumnWidths'   => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridColumnWidths',
+			],
+			'module.decoration.layout__gridDensity'        => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridDensity',
+			],
+			'module.decoration.layout__gridJustifyItems'   => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridJustifyItems',
+			],
+			'module.decoration.layout__gridOffsetRules'    => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridOffsetRules',
+			],
+			'module.decoration.layout__gridRowCount'       => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowCount',
+			],
+			'module.decoration.layout__gridRowHeight'      => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowHeight',
+			],
+			'module.decoration.layout__gridRowHeights'     => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowHeights',
+			],
+			'module.decoration.layout__gridRowMinHeight'   => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridRowMinHeight',
+			],
+			'module.decoration.layout__gridTemplateColumns' => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridTemplateColumns',
+			],
+			'module.decoration.layout__gridTemplateRows'   => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'gridTemplateRows',
+			],
+			'module.decoration.layout__justifyContent'     => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'justifyContent',
+			],
+			'module.decoration.layout__rowGap'             => [
+				'attrName' => 'module.decoration.layout',
+				'preset'   => [ 'style' ],
+				'subName'  => 'rowGap',
+			],
 			'module.decoration.overflow__x'                => [
 				'attrName' => 'module.decoration.overflow',
 				'preset'   => [
@@ -1875,6 +2091,113 @@ class AccordionItemPresetAttrsMap {
 				],
 				'subName'  => 'motionTriggerStart',
 			],
+			'module.decoration.animation__delay'           => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'delay',
+			],
+			'module.decoration.animation__direction'       => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'direction',
+			],
+			'module.decoration.animation__duration'        => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'duration',
+			],
+			'module.decoration.animation__intensity.flip'  => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'intensity.flip',
+			],
+			'module.decoration.animation__intensity.fold'  => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'intensity.fold',
+			],
+			'module.decoration.animation__intensity.roll'  => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'intensity.roll',
+			],
+			'module.decoration.animation__intensity.slide' => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'intensity.slide',
+			],
+			'module.decoration.animation__intensity.zoom'  => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'intensity.zoom',
+			],
+			'module.decoration.animation__repeat'          => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'repeat',
+			],
+			'module.decoration.animation__speedCurve'      => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'speedCurve',
+			],
+			'module.decoration.animation__startingOpacity' => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'startingOpacity',
+			],
+			'module.decoration.animation__style'           => [
+				'attrName' => 'module.decoration.animation',
+				'preset'   => [
+					'script',
+				],
+				'subName'  => 'style',
+			],
+			'module.decoration.attributes'                 => [
+				'attrName' => 'module.decoration.attributes',
+				'preset'   => [ 'html' ],
+			],
+			'module.advanced.html__elementType'            => [
+				'attrName' => 'module.advanced.html',
+				'preset'   => [ 'html' ],
+				'subName'  => 'elementType',
+			],
+			'module.advanced.html__htmlAfter'              => [
+				'attrName' => 'module.advanced.html',
+				'preset'   => [ 'html' ],
+				'subName'  => 'htmlAfter',
+			],
+			'module.advanced.html__htmlBefore'             => [
+				'attrName' => 'module.advanced.html',
+				'preset'   => [ 'html' ],
+				'subName'  => 'htmlBefore',
+			],
 		];
+
+		$loop_preset_attrs = LoopPresetAttrsMap::get_map( 'module.advanced.loop' );
+
+		return array_merge( $static_attrs, $loop_preset_attrs );
 	}
 }

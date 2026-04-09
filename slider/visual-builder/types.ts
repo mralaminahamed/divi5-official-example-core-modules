@@ -1,9 +1,6 @@
 import { type SliderAttrs } from '@divi/types';
 
-import {
-  type ModuleEditProps,
-} from '../types-module';
-
+import { type ModuleEditProps } from '../types-module';
 
 declare global {
   interface Window {
@@ -16,4 +13,17 @@ declare global {
 
 export type SliderEditProps = ModuleEditProps<SliderAttrs>;
 
-export type CustomCssFieldKeys = 'slideDescription' | 'slideTitle' | 'slideButton' | 'slideControllers' | 'slideActiveController' | 'slideImage' | 'slideArrows';
+export type CustomCssFieldKeys =
+  | 'slideDescription'
+  | 'slideTitle'
+  | 'slideButton'
+  | 'slideControllers'
+  | 'slideActiveController'
+  | 'slideImage'
+  | 'slideArrows';
+
+export type LoopStatus = {
+  id: string;
+  isLoopEnabled: boolean;
+  count: number;
+};

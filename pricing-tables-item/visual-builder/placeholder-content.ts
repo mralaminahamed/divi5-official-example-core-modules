@@ -19,7 +19,7 @@ export const placeholderContent: PricingTableAttrs = {
   title: {
     innerContent: {
       desktop: {
-        value: _x('Table Title', 'Modules dummy content', 'et_builder'),
+        value: _x('Table Title', 'Modules dummy content', 'et_builder_5'),
       },
     },
   },
@@ -34,7 +34,7 @@ export const placeholderContent: PricingTableAttrs = {
     innerContent: {
       desktop: {
         value: {
-          currency: _x('$', 'Modules dummy content', 'et_builder'),
+          currency: _x('$', 'Modules dummy content', 'et_builder_5'),
         },
       },
     },
@@ -43,7 +43,9 @@ export const placeholderContent: PricingTableAttrs = {
     innerContent: {
       desktop: {
         value: _x(
-          '+ This feature is included\n+ This feature is included\n+ This feature is included\n+ This feature is included\n- This feature is not included\n- This feature is not included', 'Modules dummy content', 'et_builder',
+          '+ This feature is included\n+ This feature is included\n+ This feature is included\n+ This feature is included\n- This feature is not included\n- This feature is not included',
+          'Modules dummy content',
+          'et_builder_5',
         ),
       },
     },

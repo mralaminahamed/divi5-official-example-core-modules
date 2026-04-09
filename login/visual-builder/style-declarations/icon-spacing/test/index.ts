@@ -1,8 +1,5 @@
-import {
-  iconSpacingDeclaration,
-} from '../index';
+import { iconSpacingDeclaration } from '../index';
 import testCases from './test-cases.json';
-
 
 describe.each(testCases)('iconSpacingDeclaration()', ({ title, cases }) => {
   describe(title, () => {

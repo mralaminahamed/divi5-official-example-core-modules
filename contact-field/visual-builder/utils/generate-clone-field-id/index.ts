@@ -1,11 +1,6 @@
-import {
-  type ContactFieldAttrs,
-  type ModuleFlatObject,
-} from '@divi/types';
+import { type ContactFieldAttrs, type ModuleFlatObject } from '@divi/types';
 
-import {
-  contactFieldModuleMetaData,
-} from '../../module.json-source';
+import { contactFieldModuleMetaData } from '../../module.json-source';
 
 /**
  * Add filter to `divi.cloneModule.attrs` hook.
@@ -18,10 +13,10 @@ import {
 export const generateCloneFieldId = (
   attrs: ContactFieldAttrs,
   info: {
-    name: string,
-    parentId: string,
-    sourceId: string,
-    state: Record<string, ModuleFlatObject<ContactFieldAttrs>>
+    name: string;
+    parentId: string;
+    sourceId: string;
+    state: Record<string, ModuleFlatObject<ContactFieldAttrs>>;
   },
 ) => {
   const { name, state, parentId, sourceId } = info;
@@ -33,7 +28,7 @@ export const generateCloneFieldId = (
   // Check if entire Contact Form was cloned by comparing parent IDs.
   // When cloning entire form: sourceField.parent !== parentId (field moved to new parent form)
   // When cloning individual field: sourceField.parent === parentId (field stays in same form)
-  const sourceField    = state[sourceId];
+  const sourceField = state[sourceId];
   const sourceParentId = sourceField?.parent;
 
   if (sourceParentId && sourceParentId !== parentId) {
@@ -41,22 +36,22 @@ export const generateCloneFieldId = (
   }
 
   const fieldUniqueBase = attrs?.fieldItem?.advanced?.id?.desktop?.value;
-  const siblings        = Object.keys(state).filter(key => state[key]?.parent === parentId);
-  const countStart      = 2;
+  const siblings = Object.keys(state).filter(key => state[key]?.parent === parentId);
+  const countStart = 2;
 
-  const findByAttrsId = (uniqueId: string):boolean => {
+  const findByAttrsId = (uniqueId: string): boolean => {
     const found = siblings.some(key => state[key]?.props?.attrs?.fieldItem?.advanced?.id?.desktop?.value === uniqueId);
 
     return found;
   };
 
-  let fieldUnique    = `${fieldUniqueBase}_${countStart}`;
+  let fieldUnique = `${fieldUniqueBase}_${countStart}`;
   let checkIncrement = 0;
 
   // Re-generate unique value for field ID if it's already exist
   while (findByAttrsId(fieldUnique)) {
     checkIncrement++;
-    fieldUnique = `${fieldUniqueBase}_${(checkIncrement + countStart)}`;
+    fieldUnique = `${fieldUniqueBase}_${checkIncrement + countStart}`;
   }
 
   return {

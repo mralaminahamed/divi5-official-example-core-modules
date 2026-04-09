@@ -19,7 +19,7 @@ export const maybeRegisterSalvattoreGrid = (): void => {
 
   blogGrid.forEach(grid => {
     const salvattoreContent = grid.querySelectorAll('.et_pb_salvattore_content');
-    const interval          = setInterval(() => {
+    const interval = setInterval(() => {
       salvattoreContent.forEach((thisEl: HTMLElement) => {
         const contentValue = getComputedStyle(thisEl, ':before').content;
 
@@ -38,7 +38,7 @@ export const maybeRegisterSalvattoreGrid = (): void => {
           return;
         }
 
-        if (thisEl.querySelectorAll('div').length && ! thisEl.querySelectorAll('div').item(0).classList.length) {
+        if (thisEl.querySelectorAll('div').length && !thisEl.querySelectorAll('div').item(0).classList.length) {
           // If the next element is a div, without a class, attempt to recreate the columns.
           window?.divi?.scriptLibrary?.scriptLibrarySalvattore?.recreateColumns(thisEl);
         } else {

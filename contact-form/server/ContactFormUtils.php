@@ -28,7 +28,7 @@ class ContactFormUtils {
 	 *
 	 * @return string The message text.
 	 */
-	public static function build_message( array $fields ):string {
+	public static function build_message( array $fields ): string {
 		$message = $fields['message']['value'] ?? '';
 
 		foreach ( $fields as $key => $field ) {
@@ -71,7 +71,7 @@ class ContactFormUtils {
 	 *
 	 * @return string The message text.
 	 */
-	public static function build_message_by_template( array $fields, string $message_template, array $skipped_fields = [] ):string {
+	public static function build_message_by_template( array $fields, string $message_template, array $skipped_fields = [] ): string {
 		$message = html_entity_decode( $message_template );
 
 		foreach ( $fields as $key => $field ) {
@@ -84,7 +84,7 @@ class ContactFormUtils {
 			foreach ( $skipped_fields as $skipped_field_id ) {
 				// First try to remove the placeholder with its line if it's alone on a line.
 				$escaped_field_id = preg_quote( $skipped_field_id, '/' );
-				$pattern = "/^[ \t]*%%{$escaped_field_id}%%[ \t]*\r?\n/m";
+				$pattern          = "/^[ \t]*%%{$escaped_field_id}%%[ \t]*\r?\n/m";
 				if ( preg_match( $pattern, $message ) ) {
 					$message = preg_replace( $pattern, '', $message );
 				} else {
@@ -100,7 +100,7 @@ class ContactFormUtils {
 		$message = preg_replace_callback(
 			// Test regex: https://regex101.com/r/L8d4D7/2.
 			"/{{if:([a-zA-Z0-9-_]+)}}([^{]+){{\/if}}\n?/m",
-			function( $matches ) use ( $fields ) {
+			function ( $matches ) use ( $fields ) {
 				$key = strtolower( $matches[1] );
 
 				if ( ! isset( $fields[ $key ] ) ) {
@@ -114,5 +114,26 @@ class ContactFormUtils {
 
 		return $message;
 	}
+	/**
+	 * Get unique ID for the contact form module.
+	 *
+	 * @since ??
+	 *
+	 * @param array $attrs        The module attributes array.
+	 * @param array $parsed_block  The parsed block array containing layout information.
+	 *
+	 * @return string The unique ID, either from attributes or generated from parsed block data.
+	 */
+	public static function get_unique_id( array $attrs, array $parsed_block ): string {
+		$unique_id = $attrs['module']['advanced']['uniqueId']['desktop']['value'] ?? '';
 
+		if ( ! $unique_id ) {
+			$layout_type = $parsed_block['layout_type'] ?? '';
+			$id          = $parsed_block['id'] ?? '';
+			$order_index = $parsed_block['orderIndex'] ?? 0;
+			$unique_id   = md5( $layout_type . '--' . $id . '--' . $order_index );
+		}
+
+		return $unique_id;
+	}
 }
